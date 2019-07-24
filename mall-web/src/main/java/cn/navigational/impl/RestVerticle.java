@@ -55,10 +55,11 @@ public class RestVerticle extends BaseVerticle {
             final String method = _r.getString(HTTP_METHOD);
             final String path = _r.getString(NAME);
             final JsonArray validator = _r.getJsonArray("validator", new JsonArray());
+            final String comment = _r.getString("comment");
             final Route route;
-            if (method.equals(HttpMethod.GET)) {
+            if (method.equals(HttpMethod.GET.toString())) {
                 route = router.get(path);
-            } else if (method.equals(HttpMethod.POST)) {
+            } else if (method.equals(HttpMethod.POST.toString())) {
                 route = router.post(path);
             } else {
                 return;
@@ -72,7 +73,9 @@ public class RestVerticle extends BaseVerticle {
                     logger.error("build api failed:{}",e.getCause().getMessage());
                 }
             });
+            logger.info("{}({}) register success!",path,comment);
         });
+        router.route("/api/*").handler(this::sendMessage);
         logger.info("api build success!");
     }
 
