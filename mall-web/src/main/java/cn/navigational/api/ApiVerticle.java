@@ -32,19 +32,23 @@ public class ApiVerticle extends RestVerticle {
         router.route("/api/*").handler(BodyHandler.create().setMergeFormAttributes(true));
         router.route("/api/*").handler(HttpDataConverter.create()).handler(RequireToken.create(vertx, config()));
 
-        router.post("/api/user/login").handler(UserValidator.create()).handler(this::sendMessage);
+//        router.post("/api/user/login").handler(UserValidator.create());
+//
+//        router.post("/api/user/register").handler(UserValidator.create()).handler(RegisterValidator.create());
+//
+//        router.get("/api/product/list");
+//
+//        router.get("/api/productCate/list");
+//
+//        router.get("/api/productSku/sku");
+//
+//        router.get("/api/address/list");
+//
+//        router.get("/api/address/default");
 
-        router.post("/api/user/register").handler(UserValidator.create()).handler(RegisterValidator.create()).handler(this::sendMessage);
+        buildApi(router);
 
-        router.get("/api/product/list");
 
-        router.get("/api/productCate/list");
-
-        router.get("/api/productSku/sku");
-
-        router.get("/api/address/list");
-
-        router.get("/api/address/default");
 
         router.route("/api/*").handler(this::sendMessage);
 

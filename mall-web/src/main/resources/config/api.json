@@ -2,12 +2,19 @@
   {
     "name": "/api/user/login",
     "method": "POST",
-    "comment": "用户登录"
+    "comment": "用户登录",
+    "validator": [
+      "cn.navigational.validator.UserValidator"
+    ]
   },
   {
     "name": "/api/user/register",
     "method": "POST",
-    "comment": "用户注册"
+    "comment": "用户注册",
+    "validator": [
+      "cn.navigational.validator.UserValidator",
+      "cn.navigational.validator.RegisterValidator"
+    ]
   },
   {
     "name": "/api/product/list",
