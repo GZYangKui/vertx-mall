@@ -1,0 +1,37 @@
+[
+  {
+    "name": "/api/user/login",
+    "method": "POST",
+    "comment": "用户登录"
+  },
+  {
+    "name": "/api/user/register",
+    "method": "POST",
+    "comment": "用户注册"
+  },
+  {
+    "name": "/api/product/list",
+    "method": "GET",
+    "comment": "获取商品列表"
+  },
+  {
+    "name": "/api/productCate/list",
+    "method": "GET",
+    "comment": "获取商品分类列表"
+  },
+  {
+    "name": "/api/productSku/sku",
+    "method": "GET",
+    "comment": "获取商品库存"
+  },
+  {
+    "name": "/api/address/list",
+    "method": "GET",
+    "comment": "用户地址列表"
+  },
+  {
+    "name": "/api/address/default",
+    "method": "GET",
+    "comment": "获取用户默认地址"
+  }
+]

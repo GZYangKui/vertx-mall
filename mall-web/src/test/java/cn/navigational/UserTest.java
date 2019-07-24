@@ -4,6 +4,7 @@ import cn.navigational.api.ApiVerticle;
 import cn.navigational.routers.UserRouter;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -12,10 +13,7 @@ import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
@@ -23,18 +21,20 @@ import static cn.navigational.config.Constants.*;
 
 @RunWith(VertxUnitRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class UserAccountTest {
-    private WebClient webClient;
+public class UserTest {
+    private static WebClient webClient;
     private final String host = "127.0.0.1";
     private final int port = 8080;
     private final Logger logger = LogManager.getLogger();
-    private Vertx vertx = Vertx.vertx();
+    private static Vertx vertx = Vertx.vertx();
 
     @Before
     public void before(TestContext context) {
         final JsonObject config = vertx.fileSystem().readFileBlocking("config/config.json").toJsonObject();
+        final JsonArray api = vertx.fileSystem().readFileBlocking("config/api.json").toJsonArray();
         final DeploymentOptions deployOptions = new DeploymentOptions();
         final WebClientOptions options = new WebClientOptions();
+        config.put(API,api);
 
         options.setSsl(false);
         options.setFollowRedirects(true);
@@ -144,8 +144,8 @@ public class UserAccountTest {
         });
     }
 
-    @After
-    public void after(TestContext context) {
+    @AfterClass
+    public static void after(TestContext context) {
         webClient.close();
         vertx.close(context.asyncAssertSuccess());
     }

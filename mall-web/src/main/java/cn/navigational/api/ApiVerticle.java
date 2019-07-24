@@ -36,16 +36,17 @@ public class ApiVerticle extends RestVerticle {
 
         router.post("/api/user/register").handler(UserValidator.create()).handler(RegisterValidator.create()).handler(this::sendMessage);
 
-        router.get("/api/product/list").handler(this::sendMessage);
+        router.get("/api/product/list");
 
-        router.get("/api/productCate/list").handler(this::sendMessage);
+        router.get("/api/productCate/list");
 
-        router.get("/api/productSku/sku").handler(this::sendMessage);
+        router.get("/api/productSku/sku");
 
-        router.get("/api/address/list").handler(this::sendMessage);
+        router.get("/api/address/list");
 
-        router.get("/api/address/default").handler(this::sendMessage);
+        router.get("/api/address/default");
 
+        router.route("/api/*").handler(this::sendMessage);
 
         final int port = config().getInteger(PORT, 8080);
 

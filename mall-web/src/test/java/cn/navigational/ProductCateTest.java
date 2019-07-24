@@ -2,12 +2,12 @@ package cn.navigational;
 
 import cn.navigational.api.ApiVerticle;
 import cn.navigational.routers.ProductCateRouter;
-import cn.navigational.routers.ProductRouter;
 import cn.navigational.routers.UserRouter;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -33,6 +33,30 @@ public class ProductCateTest {
     private static Vertx vertx = Vertx.vertx();
     private  String token = "";
 
+    @BeforeClass
+    public static void  before(TestContext context) {
+
+        final JsonObject config = vertx.fileSystem().readFileBlocking("config/config.json").toJsonObject();
+        final JsonArray api = vertx.fileSystem().readFileBlocking("config/api.json").toJsonArray();
+        final DeploymentOptions deployOptions = new DeploymentOptions();
+        final WebClientOptions options = new WebClientOptions();
+        config.put(API,api);
+
+        options.setSsl(false);
+        options.setFollowRedirects(true);
+        options.setDefaultHost(host);
+        options.setDefaultPort(port);
+
+        webClient = WebClient.create(vertx, options);
+
+        deployOptions.setConfig(config);
+
+        vertx.deployVerticle(new ApiVerticle(), deployOptions, context.asyncAssertSuccess());
+        vertx.deployVerticle(new UserRouter(), deployOptions, context.asyncAssertSuccess());
+        vertx.deployVerticle(new ProductCateRouter(),deployOptions,context.asyncAssertSuccess());
+    }
+
+
     @Before
     public void login(TestContext context) {
         final Async async = context.async();
@@ -52,27 +76,6 @@ public class ProductCateTest {
         });
     }
 
-    @BeforeClass
-    public static void  before(TestContext context) {
-
-        final JsonObject config = vertx.fileSystem().readFileBlocking("config/config.json").toJsonObject();
-        final DeploymentOptions deployOptions = new DeploymentOptions();
-        final WebClientOptions options = new WebClientOptions();
-
-        options.setSsl(false);
-        options.setFollowRedirects(true);
-        options.setDefaultHost(host);
-        options.setDefaultPort(port);
-
-        webClient = WebClient.create(vertx, options);
-
-        deployOptions.setConfig(config);
-
-        vertx.deployVerticle(new ApiVerticle(), deployOptions, context.asyncAssertSuccess());
-        vertx.deployVerticle(new UserRouter(), deployOptions, context.asyncAssertSuccess());
-        vertx.deployVerticle(new ProductRouter(),deployOptions,context.asyncAssertSuccess());
-        vertx.deployVerticle(new ProductCateRouter(),deployOptions,context.asyncAssertSuccess());
-    }
 
 
     @Test
@@ -90,8 +93,8 @@ public class ProductCateTest {
     }
 
 
-    @After
-    public void after(TestContext context) {
+    @AfterClass
+    public static void after(TestContext context) {
         webClient.close();
         vertx.close(context.asyncAssertSuccess());
     }

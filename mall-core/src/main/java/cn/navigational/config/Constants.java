@@ -28,4 +28,8 @@ public class Constants {
     public static final String GENDER = "gender";
     public static final String PAGE = "page";
     public static final String PAGE_SIZE = "pageSize";
+    public static final String API = "api";
+    public static final String PATH = "path";
+    public static final String HTTP_METHOD = "method";
+    public static final String NAME = "name";
 }

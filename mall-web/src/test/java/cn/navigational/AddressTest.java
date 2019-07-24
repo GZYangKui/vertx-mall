@@ -9,6 +9,7 @@ import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -32,14 +33,38 @@ public class AddressTest {
     private static final int port = 8080;
     private final Logger logger = LogManager.getLogger();
     private static Vertx vertx = Vertx.vertx();
-    private  String token = "";
+    private String token = "";
 
+    @BeforeClass
+    public static void before(TestContext context) {
+
+        final JsonObject config = vertx.fileSystem().readFileBlocking("config/config.json").toJsonObject();
+        final JsonArray api = vertx.fileSystem().readFileBlocking("config/api.json").toJsonArray();
+        final DeploymentOptions deployOptions = new DeploymentOptions();
+        final WebClientOptions options = new WebClientOptions();
+
+        options.setSsl(false);
+        options.setFollowRedirects(true);
+        options.setDefaultHost(host);
+        options.setDefaultPort(port);
+
+        webClient = WebClient.create(vertx, options);
+
+        config.put(API, api);
+        deployOptions.setConfig(config);
+
+        vertx.deployVerticle(new ApiVerticle(), deployOptions, context.asyncAssertSuccess());
+        vertx.deployVerticle(new UserRouter(), deployOptions, context.asyncAssertSuccess());
+        vertx.deployVerticle(new AddressRouter(), deployOptions, context.asyncAssertSuccess());
+    }
     @Before
     public void login(TestContext context) {
         final Async async = context.async();
         final JsonObject info = new JsonObject();
+
         info.put(USERNAME, "yangkui");
         info.put(PASSWORD, "123456");
+
         webClient.post("/api/user/login").sendJson(info, _rs -> {
             if (_rs.failed()) {
                 context.fail(_rs.cause());
@@ -53,35 +78,14 @@ public class AddressTest {
         });
     }
 
-    @BeforeClass
-    public static void  before(TestContext context) {
-
-        final JsonObject config = vertx.fileSystem().readFileBlocking("config/config.json").toJsonObject();
-        final DeploymentOptions deployOptions = new DeploymentOptions();
-        final WebClientOptions options = new WebClientOptions();
-
-        options.setSsl(false);
-        options.setFollowRedirects(true);
-        options.setDefaultHost(host);
-        options.setDefaultPort(port);
-
-        webClient = WebClient.create(vertx, options);
-
-        deployOptions.setConfig(config);
-
-        vertx.deployVerticle(new ApiVerticle(), deployOptions, context.asyncAssertSuccess());
-        vertx.deployVerticle(new UserRouter(), deployOptions, context.asyncAssertSuccess());
-        vertx.deployVerticle(new AddressRouter(),deployOptions,context.asyncAssertSuccess());
-    }
-
 
     @Test
     public void testAddressList(TestContext context) {
         Async async = context.async();
         HttpRequest<Buffer> request = webClient.get("/api/address/list?page=1&pageSize=10");
-        request.putHeader(HttpHeaders.AUTHORIZATION.toString(),token);
+        request.putHeader(HttpHeaders.AUTHORIZATION.toString(), token);
         request.send(_rs -> {
-            if (_rs.failed()){
+            if (_rs.failed()) {
                 context.fail(_rs.cause());
             }
             final JsonObject result = _rs.result().bodyAsJsonObject();
@@ -96,9 +100,9 @@ public class AddressTest {
     public void testDefaultAddress(TestContext context) {
         Async async = context.async();
         HttpRequest<Buffer> request = webClient.get("/api/address/default");
-        request.putHeader(HttpHeaders.AUTHORIZATION.toString(),token);
+        request.putHeader(HttpHeaders.AUTHORIZATION.toString(), token);
         request.send(_rs -> {
-            if (_rs.failed()){
+            if (_rs.failed()) {
                 context.fail(_rs.cause());
             }
             final JsonObject result = _rs.result().bodyAsJsonObject();
@@ -110,9 +114,8 @@ public class AddressTest {
     }
 
 
-
-    @After
-    public void after(TestContext context) {
+    @AfterClass
+    public static void after(TestContext context) {
         webClient.close();
         vertx.close(context.asyncAssertSuccess());
     }
