@@ -1,7 +1,7 @@
 package cn.navigational;
 
-
 import cn.navigational.annotation.ScanPackage;
+
 import cn.navigational.base.VertxApplication;
 import cn.navigational.annotation.Application;
 

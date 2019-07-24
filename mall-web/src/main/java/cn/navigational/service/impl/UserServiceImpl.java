@@ -77,7 +77,7 @@ public class UserServiceImpl extends BaseService implements UserService {
                 promise.fail(_rs.cause());
                 return;
             }
-            if (_rs.result().isEmpty()) {
+            if (_rs.result().isPresent()) {
                 promise.complete(responseFailed("用户不存在", 200));
                 return;
             }

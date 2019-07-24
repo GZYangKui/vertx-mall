@@ -48,7 +48,7 @@ public class AddressServiceImpl extends BaseService implements AddressService {
                 return;
             }
             final Optional<JsonObject> optional = _rs.result();
-            if (optional.isEmpty()) {
+            if (optional.isPresent()) {
                 promise.complete(responseSuccessJson(new JsonObject()));
             } else {
                 promise.complete(responseSuccessJson(optional.get()));

@@ -41,12 +41,13 @@ public class VertxApplication {
      */
     private final Vertx vertx = Vertx.vertx();
 
-    private final Logger logger = LogManager.getLogger();
+    private final Logger logger = LogManager.getLogger(VertxApplication.class);
 
     /**
      * 初始化应用
      */
     public void init() {
+
         final Application annotation = this.getClass().getDeclaredAnnotation(Application.class);
         final ScanPackage scanPackage = this.getClass().getDeclaredAnnotation(ScanPackage.class);
         if (annotation != null) {
@@ -61,7 +62,16 @@ public class VertxApplication {
         options.setConfig(appConfig);
 
         if (scanPackage != null) {
-            scanVerticle(scanPackage.packages()).forEach(_clazz -> vertx.deployVerticle(_clazz, options));
+            scanVerticle(scanPackage.packages()).forEach(_clazz -> {
+                logger.info("start deploy {}", _clazz);
+                vertx.deployVerticle(_clazz, options, _rs -> {
+                    if (_rs.succeeded()) {
+                        logger.info("{} deployment success!", _clazz);
+                    } else {
+                        logger.error("{} deployment failed:{}", _clazz, _rs.cause().getMessage());
+                    }
+                });
+            });
         }
     }
 
@@ -71,8 +81,8 @@ public class VertxApplication {
      * @param pack
      * @return
      */
-    private List<Class<AbstractVerticle>> scanVerticle(String... pack) {
-        final List<Class<AbstractVerticle>> verticle = new ArrayList<>();
+    private List<String> scanVerticle(String... pack) {
+        final List<String> verticle = new ArrayList<>();
         if (pack.length == 0) {
             return verticle;
         }
@@ -85,9 +95,10 @@ public class VertxApplication {
                         //文件系统
                         if (url.getProtocol().equals("file")) {
                             final String packagePath = URLDecoder.decode(url.getFile(), "UTF-8");
-                            addClass(packagePath, path,verticle);
+                            addClass(packagePath, path, verticle);
                         } else {
-                            verticle.addAll(scanClassFromJar(url));
+                            logger.info("class type:{}", "jar");
+                            verticle.addAll(scanClassFromJar(url, path));
                         }
                     }
                 }
@@ -104,8 +115,8 @@ public class VertxApplication {
      *
      * @param url 初始包路径
      */
-    private List<Class<AbstractVerticle>> scanClassFromJar(final URL url) throws IOException {
-        final List<Class<AbstractVerticle>> list = new ArrayList<>();
+    private List<String> scanClassFromJar(final URL url, final String path) throws IOException {
+        final List<String> list = new ArrayList<>();
         final JarURLConnection jarURLConnection = (JarURLConnection) url.openConnection();
         if (Objects.nonNull(jarURLConnection) && Objects.nonNull(jarURLConnection.getJarFile())) {
             final JarFile jarFile = jarURLConnection.getJarFile();
@@ -113,11 +124,13 @@ public class VertxApplication {
             while (entries.hasMoreElements()) {
                 final JarEntry jarEntry = entries.nextElement();
                 final String jarEntryName = jarEntry.getName();
-                if (jarEntryName.endsWith(".class")) {
+                final String prefix = jarEntryName.replaceAll("/", "\\.");
+                if (prefix.startsWith(path) && jarEntryName.endsWith(".class")) {
                     final String className = jarEntryName.substring(0, jarEntryName.lastIndexOf(".")).replaceAll("/", "\\.");
-                    final Class<AbstractVerticle> cl = isFitClass(className);
-                    if (cl != null) {
-                        list.add(cl);
+                    final boolean cl = isFitClass(className);
+                    if (cl) {
+                        logger.info(className);
+                        list.add(className);
                     }
                 }
             }
@@ -133,7 +146,7 @@ public class VertxApplication {
      * @param packName 包名
      * @return 包含该路径下所有class文件的list集合
      */
-    private void addClass(String packPath, String packName, List<Class<AbstractVerticle>> list) {
+    private void addClass(String packPath, String packName, List<String> list) {
         final File[] files = new File(packPath).listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
@@ -144,9 +157,9 @@ public class VertxApplication {
             final String fileName = file.getName();
             if (file.isFile()) {
                 final String className = packName + "." + fileName.split("\\.")[0];
-                final Class<AbstractVerticle> clazz = isFitClass(className);
-                if (clazz != null) {
-                    list.add(clazz);
+                final boolean clazz = isFitClass(className);
+                if (clazz) {
+                    list.add(className);
                 }
             } else {
                 final String subPath = packPath + File.separator + fileName;
@@ -159,17 +172,17 @@ public class VertxApplication {
     /**
      * 判断是否标注@Verticle注解
      */
-    private Class<AbstractVerticle> isFitClass(String className) {
-        final Class<AbstractVerticle> clazz;
+    private boolean isFitClass(String className) {
+        final Class clazz;
         try {
-            clazz = (Class<AbstractVerticle>) Class.forName(className);
+            clazz = Class.forName(className);
             if (clazz.getDeclaredAnnotation(Verticle.class) != null) {
-                return clazz;
+                return true;
             }
         } catch (ClassNotFoundException e) {
             logger.error("class {} not found!", className);
         }
-        return null;
+        return false;
     }
 
     /**
