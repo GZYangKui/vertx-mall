@@ -2,32 +2,35 @@ package cn.navigational.routers;
 
 import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
-import cn.navigational.service.ProductCateService;
-import cn.navigational.service.impl.ProductCateServiceImpl;
+import cn.navigational.service.CouponService;
 import io.vertx.core.Future;
-
 import io.vertx.core.json.JsonObject;
 
-@Verticle(description = "商品分类")
-public class ProductCateRouter extends RouterVerticle {
-    private ProductCateService service;
+@Verticle(description = "优惠券")
+public class CouponRoute extends RouterVerticle {
+    private CouponService service;
 
     @Override
     public void start() throws Exception {
-        start("/api/productCate");
-        service = new ProductCateServiceImpl(vertx, config());
+        super.start("/api/coupon");
     }
 
     @Override
     protected Future<JsonObject> dispatch(String action, JsonObject data) {
+        final Future<JsonObject> future;
         if (action.equals("/list")) {
-            return list(data);
+            future = list(data);
         } else {
-            return notFound(action);
+            future = notFound(action);
         }
+        return future;
     }
 
+    /**
+     * 获取优惠券列表
+     */
     private Future<JsonObject> list(JsonObject obj) {
         return service.list(obj);
     }
+
 }

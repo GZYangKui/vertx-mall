@@ -1,16 +1,13 @@
 package cn.navigational.routers;
 
+import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
 import cn.navigational.service.ProductService;
 import cn.navigational.service.impl.ProductServiceImpl;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 
-/**
- *
- * 商品
- *
- */
+@Verticle(description = "商品")
 public class ProductRouter extends RouterVerticle {
     private ProductService service;
     @Override

@@ -38,8 +38,13 @@ public class RestVerticle extends BaseVerticle {
 
     }
 
+    /**
+     * 批量注册api接口
+     *
+     * @param router
+     */
     protected void buildApi(Router router) {
-        final JsonArray api = config().getJsonArray(API);
+        final JsonArray api = (JsonArray) config().remove(API);
         api.stream().map(_r -> (JsonObject) _r).forEach(_r -> {
             final String method = _r.getString(HTTP_METHOD);
             final String path = _r.getString(NAME);
@@ -63,7 +68,7 @@ public class RestVerticle extends BaseVerticle {
                 }
             });
             route.handler(this::sendMessage);
-            logger.info("({}){}({}) register success!",method,path, comment);
+            logger.info("({}){}({}) register success!", method, path, comment);
         });
         logger.info("api build success!");
     }

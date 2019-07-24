@@ -1,15 +1,14 @@
 package cn.navigational.routers;
 
 
+import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
 import cn.navigational.service.ProductSkuService;
 import cn.navigational.service.impl.ProductSkuServiceImpl;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 
-/**
- * 商品库存
- */
+@Verticle(description = "商品库存信息")
 public class ProductSkuRouter extends RouterVerticle {
 
     private ProductSkuService service;

@@ -1,5 +1,6 @@
 package cn.navigational.routers;
 
+import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
 import cn.navigational.model.RegisterInfo;
 import cn.navigational.model.User;
@@ -12,11 +13,7 @@ import io.vertx.core.json.JsonObject;
 
 import static cn.navigational.config.Constants.BODY;
 
-/**
- *
- * 用户
- *
- */
+@Verticle(description = "用户信息")
 public class UserRouter extends RouterVerticle {
 
     private UserService service;
@@ -28,7 +25,7 @@ public class UserRouter extends RouterVerticle {
     }
 
     @Override
-    public Future<JsonObject> dispatch(String action,JsonObject data) {
+    public Future<JsonObject> dispatch(String action, JsonObject data) {
         if (action.equals("/login")) {
             return login(data);
         } else if (action.equals("/register")) {

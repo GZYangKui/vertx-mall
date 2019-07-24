@@ -1,16 +1,14 @@
 package cn.navigational.routers;
 
+import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
 import cn.navigational.service.AddressService;
 import cn.navigational.service.impl.AddressServiceImpl;
+
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 
-/**
- *
- * 收货地址
- *
- */
+@Verticle(description = "收货地址")
 public class AddressRouter extends RouterVerticle {
     private AddressService service;
 

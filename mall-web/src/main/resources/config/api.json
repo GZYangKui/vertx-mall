@@ -40,5 +40,10 @@
     "name": "/api/address/default",
     "method": "GET",
     "comment": "获取用户默认地址"
+  },
+  {
+    "name": "/api/coupon/list",
+    "method": "GET",
+    "comment": "获取用户优惠券列表"
   }
 ]

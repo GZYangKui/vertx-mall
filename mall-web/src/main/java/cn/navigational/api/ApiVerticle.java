@@ -1,23 +1,18 @@
 package cn.navigational.api;
 
 import cn.navigational.auth.RequireToken;
+import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.HttpDataConverter;
 import cn.navigational.impl.RestVerticle;
-import cn.navigational.utils.ResponseUtils;
-import cn.navigational.validator.RegisterValidator;
-import cn.navigational.validator.UserValidator;
-import io.vertx.core.json.JsonArray;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CookieHandler;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import static cn.navigational.config.Constants.PORT;
-import static cn.navigational.config.Constants.SKIP;
 import static cn.navigational.utils.ResponseUtils.response;
 
+@Verticle(description = "Rest Api")
 public class ApiVerticle extends RestVerticle {
     public ApiVerticle() {
         super();
