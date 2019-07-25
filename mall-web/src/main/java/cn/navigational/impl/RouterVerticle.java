@@ -35,27 +35,23 @@ public abstract class RouterVerticle extends BaseVerticle {
         vertx.eventBus().<JsonObject>consumer(getAPi(), _msg -> {
             final JsonObject data = _msg.body();
             final String action = data.getString(ACTION);
-            final Future<JsonObject> future;
-            if (requestMapping.containsKey(action)) {
-                try {
-                    future = (Future<JsonObject>) requestMapping.get(action).invoke(this, data);
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    final Promise<JsonObject> promise = Promise.promise();
-                    future = promise.future();
-                    promise.fail(e);
-                }
-            } else {
-                future = notFound(action);
+            if (!requestMapping.containsKey(action)) {
+                _msg.reply(notFound(action));
+                return;
             }
-
-            future.setHandler(_rs -> {
-                if (_rs.failed()) {
-                    logger.error("业务逻辑处理失败:{}", _rs.cause().getMessage());
-                    _msg.reply(error(_rs.cause()).result());
-                    return;
-                }
-                _msg.reply(_rs.result());
-            });
+            try {
+                ((Future<JsonObject>) requestMapping.get(action).invoke(this, data)).setHandler(_rs -> {
+                    if (_rs.failed()) {
+                        logger.error("业务逻辑处理失败:{}", _rs.cause().getMessage());
+                        _msg.reply(error(_rs.cause()).result());
+                        return;
+                    }
+                    _msg.reply(_rs.result());
+                });
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                logger.error("reflect execute failed cause:{}",e.getCause().getMessage());
+                _msg.reply(error(e.getCause()));
+            }
         });
     }
 
