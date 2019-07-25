@@ -40,6 +40,8 @@ public class VertxApplication {
 
     private final DeploymentOptions options = new DeploymentOptions();
 
+    private final List<String> verticle = new ArrayList<>();
+
 
     /**
      * 初始化应用
@@ -55,14 +57,14 @@ public class VertxApplication {
 
         final JsonObject appConfig = fs.readFileBlocking(config).toJsonObject();
 
-        final List<String> clazz = scanVerticle(scanPackage.packages());
+        scanVerticle(scanPackage.packages());
 
         appConfig.put(API, apiList);
 
         options.setConfig(appConfig);
 
-        if (!clazz.isEmpty()) {
-            clazz.forEach(_clazz -> {
+        if (!verticle.isEmpty()) {
+            verticle.forEach(_clazz -> {
                 logger.info("start deploy {}", _clazz);
                 vertx.deployVerticle(_clazz, options, _rs -> {
                     if (_rs.succeeded()) {
@@ -81,10 +83,9 @@ public class VertxApplication {
      *
      * @param pack 所需要扫描的包路径
      */
-    private List<String> scanVerticle(String... pack) {
-        final List<String> verticle = new ArrayList<>();
+    private void scanVerticle(String... pack) {
         if (pack.length == 0) {
-            return verticle;
+            return;
         }
         for (String path : pack) {
             try {
@@ -95,7 +96,7 @@ public class VertxApplication {
                         //文件系统
                         if (url.getProtocol().equals("file")) {
                             final String packagePath = URLDecoder.decode(url.getFile(), StandardCharsets.UTF_8);
-                            addClass(packagePath, path, verticle);
+                            addClass(packagePath, path);
                         } else {
                             //Jar
                             logger.info("class type:{}", "jar");
@@ -108,7 +109,6 @@ public class VertxApplication {
                 logger.error("scan package failed:{}", e.getCause().getMessage());
             }
         }
-        return verticle;
     }
 
     /**
@@ -147,7 +147,7 @@ public class VertxApplication {
      * @param packName 包名
      * @return 包含该路径下所有class文件的list集合
      */
-    private void addClass(String packPath, String packName, List<String> list) {
+    private void addClass(String packPath, String packName) {
         final File[] files = new File(packPath).listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
@@ -160,12 +160,12 @@ public class VertxApplication {
                 final String className = packName + "." + fileName.split("\\.")[0];
                 final boolean clazz = isFitClass(className);
                 if (clazz) {
-                    list.add(className);
+                    verticle.add(className);
                 }
             } else {
                 final String subPath = packPath + File.separator + fileName;
                 final String subPackage = packName + "." + fileName;
-                addClass(subPath, subPackage, list);
+                addClass(subPath, subPackage);
             }
         }
     }

@@ -70,7 +70,7 @@ public class RestVerticle extends BaseVerticle {
             route.handler(this::sendMessage);
             logger.info("({}){}({}) register success!", method, path, comment);
         });
-        logger.info("api build success!");
+        logger.info("Build api success!");
     }
 
     protected JsonObject executeException(Throwable _t) {

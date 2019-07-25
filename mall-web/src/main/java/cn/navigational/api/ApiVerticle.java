@@ -7,6 +7,7 @@ import cn.navigational.impl.RestVerticle;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CookieHandler;
+import io.vertx.ext.web.handler.StaticHandler;
 
 
 import static cn.navigational.config.Constants.PORT;
@@ -29,9 +30,13 @@ public class ApiVerticle extends RestVerticle {
 
         buildApi(router);
 
+        router.get("/*").handler(StaticHandler.create().setDefaultContentEncoding("UTF-8"));
+
         final int port = config().getInteger(PORT, 8080);
 
         router.errorHandler(500, _routingContext -> {
+            /*logger.error(_routingContext.failure().getCause().getMessage());*/
+            _routingContext.failure().printStackTrace();
             response(_routingContext, executeException(_routingContext.failure()));
         });
         router.errorHandler(404, _routingContext -> {
