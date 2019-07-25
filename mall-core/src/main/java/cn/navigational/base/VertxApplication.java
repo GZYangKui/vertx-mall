@@ -3,7 +3,6 @@ package cn.navigational.base;
 import cn.navigational.annotation.*;
 import io.vertx.codegen.annotations.Fluent;
 import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.file.FileSystem;
 import io.vertx.core.json.JsonArray;
@@ -14,11 +13,11 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -27,14 +26,11 @@ import static cn.navigational.config.Constants.*;
 
 
 public class VertxApplication {
-    /**
-     * 配置文件路径
-     */
+
+    //配置文件路径
     private String config = "config/config.json";
 
-    /**
-     * vertx实例对象
-     */
+    //vertx 实例
     private final Vertx vertx = Vertx.vertx();
 
 
@@ -42,25 +38,31 @@ public class VertxApplication {
 
     private final JsonArray apiList = new JsonArray();
 
+    private final DeploymentOptions options = new DeploymentOptions();
+
+
     /**
      * 初始化应用
      */
     public void init() {
         final FileSystem fs = vertx.fileSystem();
-        System.out.println(fs.readFileBlocking("config/banner.txt").toString());
-        final Application annotation = this.getClass().getDeclaredAnnotation(Application.class);
+        final Application app = this.getClass().getDeclaredAnnotation(Application.class);
         final ScanPackage scanPackage = this.getClass().getDeclaredAnnotation(ScanPackage.class);
-        if (annotation != null) {
-            config = annotation.config();
+
+        if (app != null) {
+            config = app.config();
         }
+
         final JsonObject appConfig = fs.readFileBlocking(config).toJsonObject();
-        final DeploymentOptions options = new DeploymentOptions();
-        final List<String> verticle = scanVerticle(scanPackage.packages());
+
+        final List<String> clazz = scanVerticle(scanPackage.packages());
+
         appConfig.put(API, apiList);
+
         options.setConfig(appConfig);
 
-        if (scanPackage != null) {
-            verticle.forEach(_clazz -> {
+        if (!clazz.isEmpty()) {
+            clazz.forEach(_clazz -> {
                 logger.info("start deploy {}", _clazz);
                 vertx.deployVerticle(_clazz, options, _rs -> {
                     if (_rs.succeeded()) {
@@ -75,10 +77,9 @@ public class VertxApplication {
     }
 
     /**
-     * 扫描verticle
+     * 扫描@Verticle注解和@RequestMapping注解
      *
-     * @param pack
-     * @return
+     * @param pack 所需要扫描的包路径
      */
     private List<String> scanVerticle(String... pack) {
         final List<String> verticle = new ArrayList<>();
@@ -93,9 +94,10 @@ public class VertxApplication {
                     if (url != null) {
                         //文件系统
                         if (url.getProtocol().equals("file")) {
-                            final String packagePath = URLDecoder.decode(url.getFile(), "UTF-8");
+                            final String packagePath = URLDecoder.decode(url.getFile(), StandardCharsets.UTF_8);
                             addClass(packagePath, path, verticle);
                         } else {
+                            //Jar
                             logger.info("class type:{}", "jar");
                             verticle.addAll(scanClassFromJar(url, path));
                         }
@@ -182,7 +184,7 @@ public class VertxApplication {
                 }
                 final Method[] methods = clazz.getDeclaredMethods();
                 for (Method method : methods) {
-                    RequestMapping map = method.getAnnotation(RequestMapping.class);
+                    final RequestMapping map = method.getAnnotation(RequestMapping.class);
                     if (map == null) {
                         return true;
                     }
@@ -214,6 +216,11 @@ public class VertxApplication {
     public VertxApplication setConfig(String config) {
         this.config = config;
         return this;
+    }
+
+
+    public DeploymentOptions getOptions() {
+        return options;
     }
 
 }

@@ -21,11 +21,12 @@ public class SubjectRouter extends RouterVerticle {
         service = new SubjectServiceImpl(vertx, config());
     }
 
-    @RequestMapping(api = "/detail",description = "获取某一个专题详情",method = HttpMethod.GET)
-    public Future<JsonObject> detail(JsonObject obj){
+    @RequestMapping(api = "/detail", description = "获取某一个专题详情", method = HttpMethod.GET)
+    public Future<JsonObject> detail(JsonObject obj) {
         return service.detail(obj);
     }
-    @RequestMapping(api = "/list",description = "获取商城专题列表",method = HttpMethod.GET)
+
+    @RequestMapping(api = "/list", description = "获取商城专题列表", method = HttpMethod.GET)
     public Future<JsonObject> list(JsonObject obj) {
         return service.list(obj);
     }

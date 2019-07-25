@@ -16,24 +16,35 @@ import java.util.Objects;
 
 import static cn.navigational.config.Constants.*;
 import static cn.navigational.utils.ResponseUtils.responseFailed;
-import static cn.navigational.utils.ResponseUtils.responseTemplate;
 
 public abstract class RouterVerticle extends BaseVerticle {
+    //缓存方法
     private final Map<String, Method> requestMapping = new HashMap<>();
 
     public void start() throws Exception {
-        init();
+        final Method[] methods = this.getClass().getDeclaredMethods();
+        for (Method method : methods) {
+            final Annotation[] annotations = method.getDeclaredAnnotations();
+            for (Annotation annotation : annotations) {
+                if (annotation.annotationType() == RequestMapping.class) {
+                    final RequestMapping map = (RequestMapping) annotation;
+                    requestMapping.put(map.api(), method);
+                }
+            }
+        }
         vertx.eventBus().<JsonObject>consumer(getAPi(), _msg -> {
             final JsonObject data = _msg.body();
             final String action = data.getString(ACTION);
-            Future<JsonObject> future = Future.future();
-            if (requestMapping.containsKey(action)){
+            final Future<JsonObject> future;
+            if (requestMapping.containsKey(action)) {
                 try {
-                    future = (Future<JsonObject>) requestMapping.get(action).invoke(this,data);
-                } catch (IllegalAccessException|InvocationTargetException e) {
-                    future.fail(e);
+                    future = (Future<JsonObject>) requestMapping.get(action).invoke(this, data);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    final Promise<JsonObject> promise = Promise.promise();
+                    future = promise.future();
+                    promise.fail(e);
                 }
-            }else {
+            } else {
                 future = notFound(action);
             }
 
@@ -48,22 +59,7 @@ public abstract class RouterVerticle extends BaseVerticle {
         });
     }
 
-    private void init() {
-        final Method[] methods = this.getClass().getDeclaredMethods();
-        for (Method method : methods) {
-            final Annotation[] annotations = method.getDeclaredAnnotations();
-            for (Annotation annotation : annotations) {
-                if (annotation.annotationType() == RequestMapping.class) {
-                    final RequestMapping map = (RequestMapping) annotation;
-                    requestMapping.put(map.api(), method);
-                }
-            }
-        }
-    }
-
-   // protected abstract Future<JsonObject> dispatch(String action, JsonObject data);
-
-    protected Future<JsonObject> notFound(final String action) {
+    private Future<JsonObject> notFound(final String action) {
         final Promise<JsonObject> promise = Promise.promise();
         final JsonObject msg = responseFailed("API NOT FOUND", 404);
         msg.put(REQUEST_API, action);

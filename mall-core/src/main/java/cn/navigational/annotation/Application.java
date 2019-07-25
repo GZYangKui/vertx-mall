@@ -14,11 +14,4 @@ public @interface Application {
      * @return
      */
     String config() default "";
-
-    /**
-     * api定义文件路径
-     *
-     * @return
-     */
-    String api() default "";
 }
