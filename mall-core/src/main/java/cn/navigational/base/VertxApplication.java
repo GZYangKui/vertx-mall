@@ -1,11 +1,9 @@
 package cn.navigational.base;
 
-import cn.navigational.annotation.Application;
-import cn.navigational.annotation.ScanPackage;
-import cn.navigational.annotation.Verticle;
+import cn.navigational.annotation.*;
 import io.vertx.codegen.annotations.Fluent;
-import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.file.FileSystem;
 import io.vertx.core.json.JsonArray;
@@ -16,6 +14,8 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -23,7 +23,7 @@ import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import static cn.navigational.config.Constants.API;
+import static cn.navigational.config.Constants.*;
 
 
 public class VertxApplication {
@@ -31,17 +31,16 @@ public class VertxApplication {
      * 配置文件路径
      */
     private String config = "config/config.json";
-    /**
-     * api定义文件路径
-     */
-    private String api = "config/api.json";
 
     /**
      * vertx实例对象
      */
     private final Vertx vertx = Vertx.vertx();
 
+
     private final Logger logger = LogManager.getLogger();
+
+    private final JsonArray apiList = new JsonArray();
 
     /**
      * 初始化应用
@@ -52,17 +51,16 @@ public class VertxApplication {
         final Application annotation = this.getClass().getDeclaredAnnotation(Application.class);
         final ScanPackage scanPackage = this.getClass().getDeclaredAnnotation(ScanPackage.class);
         if (annotation != null) {
-            api = annotation.api();
             config = annotation.config();
         }
         final JsonObject appConfig = fs.readFileBlocking(config).toJsonObject();
-        final JsonArray apiList = fs.readFileBlocking(api).toJsonArray();
         final DeploymentOptions options = new DeploymentOptions();
+        final List<String> verticle = scanVerticle(scanPackage.packages());
         appConfig.put(API, apiList);
         options.setConfig(appConfig);
 
         if (scanPackage != null) {
-            scanVerticle(scanPackage.packages()).forEach(_clazz -> {
+            verticle.forEach(_clazz -> {
                 logger.info("start deploy {}", _clazz);
                 vertx.deployVerticle(_clazz, options, _rs -> {
                     if (_rs.succeeded()) {
@@ -178,6 +176,27 @@ public class VertxApplication {
         try {
             clazz = Class.forName(className);
             if (clazz.getDeclaredAnnotation(Verticle.class) != null) {
+                final Router router = (Router) clazz.getAnnotation(Router.class);
+                if (router == null) {
+                    return true;
+                }
+                final Method[] methods = clazz.getDeclaredMethods();
+                for (Method method : methods) {
+                    RequestMapping map = method.getAnnotation(RequestMapping.class);
+                    if (map == null) {
+                        return true;
+                    }
+                    final JsonObject api = new JsonObject();
+                    final JsonArray validator = new JsonArray();
+                    for (String s : map.validators()) {
+                        validator.add(s);
+                    }
+                    api.put(API, router.api() + map.api());
+                    api.put(HTTP_METHOD, map.method().name());
+                    api.put("comment", map.description());
+                    api.put("validator", validator);
+                    apiList.add(api);
+                }
                 return true;
             }
         } catch (ClassNotFoundException e) {
@@ -197,14 +216,4 @@ public class VertxApplication {
         return this;
     }
 
-    /**
-     * 设置api定义文件
-     *
-     * @param api api文件路径
-     */
-    @Fluent
-    public VertxApplication setApi(String api) {
-        this.api = api;
-        return this;
-    }
 }

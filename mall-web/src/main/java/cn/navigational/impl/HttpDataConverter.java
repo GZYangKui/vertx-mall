@@ -25,9 +25,9 @@ public class HttpDataConverter extends HttpValidator {
 
         temp.put(HEADERS, getHeaders(request));
 
-        temp.put(PATH,path);
+        temp.put(PATH, path);
 
-        temp.put(HTTP_METHOD,request.method().name());
+        temp.put(HTTP_METHOD, request.method().name());
 
         if (request.method() == HttpMethod.POST) {
             final String str = routingContext.getBodyAsString();

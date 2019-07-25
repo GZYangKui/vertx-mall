@@ -1,16 +1,18 @@
 package cn.navigational.routers;
 
 
+import cn.navigational.annotation.RequestMapping;
 import cn.navigational.annotation.Router;
 import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
 import cn.navigational.service.ProductSkuService;
 import cn.navigational.service.impl.ProductSkuServiceImpl;
 import io.vertx.core.Future;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 
 @Verticle
-@Router(api="/api/productSku")
+@Router(api = "/api/productSku")
 public class ProductSkuRouter extends RouterVerticle {
 
     private ProductSkuService service;
@@ -21,18 +23,8 @@ public class ProductSkuRouter extends RouterVerticle {
         service = new ProductSkuServiceImpl(vertx, config());
     }
 
-    @Override
-    protected Future<JsonObject> dispatch(String action, JsonObject data) {
-        final Future<JsonObject> future;
-        if (action.equals("/sku")) {
-            future = sku(data);
-        } else {
-            future = notFound(action);
-        }
-        return future;
-    }
-
-    private Future<JsonObject> sku(JsonObject obj) {
+    @RequestMapping(api = "/sku", description = "获取商品库存", method = HttpMethod.GET)
+    public Future<JsonObject> sku(JsonObject obj) {
         return service.sku(obj);
     }
 }

@@ -47,7 +47,7 @@ public class RestVerticle extends BaseVerticle {
         final JsonArray api = (JsonArray) config().remove(API);
         api.stream().map(_r -> (JsonObject) _r).forEach(_r -> {
             final String method = _r.getString(HTTP_METHOD);
-            final String path = _r.getString(NAME);
+            final String path = _r.getString(API);
             final JsonArray validator = _r.getJsonArray("validator", new JsonArray());
             final String comment = _r.getString("comment");
             final Route route;
