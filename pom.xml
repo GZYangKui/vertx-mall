@@ -86,6 +86,8 @@
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
+                                        <!--解决log4j日志框架在打包后classNotFound问题-->
+                                        <Multi-Release>true</Multi-Release>
                                         <Main-Class>${mainClass}</Main-Class>
                                     </manifestEntries>
                                 </transformer>

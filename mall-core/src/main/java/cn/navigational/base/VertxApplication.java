@@ -41,20 +41,20 @@ public class VertxApplication {
      */
     private final Vertx vertx = Vertx.vertx();
 
-    private final Logger logger = LogManager.getLogger(VertxApplication.class);
+    private final Logger logger = LogManager.getLogger();
 
     /**
      * 初始化应用
      */
     public void init() {
-
+        final FileSystem fs = vertx.fileSystem();
+        System.out.println(fs.readFileBlocking("config/banner.txt").toString());
         final Application annotation = this.getClass().getDeclaredAnnotation(Application.class);
         final ScanPackage scanPackage = this.getClass().getDeclaredAnnotation(ScanPackage.class);
         if (annotation != null) {
             api = annotation.api();
             config = annotation.config();
         }
-        final FileSystem fs = vertx.fileSystem();
         final JsonObject appConfig = fs.readFileBlocking(config).toJsonObject();
         final JsonArray apiList = fs.readFileBlocking(api).toJsonArray();
         final DeploymentOptions options = new DeploymentOptions();
@@ -68,6 +68,7 @@ public class VertxApplication {
                     if (_rs.succeeded()) {
                         logger.info("{} deployment success!", _clazz);
                     } else {
+                        _rs.cause().printStackTrace();
                         logger.error("{} deployment failed:{}", _clazz, _rs.cause().getMessage());
                     }
                 });
