@@ -47,7 +47,7 @@ public class UserServiceImpl extends BaseService implements UserService {
                 return;
             }
             final Optional<JsonObject> optional = _rs.result();
-            if (optional.isPresent()) {
+            if (optional.isEmpty()) {
                 promise.complete(responseFailed("用户名已存在", 200));
                 return;
             }
@@ -77,7 +77,7 @@ public class UserServiceImpl extends BaseService implements UserService {
                 promise.fail(_rs.cause());
                 return;
             }
-            if (_rs.result().isPresent()) {
+            if (_rs.result().isEmpty()) {
                 promise.complete(responseFailed("用户不存在", 200));
                 return;
             }

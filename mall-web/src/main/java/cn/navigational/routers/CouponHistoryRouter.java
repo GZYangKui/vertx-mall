@@ -3,20 +3,20 @@ package cn.navigational.routers;
 import cn.navigational.annotation.Router;
 import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
-import cn.navigational.service.CouponService;
-import cn.navigational.service.impl.CouponServiceImpl;
+import cn.navigational.service.CouponHistoryService;
+import cn.navigational.service.impl.CouponHistoryServiceImpl;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 
 @Verticle
-@Router(api = "/api/coupon",description = "商城优惠券")
-public class CouponRoute extends RouterVerticle {
-    private CouponService service;
+@Router(api = "/api/couponHis", description = "优惠券领取记录")
+public class CouponHistoryRouter extends RouterVerticle {
+    private CouponHistoryService service;
 
     @Override
     public void start() throws Exception {
         super.start();
-        service = new CouponServiceImpl(vertx, config());
+        service = new CouponHistoryServiceImpl(vertx,config());
     }
 
     @Override
@@ -30,11 +30,7 @@ public class CouponRoute extends RouterVerticle {
         return future;
     }
 
-    /**
-     * 获取优惠券列表
-     */
     private Future<JsonObject> list(JsonObject obj) {
         return service.list(obj);
     }
-
 }
