@@ -1,18 +1,20 @@
 package cn.navigational.routers;
 
+import cn.navigational.annotation.Router;
 import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
 import cn.navigational.service.CouponService;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 
-@Verticle(description = "优惠券")
+@Verticle
+@Router(api ="/api/coupon")
 public class CouponRoute extends RouterVerticle {
     private CouponService service;
 
     @Override
     public void start() throws Exception {
-        super.start("/api/coupon");
+        super.start();
     }
 
     @Override

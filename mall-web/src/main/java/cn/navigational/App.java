@@ -9,7 +9,5 @@ import cn.navigational.annotation.Application;
 @Application(config = "config/config.json", api = "config/api.json")
 @ScanPackage(packages = {"cn.navigational.api", "cn.navigational.routers"})
 public class App extends VertxApplication {
-    public static void main(String[] args) {
-        new App().init();
-    }
+    public static void main(String[] args) { new App().init(); }
 }

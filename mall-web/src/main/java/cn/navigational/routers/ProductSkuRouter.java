@@ -1,6 +1,7 @@
 package cn.navigational.routers;
 
 
+import cn.navigational.annotation.Router;
 import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
 import cn.navigational.service.ProductSkuService;
@@ -8,14 +9,15 @@ import cn.navigational.service.impl.ProductSkuServiceImpl;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 
-@Verticle(description = "商品库存信息")
+@Verticle
+@Router(api="/api/productSku")
 public class ProductSkuRouter extends RouterVerticle {
 
     private ProductSkuService service;
 
     @Override
     public void start() throws Exception {
-        super.start("/api/productSku");
+        super.start();
         service = new ProductSkuServiceImpl(vertx, config());
     }
 

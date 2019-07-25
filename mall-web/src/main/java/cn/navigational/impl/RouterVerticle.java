@@ -1,5 +1,6 @@
 package cn.navigational.impl;
 
+import cn.navigational.annotation.Router;
 import cn.navigational.base.BaseVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -12,8 +13,9 @@ import static cn.navigational.utils.ResponseUtils.responseFailed;
 import static cn.navigational.utils.ResponseUtils.responseTemplate;
 
 public abstract class RouterVerticle extends BaseVerticle {
-    public void start(final String api) throws Exception {
-        vertx.eventBus().<JsonObject>consumer(api, _msg -> {
+
+    public void start() throws Exception {
+        vertx.eventBus().<JsonObject>consumer(getAPi(), _msg -> {
             final JsonObject data = _msg.body();
             final String action = data.getString(ACTION);
             final Future<JsonObject> future = dispatch(action,data);
@@ -44,5 +46,13 @@ public abstract class RouterVerticle extends BaseVerticle {
         msg.put(CAUSE, Objects.isNull(_t.getMessage()) ? "NULL" : _t.getMessage());
         promise.complete(msg);
         return promise.future();
+    }
+    private String getAPi(){
+        final Router router = this.getClass().getDeclaredAnnotation(Router.class);
+        if (Objects.nonNull(router)){
+            return router.api();
+        }else {
+            return "";
+        }
     }
 }

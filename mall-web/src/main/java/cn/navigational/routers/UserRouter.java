@@ -1,5 +1,6 @@
 package cn.navigational.routers;
 
+import cn.navigational.annotation.Router;
 import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
 import cn.navigational.model.RegisterInfo;
@@ -13,14 +14,15 @@ import io.vertx.core.json.JsonObject;
 
 import static cn.navigational.config.Constants.BODY;
 
-@Verticle(description = "用户信息")
+@Verticle()
+@Router(api="/api/user")
 public class UserRouter extends RouterVerticle {
 
     private UserService service;
 
     @Override
     public void start() throws Exception {
-        super.start("/api/user");
+        super.start();
         service = new UserServiceImpl(vertx, config());
     }
 

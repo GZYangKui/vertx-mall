@@ -12,7 +12,7 @@ import io.vertx.ext.web.handler.CookieHandler;
 import static cn.navigational.config.Constants.PORT;
 import static cn.navigational.utils.ResponseUtils.response;
 
-@Verticle(description = "Rest Api")
+@Verticle
 public class ApiVerticle extends RestVerticle {
     public ApiVerticle() {
         super();

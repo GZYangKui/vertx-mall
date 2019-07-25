@@ -1,5 +1,6 @@
 package cn.navigational.routers;
 
+import cn.navigational.annotation.Router;
 import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
 import cn.navigational.service.AddressService;
@@ -8,13 +9,14 @@ import cn.navigational.service.impl.AddressServiceImpl;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 
-@Verticle(description = "收货地址")
+@Verticle
+@Router(api ="api/address" )
 public class AddressRouter extends RouterVerticle {
     private AddressService service;
 
     @Override
     public void start() throws Exception {
-        super.start("/api/address");
+        super.start();
         service = new AddressServiceImpl(vertx, config());
     }
 

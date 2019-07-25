@@ -5,9 +5,20 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * 标注当前类为verticle,用于启动应用扫描部署verticle
- */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Verticle { }
+public @interface Router {
+    /**
+     * api
+     *
+     * @return
+     */
+    String api() default "";
+
+    /**
+     * 接口描述
+     *
+     * @return
+     */
+    String description() default "";
+}

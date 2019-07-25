@@ -1,5 +1,6 @@
 package cn.navigational.routers;
 
+import cn.navigational.annotation.Router;
 import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
 import cn.navigational.service.ProductCateService;
@@ -8,13 +9,14 @@ import io.vertx.core.Future;
 
 import io.vertx.core.json.JsonObject;
 
-@Verticle(description = "商品分类")
+@Verticle()
+@Router(api = "/api/productCate")
 public class ProductCateRouter extends RouterVerticle {
     private ProductCateService service;
 
     @Override
     public void start() throws Exception {
-        start("/api/productCate");
+        super.start();
         service = new ProductCateServiceImpl(vertx, config());
     }
 
