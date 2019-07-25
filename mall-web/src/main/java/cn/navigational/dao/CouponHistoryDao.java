@@ -9,28 +9,24 @@ import java.util.List;
 
 public interface CouponHistoryDao {
     /**
-     *  获取优惠券领取记录
-     * @param userId 用户id
-     * @param page  分页查询参数
+     * 获取优惠券领取记录
      *
+     * @param userId 用户id
+     * @param page   分页查询参数
      */
     Future<List<JsonObject>> getList(long userId, Paging page);
 
     /**
-     *
      * 获取领取记录对应的优惠券信息
-     * @param ids 优惠券id列表
      *
+     * @param ids 优惠券id列表
      */
     Future<List<JsonObject>> getCoupon(List<Integer> ids);
 
     /**
-     *
      * 删除领取记录
      *
-     * @param ids 被删除记录id
-     * @return
+     * @param ids 即将被删除记录的id
      */
-    Future<List<Integer>> deleteHistory(JsonArray ids);
-
+    Future<Integer> deleteHistory(JsonArray ids);
 }

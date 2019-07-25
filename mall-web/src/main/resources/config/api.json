@@ -50,5 +50,10 @@
     "name": "/api/couponHis/list",
     "method": "GET",
     "comment": "获取用户优惠券领取记录"
+  },
+  {
+    "name": "/api/couponHis/delete",
+    "method": "POST",
+    "comment": "删除领取记录"
   }
 ]

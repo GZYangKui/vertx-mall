@@ -16,7 +16,7 @@ public class CouponHistoryRouter extends RouterVerticle {
     @Override
     public void start() throws Exception {
         super.start();
-        service = new CouponHistoryServiceImpl(vertx,config());
+        service = new CouponHistoryServiceImpl(vertx, config());
     }
 
     @Override
@@ -24,6 +24,8 @@ public class CouponHistoryRouter extends RouterVerticle {
         final Future<JsonObject> future;
         if (action.equals("/list")) {
             future = list(data);
+        } else if (action.equals("/delete")) {
+            future = delete(data);
         } else {
             future = notFound(action);
         }
@@ -32,5 +34,9 @@ public class CouponHistoryRouter extends RouterVerticle {
 
     private Future<JsonObject> list(JsonObject obj) {
         return service.list(obj);
+    }
+
+    private Future<JsonObject> delete(JsonObject obj) {
+        return service.deleteHistory(obj);
     }
 }

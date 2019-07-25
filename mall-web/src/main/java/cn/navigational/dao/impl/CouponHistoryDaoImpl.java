@@ -2,6 +2,7 @@ package cn.navigational.dao.impl;
 
 import cn.navigational.base.BaseDao;
 
+import cn.navigational.dao.CouponHistoryDao;
 import cn.navigational.model.Paging;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -9,9 +10,10 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.sqlclient.Tuple;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class CouponHistoryDaoImpl extends BaseDao implements  CouponHistoryDao{
+public class CouponHistoryDaoImpl extends BaseDao implements CouponHistoryDao {
     public CouponHistoryDaoImpl(Vertx vertx, JsonObject config) {
         super(vertx, config);
     }
@@ -41,7 +43,10 @@ public class CouponHistoryDaoImpl extends BaseDao implements  CouponHistoryDao{
     }
 
     @Override
-    public Future<List<Integer>> deleteHistory(JsonArray ids) {
-        return null;
+    public Future<Integer> deleteHistory(JsonArray ids) {
+        final String sql = "DELETE FROM coupon_history WHERE id=$1";
+        final List<Tuple> tuples = new ArrayList<>();
+        ids.forEach(_t->tuples.add(Tuple.of(_t)));
+        return batchUpdate(sql,tuples);
     }
 }

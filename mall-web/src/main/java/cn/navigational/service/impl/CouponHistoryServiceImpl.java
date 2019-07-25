@@ -2,10 +2,10 @@ package cn.navigational.service.impl;
 
 import cn.navigational.base.BaseService;
 
+import cn.navigational.dao.CouponHistoryDao;
 import cn.navigational.dao.impl.CouponHistoryDaoImpl;
 import cn.navigational.model.Paging;
 import cn.navigational.service.CouponHistoryService;
-import cn.navigational.dao.CouponHistoryDao;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
@@ -68,8 +68,15 @@ public class CouponHistoryServiceImpl extends BaseService implements CouponHisto
 
     @Override
     public Future<JsonObject> deleteHistory(JsonObject obj) {
+        final Promise<JsonObject> promise = Promise.promise();
         final JsonArray deleteList = obj.getJsonObject(BODY).getJsonArray("ids");
-
-        return null;
+        dao.deleteHistory(deleteList).setHandler(_rs -> {
+            if (_rs.failed()) {
+                promise.fail(_rs.cause());
+                return;
+            }
+            promise.complete(responseSuccessJson());
+        });
+        return promise.future();
     }
 }

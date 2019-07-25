@@ -117,7 +117,7 @@ public class BaseDao {
                 if (_rr.failed()) {
                     promise.fail(_rr.cause());
                 } else {
-                    rowSetToJson(_rr.result()).forEach(_item->{
+                    rowSetToJson(_rr.result()).forEach(_item -> {
                         System.out.println(_item.encodePrettily());
                     });
                     promise.complete(1);
@@ -125,6 +125,26 @@ public class BaseDao {
             });
         });
 
+        return promise.future();
+    }
+
+    protected Future<Integer> batchUpdate(String sql, List<Tuple> tuples) {
+        final Promise<Integer> promise = Promise.promise();
+        getConnection().setHandler(_rs -> {
+            if (_rs.failed()) {
+                promise.fail(_rs.cause());
+                return;
+            }
+            final SqlConnection con = _rs.result();
+            con.preparedBatch(sql, tuples, _rr -> {
+              if (_rr.failed()){
+                  promise.fail(_rr.cause());
+                  return;
+              }
+              con.close();
+              promise.complete(1);
+            });
+        });
         return promise.future();
     }
 
@@ -153,7 +173,7 @@ public class BaseDao {
                 final Object val = _row.getValue(i);
                 if (val != null) {
                     if (val instanceof LocalDateTime) {
-                        temp.put(_row.getColumnName(i),val.toString());
+                        temp.put(_row.getColumnName(i), val.toString());
                     } else {
                         temp.put(_row.getColumnName(i), val);
                     }
