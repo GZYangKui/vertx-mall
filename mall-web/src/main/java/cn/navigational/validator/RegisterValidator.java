@@ -9,7 +9,7 @@ import static cn.navigational.utils.Assert.isEmpty;
 import static cn.navigational.utils.StringUtils.checkMobileNumber;
 
 
-public class RegisterValidator extends HttpValidator {
+public class RegisterValidator extends UserValidator {
     @Override
     public void handle(RoutingContext routingContext) {
         final JsonObject body = routingContext.getBodyAsJson().getJsonObject(BODY);
@@ -26,7 +26,7 @@ public class RegisterValidator extends HttpValidator {
             validatorFailed(routingContext, "参数错误");
             return;
         }
-        routingContext.next();
+        super.handle(routingContext);
     }
 
     public static HttpValidator create() {

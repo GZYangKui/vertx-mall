@@ -5,7 +5,6 @@ import io.vertx.codegen.annotations.Fluent;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.file.FileSystem;
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -196,5 +195,7 @@ public class VertxApplication {
     public DeploymentOptions getOptions() {
         return options;
     }
+
+
 
 }

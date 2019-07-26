@@ -34,7 +34,7 @@ public class ApiVerticle extends RestVerticle {
         router.post("/api/user/login").handler(UserValidator.create());
 
         //用户注册
-        router.post("/api/user/register").handler(UserValidator.create()).handler(RegisterValidator.create());
+        router.post("/api/user/register").handler(RegisterValidator.create());
 
         //商品列表
         router.get("/api/product/list");
@@ -47,6 +47,7 @@ public class ApiVerticle extends RestVerticle {
 
         //获取优惠券列表
         router.get("/api/coupon/list");
+
 
         //将请求分发到指定的分路由上去
         router.route("/api/*").handler(this::sendMessage);
