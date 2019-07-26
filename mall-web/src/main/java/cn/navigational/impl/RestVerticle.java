@@ -38,41 +38,6 @@ public class RestVerticle extends BaseVerticle {
 
     }
 
-    /**
-     * 批量注册api接口
-     *
-     * @param router
-     */
-    protected void buildApi(Router router) {
-        final JsonArray api = (JsonArray) config().remove(API);
-        api.stream().map(_r -> (JsonObject) _r).forEach(_r -> {
-            final String method = _r.getString(HTTP_METHOD);
-            final String path = _r.getString(API);
-            final JsonArray validator = _r.getJsonArray("validator", new JsonArray());
-            final String comment = _r.getString("comment");
-            final Route route;
-            if (method.equals("GET")) {
-                route = router.get(path);
-            } else if (method.equals("POST")) {
-                route = router.post(path);
-            } else {
-                return;
-            }
-            validator.forEach(_v -> {
-                final String v = _v.toString();
-                try {
-                    HttpValidator vv = (HttpValidator) Class.forName(v).getConstructor().newInstance();
-                    route.handler(vv);
-                } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    logger.error("build api failed:{}", e.getCause().getMessage());
-                }
-            });
-            route.handler(this::sendMessage);
-            logger.info("({}){}({}) register success!", method, path, comment);
-        });
-        logger.info("Build api success!");
-    }
-
     protected JsonObject executeException(Throwable _t) {
         final JsonObject msg = responseTemplate("服务器错误", 500, false, EventBusDataType.JSON);
         msg.put(CAUSE, Objects.isNull(_t.getMessage()) ? "NULL" : _t.getMessage());

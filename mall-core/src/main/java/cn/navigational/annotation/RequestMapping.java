@@ -32,11 +32,4 @@ public @interface RequestMapping {
      */
     String description() default "";
 
-    /**
-     * HttpValidator http请求数据校验器
-     * @see cn.navigational.base.HttpValidator
-     * @return
-     */
-    String[] validators() default {};
-
 }

@@ -13,7 +13,6 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -22,7 +21,6 @@ import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import static cn.navigational.config.Constants.*;
 
 
 public class VertxApplication {
@@ -36,7 +34,6 @@ public class VertxApplication {
 
     private final Logger logger = LogManager.getLogger();
 
-    private final JsonArray apiList = new JsonArray();
 
     private final DeploymentOptions options = new DeploymentOptions();
 
@@ -58,8 +55,6 @@ public class VertxApplication {
         final JsonObject appConfig = fs.readFileBlocking(config).toJsonObject();
 
         scanVerticle(scanPackage.packages());
-
-        appConfig.put(API, apiList);
 
         options.setConfig(appConfig);
 
@@ -178,27 +173,6 @@ public class VertxApplication {
         try {
             clazz = Class.forName(className);
             if (clazz.getDeclaredAnnotation(Verticle.class) != null) {
-                final Router router = (Router) clazz.getAnnotation(Router.class);
-                if (router == null) {
-                    return true;
-                }
-                final Method[] methods = clazz.getDeclaredMethods();
-                for (Method method : methods) {
-                    final RequestMapping map = method.getAnnotation(RequestMapping.class);
-                    if (map == null) {
-                        return true;
-                    }
-                    final JsonObject api = new JsonObject();
-                    final JsonArray validator = new JsonArray();
-                    for (String s : map.validators()) {
-                        validator.add(s);
-                    }
-                    api.put(API, router.api() + map.api());
-                    api.put(HTTP_METHOD, map.method().name());
-                    api.put("comment", map.description());
-                    api.put("validator", validator);
-                    apiList.add(api);
-                }
                 return true;
             }
         } catch (ClassNotFoundException e) {

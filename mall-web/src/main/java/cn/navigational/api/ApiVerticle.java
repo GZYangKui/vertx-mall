@@ -4,6 +4,8 @@ import cn.navigational.auth.RequireToken;
 import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.HttpDataConverter;
 import cn.navigational.impl.RestVerticle;
+import cn.navigational.validator.RegisterValidator;
+import cn.navigational.validator.UserValidator;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CookieHandler;
@@ -28,14 +30,32 @@ public class ApiVerticle extends RestVerticle {
         router.route("/api/*").handler(BodyHandler.create().setMergeFormAttributes(true));
         router.route("/api/*").handler(HttpDataConverter.create()).handler(RequireToken.create(vertx, config()));
 
-        buildApi(router);
+        //用户登录
+        router.post("/api/user/login").handler(UserValidator.create());
+
+        //用户注册
+        router.post("/api/user/register").handler(UserValidator.create()).handler(RegisterValidator.create());
+
+        //商品列表
+        router.get("/api/product/list");
+
+        //获取商品库存信息
+        router.get("/api/sku/info");
+
+        //获取商品分离列表
+        router.get("/api/productCate/list");
+
+        //获取优惠券列表
+        router.get("/api/coupon/list");
+
+        //将请求分发到指定的分路由上去
+        router.route("/api/*").handler(this::sendMessage);
 
         router.get("/*").handler(StaticHandler.create().setDefaultContentEncoding("UTF-8"));
 
         final int port = config().getInteger(PORT, 8080);
 
         router.errorHandler(500, _routingContext -> {
-            /*logger.error(_routingContext.failure().getCause().getMessage());*/
             _routingContext.failure().printStackTrace();
             response(_routingContext, executeException(_routingContext.failure()));
         });

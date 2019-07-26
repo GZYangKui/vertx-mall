@@ -29,15 +29,13 @@ public class UserRouter extends RouterVerticle {
     }
 
 
-    @RequestMapping(api = "/login", description = "用户登录", method = HttpMethod.POST, validators = {"cn.navigational.validator.UserValidator"})
+    @RequestMapping(api = "/login", description = "用户登录", method = HttpMethod.POST)
     public Future<JsonObject> login(JsonObject obj) {
         final User user = obj.getJsonObject(BODY).mapTo(User.class);
         return service.login(user);
     }
 
-    @RequestMapping(api = "/register", description = "用户注册", method = HttpMethod.POST, validators = {
-            "cn.navigational.validator.UserValidator",
-            "cn.navigational.validator.RegisterValidator"})
+    @RequestMapping(api = "/register", description = "用户注册", method = HttpMethod.POST)
     public Future<JsonObject> register(JsonObject obj) {
         final RegisterInfo registerInfo = obj.getJsonObject(BODY).mapTo(RegisterInfo.class);
         return service.register(registerInfo);

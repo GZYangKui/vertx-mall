@@ -23,7 +23,7 @@ public class ProductSkuRouter extends RouterVerticle {
         service = new ProductSkuServiceImpl(vertx, config());
     }
 
-    @RequestMapping(api = "/sku", description = "获取商品库存", method = HttpMethod.GET)
+    @RequestMapping(api = "/info", description = "获取商品库存", method = HttpMethod.GET)
     public Future<JsonObject> sku(JsonObject obj) {
         return service.sku(obj);
     }
