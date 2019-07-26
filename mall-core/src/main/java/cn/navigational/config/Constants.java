@@ -1,8 +1,7 @@
 package cn.navigational.config;
 
 public class Constants {
-    public static final String ACTION = "action";
-    public static final String REQUEST_API = "requestApi";
+    public static final String EVENT_ADDRESS = "eventAddress";
     public static final String PORT = "port";
     public static final String BODY = "body";
     public static final String QUERY = "query";
@@ -19,17 +18,15 @@ public class Constants {
     public static final String TIME_STAMP = "timestamp";
     public static final String USERNAME = "username";
     public static final String SKIP = "skip";
-    public static final String TOKEN ="token";
+    public static final String TOKEN = "token";
     public static final String USER_ID = "userId";
-    public static final String ID ="id";
+    public static final String ID = "id";
     public static final String DATA = "data";
     public static final String TYPE = "type";
     public static final String PHONE = "phone";
     public static final String GENDER = "gender";
     public static final String PAGE = "page";
     public static final String PAGE_SIZE = "pageSize";
-    public static final String API = "api";
     public static final String PATH = "path";
     public static final String HTTP_METHOD = "method";
-    public static final String NAME = "name";
 }

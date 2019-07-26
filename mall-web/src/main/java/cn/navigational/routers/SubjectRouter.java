@@ -7,6 +7,7 @@ import cn.navigational.impl.RouterVerticle;
 import cn.navigational.service.SubjectService;
 import cn.navigational.service.impl.SubjectServiceImpl;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 
@@ -16,10 +17,11 @@ public class SubjectRouter extends RouterVerticle {
     private SubjectService service;
 
     @Override
-    public void start() throws Exception {
-        super.start();
+    public void start(Promise<Void> startPromise) throws Exception {
+        super.start(startPromise);
         service = new SubjectServiceImpl(vertx, config());
     }
+
 
     @RequestMapping(api = "/detail", description = "获取某一个专题详情", method = HttpMethod.GET)
     public Future<JsonObject> detail(JsonObject obj) {

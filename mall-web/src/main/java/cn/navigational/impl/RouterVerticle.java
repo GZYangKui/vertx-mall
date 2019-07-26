@@ -23,12 +23,19 @@ import static cn.navigational.utils.ResponseUtils.responseFailed;
  * @author GZYangKui
  * @see io.vertx.core.eventbus.EventBus
  * @see cn.navigational.annotation.RequestMapping
+ *
  */
 public abstract class RouterVerticle extends BaseVerticle {
     //缓存方法
     private final Map<String, Map<String, Object>> requestMapping = new HashMap<>();
 
-    public void start() throws Exception {
+    @Override
+    public void start(Promise<Void> startPromise) throws Exception {
+        final Router router = this.getClass().getAnnotation(Router.class);
+        if (Objects.isNull(router)) {
+            startPromise.fail("Extends RouterVerticle must mark @Router annotation");
+            return;
+        }
         final Method[] methods = this.getClass().getDeclaredMethods();
         for (Method method : methods) {
             final Annotation[] annotations = method.getDeclaredAnnotations();
@@ -38,22 +45,22 @@ public abstract class RouterVerticle extends BaseVerticle {
                     final Map<String, Object> info = new HashMap<>();
                     info.put(HTTP_METHOD, ((RequestMapping) annotation).method().toString());
                     info.put("execute", method);
-                    requestMapping.put(map.api(), info);
+                    requestMapping.put(router.api() + map.api(), info);
                 }
             }
         }
         vertx.eventBus().<JsonObject>consumer(getAPi(), _msg -> {
             final JsonObject data = _msg.body();
-            final String action = data.getString(ACTION);
+            final String path = data.getString(PATH);
             final String httpMethod = data.getString(HTTP_METHOD);
             //检查当前api是否存在,以及请求方法是否符合@RequestMapping中设定的请求方法
-            if (!requestMapping.containsKey(action) || !requestMapping.get(action).get(HTTP_METHOD).equals(httpMethod)) {
-                _msg.reply(notFound(action));
+            if (!requestMapping.containsKey(path) || !requestMapping.get(path).get(HTTP_METHOD).equals(httpMethod)) {
+                _msg.reply(notFound(path));
                 return;
             }
             //反射执行特定方法
             try {
-                final Method method = (Method) requestMapping.get(action).get("execute");
+                final Method method = (Method) requestMapping.get(path).get("execute");
                 ((Future<JsonObject>) method.invoke(this, data)).setHandler(_rs -> {
                     if (_rs.failed()) {
                         logger.error("业务逻辑处理失败:{}", _rs.cause().getMessage());
@@ -67,12 +74,13 @@ public abstract class RouterVerticle extends BaseVerticle {
                 _msg.reply(error(e.getCause()));
             }
         });
+        startPromise.complete();
     }
 
     private Future<JsonObject> notFound(final String action) {
         final Promise<JsonObject> promise = Promise.promise();
         final JsonObject msg = responseFailed("API NOT FOUND", 404);
-        msg.put(REQUEST_API, action);
+        msg.put(EVENT_ADDRESS, action);
         promise.complete(msg);
         return promise.future();
     }

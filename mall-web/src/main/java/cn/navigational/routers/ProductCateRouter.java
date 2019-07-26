@@ -8,6 +8,7 @@ import cn.navigational.service.ProductCateService;
 import cn.navigational.service.impl.ProductCateServiceImpl;
 import io.vertx.core.Future;
 
+import io.vertx.core.Promise;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 
@@ -17,8 +18,8 @@ public class ProductCateRouter extends RouterVerticle {
     private ProductCateService service;
 
     @Override
-    public void start() throws Exception {
-        super.start();
+    public void start(Promise<Void> startPromise) throws Exception {
+        super.start(startPromise);
         service = new ProductCateServiceImpl(vertx, config());
     }
 

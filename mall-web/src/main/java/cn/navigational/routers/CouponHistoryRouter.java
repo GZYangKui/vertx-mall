@@ -7,6 +7,7 @@ import cn.navigational.impl.RouterVerticle;
 import cn.navigational.service.CouponHistoryService;
 import cn.navigational.service.impl.CouponHistoryServiceImpl;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 
@@ -16,9 +17,10 @@ public class CouponHistoryRouter extends RouterVerticle {
     private CouponHistoryService service;
 
     @Override
-    public void start() throws Exception {
-        super.start();
+    public void start(Promise<Void> startPromise) throws Exception {
+        super.start(startPromise);
         service = new CouponHistoryServiceImpl(vertx, config());
+
     }
 
     @RequestMapping(api = "/list",method = HttpMethod.GET,description = "优惠券领取记录")

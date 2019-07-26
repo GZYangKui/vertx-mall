@@ -27,7 +27,9 @@ public class ApiVerticle extends RestVerticle {
         final Router router = Router.router(vertx);
 
         router.route("/api/*").handler(CookieHandler.create());
+
         router.route("/api/*").handler(BodyHandler.create().setMergeFormAttributes(true));
+
         router.route("/api/*").handler(HttpDataConverter.create()).handler(RequireToken.create(vertx, config()));
 
         //用户登录
@@ -35,6 +37,12 @@ public class ApiVerticle extends RestVerticle {
 
         //用户注册
         router.post("/api/user/register").handler(RegisterValidator.create());
+
+        //获取地址列表
+        router.get("/api/address/list");
+
+        //获取默认地址
+        router.get("/api/address/default");
 
         //商品列表
         router.get("/api/product/list");

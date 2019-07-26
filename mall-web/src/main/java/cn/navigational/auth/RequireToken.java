@@ -28,9 +28,11 @@ public class RequireToken extends HttpValidator {
     @Override
     public void handle(RoutingContext routingContext) {
         final HttpServerRequest request = routingContext.request();
+
         final String uri = request.uri();
 
         final JsonArray skips = config.getJsonArray(SKIP);
+
         final JsonObject jwtConfig = config.getJsonObject("jwtConfig");
 
         //如果包含在不授权列表中 则直接跳过验证
@@ -38,6 +40,7 @@ public class RequireToken extends HttpValidator {
             routingContext.next();
             return;
         }
+
         vertx.executeBlocking(_fut -> {
             final String token = request.getHeader(HttpHeaders.AUTHORIZATION);
             if (isEmpty(token)) {

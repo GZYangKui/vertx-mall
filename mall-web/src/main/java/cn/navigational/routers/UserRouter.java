@@ -10,6 +10,7 @@ import cn.navigational.service.UserService;
 import cn.navigational.service.impl.UserServiceImpl;
 import io.vertx.core.Future;
 
+import io.vertx.core.Promise;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 
@@ -23,11 +24,10 @@ public class UserRouter extends RouterVerticle {
     private UserService service;
 
     @Override
-    public void start() throws Exception {
-        super.start();
+    public void start(Promise<Void> startPromise) throws Exception {
+        super.start(startPromise);
         service = new UserServiceImpl(vertx, config());
     }
-
 
     @RequestMapping(api = "/login", description = "用户登录", method = HttpMethod.POST)
     public Future<JsonObject> login(JsonObject obj) {

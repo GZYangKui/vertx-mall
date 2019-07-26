@@ -13,13 +13,16 @@ public class HttpDataConverter extends HttpValidator {
     public void handle(RoutingContext routingContext) {
 
         final HttpServerRequest request = routingContext.request();
-        final String path = request.path();
-        final JsonObject temp = new JsonObject();
-        final int index = path.indexOf("/", 5);
-        final String requestApi = path.substring(0, index);
-        temp.put(REQUEST_API, requestApi);
 
-        temp.put(ACTION, path.substring(index, path.length()));
+        final String path = request.path();
+
+        final JsonObject temp = new JsonObject();
+
+        final int index = path.indexOf("/", 5);
+
+        final String eventAddress = path.substring(0, index);
+
+        temp.put(EVENT_ADDRESS, eventAddress);
 
         temp.put(QUERY, getQuery(routingContext));
 

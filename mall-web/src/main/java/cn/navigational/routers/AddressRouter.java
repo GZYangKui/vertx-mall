@@ -8,6 +8,7 @@ import cn.navigational.service.AddressService;
 import cn.navigational.service.impl.AddressServiceImpl;
 
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 
@@ -17,11 +18,10 @@ public class AddressRouter extends RouterVerticle {
     private AddressService service;
 
     @Override
-    public void start() throws Exception {
-        super.start();
+    public void start(Promise<Void> startPromise) throws Exception {
+        super.start(startPromise);
         service = new AddressServiceImpl(vertx, config());
     }
-
     @RequestMapping(api = "/list", method = HttpMethod.GET, description = "获取地址列表")
     public Future<JsonObject> list(JsonObject obj) {
         return service.list(obj);
