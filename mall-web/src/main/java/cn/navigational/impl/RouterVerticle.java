@@ -24,6 +24,7 @@ import static cn.navigational.utils.ResponseUtils.responseFailed;
  * @see io.vertx.core.eventbus.EventBus
  * @see cn.navigational.annotation.RequestMapping
  *
+ *
  */
 public abstract class RouterVerticle extends BaseVerticle {
     //缓存方法
@@ -77,12 +78,10 @@ public abstract class RouterVerticle extends BaseVerticle {
         startPromise.complete();
     }
 
-    private Future<JsonObject> notFound(final String action) {
-        final Promise<JsonObject> promise = Promise.promise();
+    private JsonObject notFound(final String action) {
         final JsonObject msg = responseFailed("API NOT FOUND", 404);
         msg.put(EVENT_ADDRESS, action);
-        promise.complete(msg);
-        return promise.future();
+        return msg;
     }
 
     private Future<JsonObject> error(Throwable _t) {

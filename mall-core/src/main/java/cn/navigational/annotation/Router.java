@@ -5,6 +5,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * 此注解用于标注在RouterVerticle上。
+ * 一般该注解与RequestMapping组合使用
+ *
+ * @author GZYangKui
+ * @see cn.navigational.annotation.RequestMapping
+ *
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Router {
