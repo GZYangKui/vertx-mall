@@ -56,6 +56,9 @@ public class ApiVerticle extends RestVerticle {
         //获取优惠券列表
         router.get("/api/coupon/list");
 
+        //获取优选专题列表
+        router.get("/api/preference/list");
+
 
         //将请求分发到指定的分路由上去
         router.route("/api/*").handler(this::sendMessage);
