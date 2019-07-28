@@ -2,7 +2,6 @@ import base.BaseTest;
 import cn.navigational.api.ApiVerticle;
 import cn.navigational.routers.PreferenceAreaRouter;
 import cn.navigational.routers.UserRouter;
-import io.netty.handler.codec.Headers;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpHeaders;

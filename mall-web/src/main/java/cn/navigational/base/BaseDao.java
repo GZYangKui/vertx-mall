@@ -8,6 +8,8 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.pgclient.PgConnectOptions;
 import io.vertx.pgclient.PgPool;
 import io.vertx.sqlclient.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 import java.time.LocalDateTime;
@@ -137,12 +139,12 @@ public class BaseDao {
             }
             final SqlConnection con = _rs.result();
             con.preparedBatch(sql, tuples, _rr -> {
-              if (_rr.failed()){
-                  promise.fail(_rr.cause());
-                  return;
-              }
-              con.close();
-              promise.complete(1);
+                if (_rr.failed()) {
+                    promise.fail(_rr.cause());
+                    return;
+                }
+                con.close();
+                promise.complete(1);
             });
         });
         return promise.future();

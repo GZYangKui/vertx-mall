@@ -29,14 +29,14 @@ public class ProductDaoImpl extends BaseDao implements ProductDao {
         tuple.addValue(1);
         sb.append("SELECT * FROM product WHERE delete_status=$1 AND publish_status=$2 AND id IN(");
         for (int i = 0; i < productIds.size(); i++) {
-            final int index = i + 1;
+            final int index = tuple.size() + 1;
+            tuple.addValue(productIds.get(i));
             sb.append("$").append(index);
             if (i == productIds.size() - 1) {
                 sb.append(")");
             } else {
                 sb.append(",");
             }
-            tuple.addValue(productIds.get(i));
         }
         return executeQuery(sb.toString(), tuple);
     }

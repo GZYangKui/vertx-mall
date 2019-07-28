@@ -10,6 +10,7 @@ import cn.navigational.service.PreferenceService;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 import java.util.List;
@@ -42,6 +43,10 @@ public class PreferenceServiceImpl extends BaseService implements PreferenceServ
                 promise.complete(responseSuccessJson(List.of()));
                 return;
             }
+
+            //将商品列表初始化为0
+            list.forEach(_t -> _t.put("products", List.of()));
+
             //获取优选专题id
             final List<Integer> ids = list.stream().map(_rr -> _rr.getInteger("id")).collect(Collectors.toList());
             //获取关联商品id
@@ -52,8 +57,15 @@ public class PreferenceServiceImpl extends BaseService implements PreferenceServ
                 }
                 //专题关联信息
                 final List<JsonObject> temp = _rr.result();
+
                 //获取商品id
                 final List<Integer> products = temp.stream().map(_r -> _r.getInteger("product_id")).collect(Collectors.toList());
+
+                if (products.isEmpty()) {
+                    promise.complete(responseSuccessJson(list));
+                    return;
+                }
+
                 //获取商品信息
                 productDao.list(products).setHandler(_rrr -> {
                     if (_rrr.failed()) {
