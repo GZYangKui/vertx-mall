@@ -9,6 +9,7 @@ import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 
@@ -16,10 +17,11 @@ import static cn.navigational.config.Constants.*;
 
 @RunWith(VertxUnitRunner.class)
 public class BaseTest {
+
     protected String token = "";
-    protected static Vertx vertx;
-    protected static WebClient webClient;
-    protected static WebClientOptions options = new WebClientOptions();
+    protected  WebClient webClient;
+
+    protected static Vertx vertx = Vertx.vertx();
 
     /**
      * 登录获取token
@@ -30,6 +32,17 @@ public class BaseTest {
     public void before(TestContext context) {
         final Async async = context.async();
         final JsonObject userInfo = new JsonObject();
+        final WebClientOptions options = new WebClientOptions();
+
+        options.setDefaultHost("127.0.0.1");
+        options.setDefaultPort(8080);
+        options.setSsl(false);
+        options.setFollowRedirects(true);
+
+        vertx = Vertx.vertx();
+        webClient = WebClient.create(vertx, options);
+
+        webClient = WebClient.create(vertx,options);
         userInfo.put(USERNAME, "yangkui");
         userInfo.put(PASSWORD, "123456");
         webClient.post("/api/user/login").sendJson(userInfo, _rs -> {
@@ -41,6 +54,12 @@ public class BaseTest {
             token = "Bearer " + result.getJsonObject(DATA).getString(TOKEN);
             async.complete();
         });
+    }
+
+    @Test
+    public void test(TestContext context){
+        System.out.println("=========test========");
+        context.async().complete();
     }
 
     /**

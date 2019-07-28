@@ -1,0 +1,40 @@
+/*
+
+公共样式
+
+ */
+body {
+    background-color: #EDEDED;
+}
+
+.flex-box {
+    display: flex;
+    display: -webkit-flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+
+.container {
+    padding-bottom: 3rem;
+}
+
+/**底部导航栏样式**/
+.bottom-navigator img {
+    width: 25px;
+    height: 25px;
+}
+
+.bottom-navigator > div {
+    text-align: center;
+}
+
+.bottom-navigator {
+    width: 100%;
+    color: #7300BC;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    background-color: #FBFBFB;
+    padding: 5px 0;
+}

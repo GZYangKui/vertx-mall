@@ -1,0 +1,39 @@
+.container > div {
+    background-color: #FFFFFF;
+}
+
+.carousel-item > img {
+    width: 100%;
+    height: 100%;
+}
+
+.top-action > div {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5px;
+    padding: 5px;
+}
+
+.top-action > div > div:first-child {
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 35px;
+    height: 35px;
+}
+
+.top-action > div:first-child > div:first-child {
+    background-image: url("../images/svg/topic.svg");
+}
+
+.top-action > div:nth-child(2) > div:first-child {
+    background-image: url("../images/svg/preferential.svg");
+}
+
+.top-action > div:nth-child(3) > div:first-child {
+    background-image: url("../images/svg/optimization.svg");
+}
+
+.top-action > div:nth-child(4) > div:first-child {
+    background-image: url("../images/svg/sign.svg");
+}

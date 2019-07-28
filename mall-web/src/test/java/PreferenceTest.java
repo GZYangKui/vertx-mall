@@ -19,14 +19,6 @@ public class PreferenceTest extends BaseTest {
 
     @BeforeClass
     public static void beforeClass(TestContext context) {
-        options.setDefaultHost("127.0.0.1");
-        options.setDefaultPort(8080);
-        options.setSsl(false);
-        options.setFollowRedirects(true);
-
-        vertx = Vertx.vertx();
-        webClient = WebClient.create(vertx, options);
-
         final JsonObject config = vertx.fileSystem().readFileBlocking("config/config.json").toJsonObject();
         final DeploymentOptions deploymentOptions = new DeploymentOptions();
 

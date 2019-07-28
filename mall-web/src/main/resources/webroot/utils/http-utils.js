@@ -11,7 +11,6 @@
  *     data:{},
  * }
  */
-let host = "http://127.0.0.1:8080";
 
 let request = (requestInfo, resultHandler) => {
     let token = $.cookie("token");
@@ -32,7 +31,7 @@ let request = (requestInfo, resultHandler) => {
         requestInfo.url += temp;
     }
     $.ajax({
-        url: host + requestInfo.url,
+        url: requestInfo.url,
         type: requestInfo.type,
         dataType: requestInfo.dataType == null ? "json" : requestInfo.dataType,
         contentType: "application/x-www-form-urlencoded; charset=UTF-8",
@@ -42,8 +41,12 @@ let request = (requestInfo, resultHandler) => {
         },
         success: (res) => {
             if (res.code === 403) {
+                layer.msg("登录过期,请重新登录");
                 window.location.href = "/login.html";
             } else {
+                if (!res.flag) {
+                    layer.msg(res.message);
+                }
                 resultHandler(res);
             }
         },

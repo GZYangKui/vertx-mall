@@ -9,7 +9,6 @@ import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
-import io.vertx.ext.web.client.WebClient;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -21,14 +20,6 @@ import org.junit.Test;
 public class HomeAdvertiseTest extends BaseTest {
     @BeforeClass
     public static void beforeClass(TestContext context) {
-        options.setDefaultHost("127.0.0.1");
-        options.setDefaultPort(8080);
-        options.setSsl(false);
-        options.setFollowRedirects(true);
-
-        vertx = Vertx.vertx();
-        webClient = WebClient.create(vertx, options);
-
         final JsonObject config = vertx.fileSystem().readFileBlocking("config/config.json").toJsonObject();
         final DeploymentOptions deploymentOptions = new DeploymentOptions();
 
