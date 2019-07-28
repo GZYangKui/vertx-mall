@@ -12,10 +12,7 @@ import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
@@ -23,7 +20,7 @@ import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
 public class PreferenceServiceImpl extends BaseService implements PreferenceService {
 
     private final PreferenceDao dao = new PreferenceDaoImpl(vertx, config);
-    private final ProductDao productDao = new ProductDaoImpl(vertx,config);
+    private final ProductDao productDao = new ProductDaoImpl(vertx, config);
 
     public PreferenceServiceImpl(Vertx vertx, JsonObject config) {
         super(vertx, config);
@@ -46,24 +43,41 @@ public class PreferenceServiceImpl extends BaseService implements PreferenceServ
                 return;
             }
             //获取优选专题id
-            final List<Integer> ids = list.stream().map(_rr->_rr.getInteger("id")).collect(Collectors.toList());
+            final List<Integer> ids = list.stream().map(_rr -> _rr.getInteger("id")).collect(Collectors.toList());
             //获取关联商品id
-            dao.getRelateProductId(ids).setHandler(_rr->{
-                if (_rr.failed()){
+            dao.getRelateProductId(ids).setHandler(_rr -> {
+                if (_rr.failed()) {
                     promise.fail(_rr.cause());
                     return;
                 }
                 //专题关联信息
                 final List<JsonObject> temp = _rr.result();
                 //获取商品id
-                final List<Integer> products = temp.stream().map(_r->_r.getInteger("product_id")).collect(Collectors.toList());
+                final List<Integer> products = temp.stream().map(_r -> _r.getInteger("product_id")).collect(Collectors.toList());
                 //获取商品信息
-                productDao.list(products).setHandler(_rrr->{
-                   if (_rrr.failed()){
-                       promise.fail(_rrr.cause());
-                       return;
-                   }
-                   //TODO 实现集合归纳
+                productDao.list(products).setHandler(_rrr -> {
+                    if (_rrr.failed()) {
+                        promise.fail(_rrr.cause());
+                        return;
+                    }
+                    list.forEach(_t -> {
+                        final List<JsonObject> o = temp.stream()
+                                .filter(_tt -> _tt.getInteger("preference_area_id") == _t.getInteger("id"))
+                                .collect(Collectors.toList());
+
+                        if (o.isEmpty()) {
+                            _t.put("products", List.of());
+                            return;
+                        }
+
+                        final List<JsonObject> p = _rrr.result().stream()
+                                .filter(_tt -> o.stream()
+                                        .map(_k -> _k.getInteger("product_id"))
+                                        .collect(Collectors.toList()).contains(_tt.getInteger("id")))
+                                .collect(Collectors.toList());
+                        _t.put("products", p);
+                    });
+                    promise.complete(responseSuccessJson(list));
                 });
             });
         });
