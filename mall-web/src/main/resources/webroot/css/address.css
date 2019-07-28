@@ -1,0 +1,122 @@
+body {
+    background-color: #EDEDED;
+}
+
+.flex-box {
+    display: -webkit-flex;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bottom-action-box {
+    height: 45px;
+    background-color: #FFFFFF;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    padding: 5px 0;
+    text-align: center;
+    width: 100%;
+    border-top: 1px solid #CACACA;
+}
+
+.bottom-action-box > button {
+    height: 100%;
+    width: 250px;
+    border-radius: 20px;
+    background-color: #00C298;
+    color: #FFFFFF;
+    border-width: 0;
+    font-size: 18px;
+}
+
+.container {
+    padding-bottom: 1rem;
+}
+
+.container > div {
+    background-color: #FFFFFF;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #CACACA;
+    border-top: 1px solid #CACACA;
+}
+
+.container > div > div, .container > div > div > div {
+    padding: 10px;
+}
+
+.checked-item {
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    display: none;
+}
+
+/*未选中时*/
+.checked-item + label {
+    position: relative;
+    top: 6px;
+    width: 25px;
+    height: 25px;
+    display: inline-block;
+    background-image: url(../img/unselectedshape_u387.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+/*选中checkbox时,修改背景图片的位置*/
+.checked-item:checked + label {
+    background-image: url(../img/u2601.png);
+}
+
+
+.address-info {
+    border-bottom: 1px solid #CACACA;
+}
+
+.non-default {
+    display: none;
+    border: #FDA93F 1px solid;
+    color: #FDA93F;
+    width: 40px;
+    height: 20px;
+    text-align: center;
+    margin-left: 10px;
+    border-radius: 3px;
+}
+
+.default-address {
+    display: inline-block;
+}
+
+.edit-box > div, .delete-box > div {
+    margin-left: 5px;
+}
+
+.edit-box > div:first-child, .delete-box > div:first-child {
+    width: 24px;
+    height: 24px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+}
+
+.edit-box > div:first-child {
+    background-image: url("../img/svg/edit.svg");
+}
+
+.delete-box > div:first-child {
+    background-image: url("../img/svg/delete.svg");
+}
+
+.address-info > div:first-child > span:first-child {
+    font-size: 17px;
+    color: #333333;
+}
+
+.address-info > div:last-child > span,.action-box span{
+    font-size: 14px;
+    color: #666666;
+}

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta content="telephone=no" name="format-detection"/>
+
+    <title>添加收货地址</title>
+
+    <link rel="stylesheet" href="lib/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="./css/add_address.css" type="text/css"/>
+    <script>
+        (function (doc, win) {
+            let docEl = doc.documentElement,
+                resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                recalc = function () {
+                    let clientWidth = docEl.clientWidth;
+                    if (!clientWidth) return;
+                    if (clientWidth >= 750) {
+                        docEl.style.fontSize = '100px';
+                    } else {
+                        docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                    }
+                };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+</head>
+
+<body>
+<form class="layui-form form" lay-filter="example">
+    <div>
+        <div class="address_content">
+            <input placeholder="收货人" id="name"/>
+            <hr/>
+            <input placeholder="手机号" id="phone"/>
+            <hr/>
+            <input placeholder="所在区域" value="贵州省-凯里市" disabled id="address"/>
+            <hr/>
+            <textarea name="" required lay-verify="required" placeholder="详细地址：如道路、门牌号、小区、楼栋号、单元室等"
+                      class="layui-textarea" id="detailAddress"></textarea>
+        </div>
+        <div class="flex_box setting">
+            <div>
+                <span>设置为默认</span>
+            </div>
+            <div class="layui-input-block">
+                <input type="checkbox" checked name="open" lay-skin="switch" lay-filter="switchTest"
+                       lay-text="是|否" id="isDefault" value="1">
+            </div>
+        </div>
+    </div>
+</form>
+
+<div align="center" class="action-box">
+    <button onclick="submitData()">保存</button>
+</div>
+
+<script src="lib/jquery-3.4.1.min.js" charset="UTF-8"></script>
+<script src="lib/jquery.cookie.js" charset="UTF-8"></script>
+<script src="lib/layui/layui.all.js" charset="utf-8"></script>
+<script src="utils/http-utils.js" charset="UTF-8"></script>
+<script src="./js/add_address.js" charset="UTF-8"></script>
+
+</body>
+<script>
+    layui.use('form', function () {
+        let form = layui.form;
+        form.render();
+        //监控选择变化
+        form.on('switch(switchTest)', function (data) {
+            isDefault = data.elem.checked ? 1 : 0;
+        });
+    });
+    layer.ready(() => {
+        initEdit();
+    });
+
+</script>
+</html>

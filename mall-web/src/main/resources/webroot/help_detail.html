@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>常见问题</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link rel="stylesheet" href="lib/layui/css/layui.css" type="text/css">
+</head>
+<body>
+<div class="layui-collapse">
+    <div class="layui-colla-item">
+        <h2 class="layui-colla-title">Q：想改收货地址怎么办？</h2>
+        <div class="layui-colla-content">
+            A：请您直接联系客服修改，如果已经发货了，客服会帮您查配送员的联系方式。
+        </div>
+    </div>
+    <div class="layui-colla-item">
+        <h2 class="layui-colla-title">Q：送货要多长时间？</h2>
+        <div class="layui-colla-content">
+            A：正常情况在你所选时间内送到，但是如果遇到特殊情况(一些不可抗拒外界因素)，可能会延时送达。
+        </div>
+    </div>
+    <div class="layui-colla-item">
+        <h2 class="layui-colla-title">Q：想改收货地址怎么办？</h2>
+        <div class="layui-colla-content">
+            A：请您直接联系客服修改，如果已经发货了，客服会帮您查询配送员的联系方式。
+        </div>
+    </div>
+    <div class="layui-colla-item">
+        <h2 class="layui-colla-title">Q：为什么商品在购物车里价格变化了？</h2>
+        <div class="layui-colla-content">
+            A：我们会不定时推出各种优惠活动，可能您把商品放在购物车里的那段时间，商品因为活动有调价。如果想查看最新的优惠，请关注活动版块哦。
+        </div>
+    </div>
+</div>
+<script src="lib/layui/layui.all.js" type="text/javascript"></script>
+</body>
+<script>
+    //注意：折叠面板 依赖 element 模块，否则无法进行功能性操作
+    layui.use('element', function () {
+        let element = layui.element;
+        element.init();
+    });
+</script>
+</html>

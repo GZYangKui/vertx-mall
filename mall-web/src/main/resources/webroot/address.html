@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta type="text/javascript">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta content="telephone=no" name="format-detection"/>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="lib/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="./css/address.css" type="text/css"/>
+    <title>地址管理</title>
+
+</head>
+
+<body>
+
+
+<div id="container" class="container">
+
+</div>
+
+<div class="bottom-action-box">
+    <button class="add_button" onclick="addAddress()">添加收货地址</button>
+</div>
+
+<script src="lib/jquery-3.4.1.min.js" type="text/javascript"></script>
+<script src="lib/jquery.cookie.js" type="text/javascript"></script>
+<script src="lib/layui/layui.all.js" type="text/javascript"></script>
+<script src="utils/http-utils.js" type="text/javascript"></script>
+<script src="js/address.js" type="text/javascript"></script>
+
+</body>
+<script>
+    $(document).ready(() => {
+        layer.ready(() => {
+            init();
+        });
+        //检测滑动到底 加载数据
+        $(window).scroll(function () {
+            if ((($(window).scrollTop() + $(window).height())) === $(document).height()) {
+                if (!loadingStatus) {
+                    init();
+                }
+            }
+        });
+    });
+
+    function addAddress() {
+        window.location.href = "/add_address.html";
+    }
+</script>
+</html>

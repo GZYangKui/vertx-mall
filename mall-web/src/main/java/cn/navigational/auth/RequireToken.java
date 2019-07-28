@@ -69,7 +69,6 @@ public class RequireToken extends HttpValidator {
             _fut.complete();
         }, _rs -> {
             if (_rs.failed()) {
-                _rs.cause().printStackTrace();
                 final JsonObject msg = responseFailed("请先登录", 403);
                 response(routingContext, msg);
             } else {

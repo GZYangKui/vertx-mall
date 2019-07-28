@@ -62,6 +62,35 @@ let isEmpty = (i) => {
     return i === undefined || i === null || i.trim() === "";
 };
 
+
+/**
+ *
+ *
+ * 获取请求参数
+ * @param paraName
+ * @returns {string|null}
+ */
+function getUrlParam(paraName) {
+    const url = document.location.toString();
+    const arrObj = url.split("?");
+
+    if (arrObj.length > 1) {
+        const arrPara = arrObj[1].split("&");
+        let arr;
+
+        for (let i = 0; i < arrPara.length; i++) {
+            arr = arrPara[i].split("=");
+
+            if (arr != null && arr[0] === paraName) {
+                return arr[1];
+            }
+        }
+        return null;
+    } else {
+        return null;
+    }
+}
+
 //加载js文件
 function load(url){//url：需要加载js路径
     const script = document.createElement("script");

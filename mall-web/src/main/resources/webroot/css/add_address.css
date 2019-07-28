@@ -1,0 +1,80 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #F4F4F4;
+}
+
+.flex_box {
+    display: flex;
+    display: -webkit-flex;
+    display: -moz-flex;
+    justify-content: space-between;
+    -webkit-justify-content: space-between;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+.top_navigator {
+
+    background-color: #f3f3f3;
+    height: 40px;
+    padding: 5px;
+}
+
+.top_navigator .save_button {
+    border-width: 0;
+    background-color: #f3f3f3;
+    font-size: 16px;
+    color: #F9B08E;
+    border-radius: 3px;
+}
+
+.address_content, .setting {
+    background-color: #ffffff;
+    margin-bottom: 5px;
+    padding: 1px 6px;
+}
+
+.address_content > hr {
+    margin: 5px 0;
+}
+
+.address_content > input {
+    width: 100%;
+    height: 40px;
+    border-width: 0;
+}
+
+.address_content > textarea {
+    border-width: 0;
+}
+
+.address_content > input:disabled {
+    background-color: #ffffff;
+}
+
+.form input {
+    padding: 1px 6px;
+}
+
+.action-box {
+    height: 45px;
+    background-color: #FFFFFF;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    padding: 5px 0;
+    text-align: center;
+    width: 100%;
+    border-top: 1px solid #CACACA;
+}
+
+.action-box > button {
+    height: 100%;
+    width: 250px;
+    border-radius: 20px;
+    background-color: #00C298;
+    color: #FFFFFF;
+    border-width: 0;
+    font-size: 18px;
+}

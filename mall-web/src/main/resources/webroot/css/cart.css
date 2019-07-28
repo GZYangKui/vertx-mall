@@ -1,0 +1,201 @@
+body {
+    background-color: #EDEDED;
+}
+
+.rolling {
+    padding-bottom: 2.0rem !important;
+}
+
+.flex-box {
+    display: flex;
+    display: -webkit-flex;
+    flex-direction: row;
+    justify-content: space-between;
+    -webkit-justify-content: space-between;
+    -webkit-align-items: center;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+.bottom-action-box {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 999999;
+    height: 50px;
+    background-color: #FFFFFF;
+    width: 100%;
+    align-items: baseline;
+}
+
+.bottom-action-box > div {
+    height: 100%;
+}
+
+.bottom-action-box > div:first-child {
+    padding-left: 10px;
+}
+
+.action-button {
+    height: 100%;
+    width: 100px;
+    background-color: #8300BE;
+    color: #FFFFFF;
+    border-width: 0;
+    font-size: 18px;
+}
+
+.edit-model > div:nth-child(2) {
+    visibility: hidden;
+}
+
+.edit-model button {
+    background-color: red;
+}
+
+.check-box-item {
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    display: none;
+}
+
+/*未选中时*/
+.check-box-item + label {
+    position: relative;
+    top: 12%;
+    width: 25px;
+    height: 25px;
+    display: inline-block;
+    background-image: url(../img/unselectedshape_u387.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+/*选中checkbox时,修改背景图片的位置*/
+.check-box-item:checked + label {
+    background-image: url(../img/selectedshape_u388.png);
+}
+
+.cart-item {
+    background-color: #FFFFFF;
+    padding: 10px;
+    margin: 10px 0;
+    border-width: 1px 0 1px 0;
+    border-style: solid;
+    border-color: #DFDFDF;
+}
+
+
+.cart-pic {
+    width: 150px;
+    height: 100px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.product-info {
+    height: 100px;
+    flex-direction: column;
+    width: 100%;
+    justify-content: space-between;
+    -webkit-justify-content: space-between;
+    align-items: flex-start;
+}
+
+.product-info > div:last-child {
+    width: 100%;
+}
+
+.action-box span, .product-info > div:nth-child(2) {
+    font-size: 14px;
+    color: #666666;
+}
+
+.bottom-action-box > div:nth-child(2) > span:nth-child(2), .product-info > div:last-child > div:first-child {
+    color: #FF3E3E;
+}
+
+.action-box > div {
+    width: 20px;
+    height: 20px;
+    margin: 0 5px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    align-items: center;
+    text-align: center;
+}
+
+.action-box > div:nth-child(2) span {
+    position: relative;
+    top: 17%;
+}
+
+.action-box > div:first-child {
+    background-image: url("../img/svg/reduce.svg");
+}
+
+.action-box > div:last-child {
+    background-image: url("../img/svg/add01.svg");
+}
+
+.edit {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border-radius: 50% 50%;
+    border-color: #DFDFDF;
+    border-width: 1px;
+    z-index: 10000;
+    position: fixed;
+    right: 20px;
+    bottom: 100px;
+    border-style: solid;
+}
+
+.edit > span {
+    position: relative;
+    left: 15%;
+    top: 30%;
+    font-size: 0.3rem;
+}
+
+.cart-empty {
+    width: 100%;
+    margin-top: 50px;
+}
+
+.cart-empty > div {
+    margin: 10px auto;
+    width: fit-content;
+    color: #CACACA;
+}
+
+.cart-empty button {
+    width: 100px;
+    border-radius: 50px;
+    border-width: 0;
+    background: linear-gradient(left, #21BE44, #28BA41, #37B23B, #3AB13A, #45AC36);
+    background: -webkit-linear-gradient(left, #21BE44, #28BA41, #37B23B, #3AB13A, #45AC36);
+    color: #FFFFFF;
+    font-size: 16px;
+    padding: 5px;
+}
+
+.cart-empty > div:first-child {
+    width: 100px;
+    background-image: url("../img/svg/cart01.svg");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100px;
+}
+
+.hidden-edit {
+    display: none;
+}

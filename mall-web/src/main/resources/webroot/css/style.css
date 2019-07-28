@@ -16,7 +16,7 @@ body {
 
 
 .container {
-    padding-bottom: 1.4rem;
+    padding-bottom: 4.0rem;
     height: 100%;
 }
 
@@ -39,5 +39,5 @@ body {
     background-color: #FBFBFB;
     padding: 5px 0;
     z-index: 99999;
-    justify-content: space-around;!important;
+    justify-content: space-around !important;
 }
