@@ -1,6 +1,6 @@
 import base.BaseTest;
 import cn.navigational.api.ApiVerticle;
-import cn.navigational.routers.PreferenceAreaRouter;
+import cn.navigational.routers.ProductCateRouter;
 import cn.navigational.routers.UserRouter;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.http.HttpHeaders;
@@ -10,11 +10,13 @@ import io.vertx.ext.unit.TestContext;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * 优选专题
- */
-public class PreferenceTest extends BaseTest {
 
+/**
+ *
+ * 产品分类
+ *
+ */
+public class ProductCateTest extends BaseTest{
     @BeforeClass
     public static void beforeClass(TestContext context) {
         final JsonObject config = vertx.fileSystem().readFileBlocking("config/config.json").toJsonObject();
@@ -24,20 +26,20 @@ public class PreferenceTest extends BaseTest {
 
         vertx.deployVerticle(new ApiVerticle(), deploymentOptions, context.asyncAssertSuccess());
         vertx.deployVerticle(new UserRouter(), deploymentOptions, context.asyncAssertSuccess());
-        vertx.deployVerticle(new PreferenceAreaRouter(), deploymentOptions, context.asyncAssertSuccess());
+        vertx.deployVerticle(new ProductCateRouter(), deploymentOptions, context.asyncAssertSuccess());
     }
 
+    //测试获取分类列表
     @Test
-    public void testPreference(TestContext context) {
+    public void testCategory(TestContext context){
         final Async async = context.async();
-        webClient.get("/api/preference/list?page=1&pageSize=10").putHeader(HttpHeaders.AUTHORIZATION.toString(), token).send(_rs -> {
-            if (_rs.failed()) {
+        webClient.get("/api/productCate/list").putHeader(String.valueOf(HttpHeaders.AUTHORIZATION),token).send(_rs->{
+            if (_rs.failed()){
                 context.fail(_rs.cause());
             }
             final JsonObject result = _rs.result().bodyAsJsonObject();
-            commonAssert(context, result);
+            commonAssert(context,result);
             async.complete();
         });
     }
-
 }

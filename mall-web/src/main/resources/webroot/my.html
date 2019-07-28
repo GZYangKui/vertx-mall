@@ -6,28 +6,75 @@
     <title>我的</title>
     <link rel="stylesheet" href="lib/layui/css/layui.css"/>
     <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="css/my.css"/>
 </head>
 <body>
 <div class="container">
-
+    <div class="aui-my-info">
+        <div class="aui-my-info-back"></div>
+        <a href="javascript:;" class="">
+            <img src="img/svg/icon.png" class="aui-my-avatar" id="headerIcon">
+        </a>
+        <div class="aui-mt-location aui-l-red"></div>
+    </div>
+    <div class="flex-box item navigation-box">
+        <div onclick="window.location.href='/order.html'">
+            <div><img src="img/svg/order.svg" alt=""></div>
+            <div><span>我的订单</span></div>
+        </div>
+        <div onclick="window.location.href='/order.html?currentIndex=0'">
+            <div><img src="img/svg/purchase.svg" alt=""></div>
+            <div><span>待付款</span></div>
+        </div>
+        <div onclick="window.location.href='/order.html?currentIndex=1'">
+            <div><img src="img/svg/wait.svg" alt=""></div>
+            <div><span>待收货</span></div>
+        </div>
+        <div>
+            <div><img src="img/svg/comment.svg" alt=""></div>
+            <div><span>评价</span></div>
+        </div>
+        <div>
+            <div><img src="img/svg/sale-service.svg" alt=""></div>
+            <div><span>售后服务</span></div>
+        </div>
+    </div>
+    <div class="item list-item">
+        <div class="flex-box">
+            <div><img src="img/svg/my-comment.svg" alt=""><span>我的评价</span></div>
+            <div class="next-box"></div>
+        </div>
+        <div class="flex-box" onclick="window.location.href='/address.html'">
+            <div><img src="img/svg/address_manage.svg" alt=""><span>地址管理</span></div>
+            <div class="next-box"></div>
+        </div>
+        <div class="flex-box">
+            <div><img src="img/svg/member-icon.svg" alt=""><span>我的会员</span></div>
+            <div class="next-box"></div>
+        </div>
+        <div class="flex-box" onclick="window.location.href='/help_detail.html'">
+            <div><img src="img/svg/question.svg" alt=""><span>常见问题</span></div>
+            <div class="next-box"></div>
+        </div>
+    </div>
 </div>
 
 <!--底部导航栏-->
 <div class="flex-box bottom-navigator">
     <div onclick="window.location.href='index.html'">
-        <img src="images/navigator/home.svg"/>
+        <img src="img/navigator/home.svg"/>
         <p><span>首页</span></p>
     </div>
     <div onclick="window.location.href='category.html'">
-        <img src="images/navigator/category.svg"/>
+        <img src="img/navigator/category.svg"/>
         <p><span>分类</span></p>
     </div>
     <div onclick="window.location.href='subject.html'">
-        <img src="images/navigator/subject.svg"/>
+        <img src="img/navigator/subject.svg"/>
         <p><span>专题</span></p>
     </div>
     <div>
-        <img src="images/navigator/my.svg"/>
+        <img src="img/navigator/my.svg"/>
         <p><span>我的</span></p>
     </div>
 </div>

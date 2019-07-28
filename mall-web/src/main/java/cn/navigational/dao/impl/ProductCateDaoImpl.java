@@ -17,8 +17,8 @@ public class ProductCateDaoImpl extends BaseDao implements ProductCateDao {
     }
 
     @Override
-    public Future<List<JsonObject>> getCateList(Paging page) {
-        final String sql = "SELECT * FROM product_category WHERE show_status=$1 LIMIT $2 OFFSET $3";
-        return executeQuery(sql, Tuple.of(1, page.getPageSize(), page.getInitOffset()));
+    public Future<List<JsonObject>> getCateList() {
+        final String sql = "SELECT * FROM product_category WHERE show_status=$1";
+        return executeQuery(sql, Tuple.of(1));
     }
 }

@@ -1,0 +1,143 @@
+body {
+    background-color: #EDEDED;
+}
+
+.subject-cate-box {
+    flex-direction: row;
+    -ms-flex-direction: row;
+    -webkit-flex-direction: row;
+    justify-content: start;
+    -webkit-justify-content: flex-start;
+    overflow-x: scroll;
+}
+
+.cate-item {
+    flex-direction: column;
+    min-width: 80px;
+    align-content: center;
+    margin: 10px 5px;
+}
+
+.cate-item > div:first-child {
+    border-radius: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    background-color: #E6E2EB;
+    width: 50px;
+    height: 50px;
+}
+
+.cate-item > div > img {
+    width: 100px;
+    height: 100px;
+}
+
+.cate-selected {
+    color: #10C69E;
+}
+
+.subject > div {
+    margin: 10px 5px;
+}
+
+.title-box {
+    font-size: 0.35rem;
+}
+
+.description-box {
+    font-size: 0.25rem;
+    color: gray;
+}
+
+.cate-icon {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    border-radius: 50% 50%;
+    background-color: gray;
+    position: relative;
+    top: 20%;
+    margin-right: 10px;
+}
+
+.subject-icon {
+    width: 100%;
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.action-box {
+    color: #C8C8C8;
+    border-top: 1px solid #f6f6f6;
+}
+
+.action-box img {
+    width: 20px;
+    height: 20px;
+}
+
+.ax_default {
+    background-color: #F2F1F1;
+    width: 100%;
+    padding: 10px 5px;
+    display: none;
+}
+
+.ax_default > div {
+    flex-direction: column;
+    align-content: center;
+    -webkit-align-content: center;
+    justify-content: center;
+    -webkit-justify-content: center;
+    text-align: center;
+}
+
+.ax_default > div img {
+    width: 50px;
+    height: 50px;
+}
+
+.ax_default > div span {
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern" 1;
+    -webkit-font-feature-settings: "kern";
+    -moz-font-feature-settings: "kern";
+    -moz-font-feature-settings: "kern=1";
+    font-kerning: normal;
+    white-space: nowrap;
+    height: 20px;
+    color: #999999;
+}
+
+/**
+滚动条凹槽的颜色，还可以设置边框属性
+ */
+::-webkit-scrollbar-track-piece {
+    background: -webkit-linear-gradient(left, #ABDCFF, #0396FF);
+}
+
+/**
+滚动条的宽度
+ */
+::-webkit-scrollbar {
+    width: 9px;
+    height: 1px;
+}
+
+/**
+滚动条的设置
+ */
+::-webkit-scrollbar-thumb {
+    background-color: #dddddd;
+    background-clip: padding-box;
+    min-height: 28px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #bbb;
+}

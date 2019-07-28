@@ -23,8 +23,6 @@ import static cn.navigational.utils.ResponseUtils.responseFailed;
  * @author GZYangKui
  * @see io.vertx.core.eventbus.EventBus
  * @see cn.navigational.annotation.RequestMapping
- *
- *
  */
 public abstract class RouterVerticle extends BaseVerticle {
     //缓存方法
@@ -65,7 +63,7 @@ public abstract class RouterVerticle extends BaseVerticle {
                 ((Future<JsonObject>) method.invoke(this, data)).setHandler(_rs -> {
                     if (_rs.failed()) {
                         logger.error("业务逻辑处理失败:{}", _rs.cause().getMessage());
-                        _msg.reply(error(_rs.cause()).result());
+                        _msg.reply(error(_rs.cause()));
                         return;
                     }
                     _msg.reply(_rs.result());
@@ -84,12 +82,10 @@ public abstract class RouterVerticle extends BaseVerticle {
         return msg;
     }
 
-    private Future<JsonObject> error(Throwable _t) {
-        final Promise<JsonObject> promise = Promise.promise();
+    private JsonObject error(Throwable _t) {
         final JsonObject msg = responseFailed("程序出错", 500);
         msg.put(CAUSE, Objects.isNull(_t.getMessage()) ? "NULL" : _t.getMessage());
-        promise.complete(msg);
-        return promise.future();
+        return msg;
     }
 
     private String getAPi() {

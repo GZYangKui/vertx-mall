@@ -23,17 +23,17 @@
 }
 
 .top-action > div:first-child > div:first-child {
-    background-image: url("../images/svg/topic.svg");
+    background-image: url("../img/svg/topic.svg");
 }
 
 .top-action > div:nth-child(2) > div:first-child {
-    background-image: url("../images/svg/preferential.svg");
+    background-image: url("../img/svg/preferential.svg");
 }
 
 .top-action > div:nth-child(3) > div:first-child {
-    background-image: url("../images/svg/optimization.svg");
+    background-image: url("../img/svg/optimization.svg");
 }
 
 .top-action > div:nth-child(4) > div:first-child {
-    background-image: url("../images/svg/sign.svg");
+    background-image: url("../img/svg/sign.svg");
 }

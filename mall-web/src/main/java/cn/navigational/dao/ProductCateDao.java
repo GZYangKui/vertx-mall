@@ -7,5 +7,5 @@ import io.vertx.core.json.JsonObject;
 import java.util.List;
 
 public interface ProductCateDao {
-    Future<List<JsonObject>> getCateList(Paging page);
+    Future<List<JsonObject>> getCateList();
 }

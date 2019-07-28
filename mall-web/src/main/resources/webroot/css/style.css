@@ -16,7 +16,8 @@ body {
 
 
 .container {
-    padding-bottom: 3rem;
+    padding-bottom: 1.4rem;
+    height: 100%;
 }
 
 /**底部导航栏样式**/
@@ -37,4 +38,6 @@ body {
     bottom: 0;
     background-color: #FBFBFB;
     padding: 5px 0;
+    z-index: 99999;
+    justify-content: space-around;!important;
 }

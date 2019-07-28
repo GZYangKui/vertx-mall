@@ -602,7 +602,7 @@ COMMENT ON COLUMN "public"."product"."original_price" IS '原始价格';
 -- ----------------------------
 -- Records of product
 -- ----------------------------
-INSERT INTO "public"."product" VALUES (3, 1, 1, 'AMD 锐龙R7 2700X电脑主机', 'https://aiwulele.oss-cn-beijing.aliyuncs.com/mall/images/1e060666-2dd0-4388-8160-8295271a1963/5bee9f0eN6576dcf6.jpg', 'No.123456', 0, 1, 0, 0, 0, 5000000, 100, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL);
+INSERT INTO "public"."product" VALUES (3, 1, 1, 'AMD 锐龙R7 2700X电脑主机', 'https://aiwulele.oss-cn-beijing.aliyuncs.com/mall/img/1e060666-2dd0-4388-8160-8295271a1963/5bee9f0eN6576dcf6.jpg', 'No.123456', 0, 1, 0, 0, 0, 5000000, 100, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for product_attribute
@@ -823,7 +823,7 @@ COMMENT ON TABLE "public"."subject_category" IS '专题分类';
 -- ----------------------------
 -- Records of subject_category
 -- ----------------------------
-INSERT INTO "public"."subject_category" VALUES (1, '精选专题', 'http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/images/20190129/subject_cate_jingxuan.png', 0, 1, 0, 0);
+INSERT INTO "public"."subject_category" VALUES (1, '精选专题', 'http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/img/20190129/subject_cate_jingxuan.png', 0, 1, 0, 0);
 
 -- ----------------------------
 -- Table structure for subject_comment

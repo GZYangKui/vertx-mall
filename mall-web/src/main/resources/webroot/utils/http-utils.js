@@ -62,3 +62,10 @@ let isEmpty = (i) => {
     return i === undefined || i === null || i.trim() === "";
 };
 
+//加载js文件
+function load(url){//url：需要加载js路径
+    const script = document.createElement("script");
+    script.type="text/javascript";
+    script.src=url;
+    document.body.appendChild(script)
+}
