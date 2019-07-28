@@ -9,6 +9,7 @@ import cn.navigational.validator.UserValidator;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CookieHandler;
+import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 
 
@@ -66,7 +67,7 @@ public class ApiVerticle extends RestVerticle {
         //将请求分发到指定的分路由上去
         router.route("/api/*").handler(this::sendMessage);
 
-        //获取静态资源,默认路径为‘webroot’
+        //匹配静态资源
         router.get("/*").handler(StaticHandler.create().setDefaultContentEncoding("UTF-8"));
 
         final int port = config().getInteger(PORT, 8080);

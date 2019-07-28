@@ -11,6 +11,8 @@
  *     data:{},
  * }
  */
+let host = "http://127.0.0.1:8080";
+
 let request = (requestInfo, resultHandler) => {
     let token = $.cookie("token");
     if (token == null) {
@@ -30,7 +32,7 @@ let request = (requestInfo, resultHandler) => {
         requestInfo.url += temp;
     }
     $.ajax({
-        url: requestInfo.url,
+        url: host + requestInfo.url,
         type: requestInfo.type,
         dataType: requestInfo.dataType == null ? "json" : requestInfo.dataType,
         contentType: "application/x-www-form-urlencoded; charset=UTF-8",
