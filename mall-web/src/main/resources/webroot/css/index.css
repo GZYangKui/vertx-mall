@@ -15,7 +15,6 @@
     margin-bottom: 5px;
     padding: 5px;
 }
-
 .top-action > div > div:first-child {
     background-size: contain;
     background-repeat: no-repeat;
@@ -32,10 +31,15 @@
 }
 .card-item div{
     text-align: center;
+    width: 50%;
 }
+
+.card-item > div > div{
+    width: 90%;
+}
+
 .card-item > div > div:first-child{
-    width: 100px;
-    height: 100px;
+    height: 150px;
     background-image: url("http://39.98.190.128/mall-app/images/mainpage/u103.png");
     background-size: cover;
     background-repeat: no-repeat;

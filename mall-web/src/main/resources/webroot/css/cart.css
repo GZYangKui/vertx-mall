@@ -1,3 +1,6 @@
+html {
+    font-size: 62.5%; /***设置html根节点字体大小为10px**/
+}
 body,html {
     background-color: #EDEDED;
     height: 100%;
@@ -153,7 +156,7 @@ body,html {
     z-index: 10000;
     position: fixed;
     right: 20px;
-    bottom: 7rem;
+    bottom: 10rem;
     border-style: solid;
 }
 
@@ -161,7 +164,7 @@ body,html {
     position: relative;
     left: 15%;
     top: 30%;
-    font-size: 0.3rem;
+    font-size: 1.5rem;
 }
 
 .cart-empty {

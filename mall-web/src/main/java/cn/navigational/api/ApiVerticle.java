@@ -90,6 +90,10 @@ public class ApiVerticle extends RestVerticle {
         //删除购物车商品数量
         router.post("/api/cart/deletes");
 
+        //获取首页专题推荐列表
+        router.get("/api/homeSubject/list");
+
+
         //将请求分发到指定的分路由上去
         router.route("/api/*").handler(this::sendMessage);
 

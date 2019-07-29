@@ -8,6 +8,7 @@ let advertise = [];
  */
 let init = () => {
     getAdvertiseList();
+    getRecommendSubject();
 };
 /**
  *
@@ -51,6 +52,21 @@ let getAdvertiseList = () => {
         });
     });
 
+};
+
+/**
+ *
+ * 获取首页推荐专题
+ *
+ */
+let getRecommendSubject = () => {
+    let requestInfo = {
+        url: "/api/homeSubject/list",
+        type: 'get'
+    };
+    request(requestInfo, (rs) => {
+
+    });
 };
 
 $(document).ready(() => {

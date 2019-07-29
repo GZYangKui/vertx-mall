@@ -134,7 +134,7 @@ public class BaseDao {
      * @return 返回异步自增id
      */
     protected Future<Integer> insertSingle(final String sql, Tuple tuple) {
-       final String reSql=sql+" RETURNING id";
+        final String reSql = sql + " RETURNING id";
         final Promise<Integer> promise = Promise.promise();
         getConnection().setHandler(_r -> {
             if (_r.failed()) {
@@ -172,6 +172,25 @@ public class BaseDao {
             });
         });
         return promise.future();
+    }
+
+    /**
+     * 拼接sql IN语法
+     * @param sb sql语句
+     * @param tuple sql参数
+     * @param list 参数值
+     */
+    protected void pingIn(StringBuilder sb, Tuple tuple, List list) {
+        for (int i = 0; i < list.size(); i++) {
+            final int index = i + 1;
+            sb.append("$").append(index);
+            tuple.addValue(list.get(i));
+            if (i == list.size() - 1) {
+                sb.append(")");
+            } else {
+                sb.append(",");
+            }
+        }
     }
 
     /**
