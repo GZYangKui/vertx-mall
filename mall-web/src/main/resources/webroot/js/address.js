@@ -94,6 +94,8 @@ let updateDefault = (index) => {
         data: {addressId: address[index].id}
     };
     request(requestInfo, (rs) => {
-        window.location.reload();
+        if (rs.flag) {
+            window.location.reload();
+        }
     });
 };

@@ -47,4 +47,14 @@ public class AddressRouter extends RouterVerticle {
     public Future<JsonObject> create(JsonObject obj) {
         return service.create(obj);
     }
+
+    @RequestMapping(api = "/updateDefault",method = HttpMethod.POST,description = "更新默认地址")
+    public Future<JsonObject> updateDefault(JsonObject obj){
+        return service.updateDefault(obj);
+    }
+
+    @RequestMapping(api = "/delete",method = HttpMethod.POST,description = "删除地址信息")
+    public Future<JsonObject> delete(JsonObject obj){
+        return service.delete(obj);
+    }
 }

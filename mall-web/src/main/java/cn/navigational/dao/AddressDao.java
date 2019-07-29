@@ -51,7 +51,7 @@ public interface AddressDao {
      * @param addressId 默认地址id
      *
      */
-    Future<Integer> updateDefaultAddress(int addressId);
+    Future<Integer> updateDefaultAddress(long userId,int addressId);
 
     /**
      *
@@ -60,6 +60,23 @@ public interface AddressDao {
      *
      */
     Future<Integer> create(JsonObject address,long userId);
+
+    /**
+     *
+     * 设置默认地址
+     * @param userId 用户id
+     * @param addressId 地址id
+     *
+     */
+    Future<Integer> setDefault(long userId,int addressId);
+
+    /**
+     *
+     *
+     * 删除地址信息
+     *
+     */
+    Future<Integer> delete(long userId,long addressId);
 
 
 }

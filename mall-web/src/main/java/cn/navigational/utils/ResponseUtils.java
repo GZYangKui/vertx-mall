@@ -56,13 +56,15 @@ public class ResponseUtils {
         final EventBusDataType type = EventBusDataType.valueOf(info.getString(TYPE));
         final JsonObject headers = (JsonObject) info.remove(HEADERS);
         headers.forEach(_header -> response.putHeader(_header.getKey(), _header.getValue().toString()));
-        if (type == EventBusDataType.JSON) {
-            response.end(info.toBuffer());
-        } else if (type == EventBusDataType.PNG) {
-            final byte[] bytes = info.getBinary(DATA);
-            response.end(Buffer.buffer(bytes));
-        } else {
-            //TODO MORE
+        if (!response.closed() && !response.ended()) {
+            if (type == EventBusDataType.JSON) {
+                response.end(info.toBuffer());
+            } else if (type == EventBusDataType.PNG) {
+                final byte[] bytes = info.getBinary(DATA);
+                response.end(Buffer.buffer(bytes));
+            } else {
+                //TODO MORE
+            }
         }
     }
 }

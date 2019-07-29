@@ -83,6 +83,7 @@ public class AddressServiceImpl extends BaseService implements AddressService {
         final Promise<JsonObject> promise = Promise.promise();
         final JsonObject info = obj.getJsonObject(BODY);
         final int addressId = info.getInteger("id");
+        final long userId = getUser(obj).getUserId();
         dao.getDetail(addressId).setHandler(_rs -> {
             if (_rs.failed()) {
                 promise.fail(_rs.cause());
@@ -103,7 +104,7 @@ public class AddressServiceImpl extends BaseService implements AddressService {
                 }
                 promise.complete(responseSuccessJson());
                 if (isUpdateDefault) {
-                    dao.updateDefaultAddress(info.getInteger("id"));
+                    dao.updateDefaultAddress(userId, info.getInteger("id"));
                 }
             });
         });
@@ -125,11 +126,59 @@ public class AddressServiceImpl extends BaseService implements AddressService {
             final int id = _r.result();
 
             if (info.getInteger("isDefault") == 1) {
-                dao.updateDefaultAddress(id);
+                dao.updateDefaultAddress(userId, id);
             }
             promise.complete(responseSuccessJson());
         });
 
+        return promise.future();
+    }
+
+    @Override
+    public Future<JsonObject> updateDefault(JsonObject obj) {
+        final Promise<JsonObject> promise = Promise.promise();
+        final JsonObject info = obj.getJsonObject(BODY);
+        final int addressId = info.getInteger("addressId");
+        final long userId = getUser(obj).getUserId();
+        dao.getDetail(addressId).setHandler(_rs -> {
+            if (_rs.failed()) {
+                promise.fail(_rs.cause());
+                return;
+            }
+            final Optional<JsonObject> optional = _rs.result();
+            if (optional.isEmpty()) {
+                promise.complete(responseFailed("地址信息不存在", 200));
+                return;
+            }
+            final JsonObject address = optional.get();
+            if (address.getInteger("default_status") == 1) {
+                promise.complete(responseFailed("当前地址已经是默认地址啦!", 200));
+                return;
+            }
+            dao.setDefault(userId, addressId).setHandler(_r -> {
+                if (_r.failed()) {
+                    promise.fail(_r.cause());
+                    return;
+                }
+                promise.complete(responseSuccessJson());
+                dao.updateDefaultAddress(userId, addressId);
+            });
+        });
+        return promise.future();
+    }
+
+    @Override
+    public Future<JsonObject> delete(JsonObject obj) {
+        final Promise<JsonObject> promise = Promise.promise();
+        final long userId = getUser(obj).getUserId();
+        final long addressId = obj.getJsonObject(BODY).getInteger("addressId");
+        dao.delete(userId, addressId).setHandler(_rs -> {
+            if (_rs.failed()) {
+                promise.fail(_rs.cause());
+                return;
+            }
+            promise.complete(responseSuccessJson());
+        });
         return promise.future();
     }
 }

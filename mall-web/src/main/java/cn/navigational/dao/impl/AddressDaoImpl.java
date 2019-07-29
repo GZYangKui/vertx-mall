@@ -50,13 +50,13 @@ public class AddressDaoImpl extends BaseDao implements AddressDao {
     }
 
     @Override
-    public Future<Integer> updateDefaultAddress(int addressId) {
-        final String sql = "UPDATE receive_address SET default_status=$1 WHERE id!=$2";
-        return executeUpdate(sql, Tuple.of(0, addressId));
+    public Future<Integer> updateDefaultAddress(long userId, int addressId) {
+        final String sql = "UPDATE receive_address SET default_status=$1 WHERE id!=$2 AND member_id=$3";
+        return executeUpdate(sql, Tuple.of(0, addressId, userId));
     }
 
     @Override
-    public Future<Integer> create(JsonObject address,long userId) {
+    public Future<Integer> create(JsonObject address, long userId) {
         final String sql = "INSERT INTO receive_address(name,phone,default_status,province,city,region,detail_address,member_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)";
 
         final Tuple tuple = Tuple.of(
@@ -69,6 +69,18 @@ public class AddressDaoImpl extends BaseDao implements AddressDao {
                 address.getString("detailAddress"),
                 userId);
 
-        return insertSingle(sql,tuple);
+        return insertSingle(sql, tuple);
+    }
+
+    @Override
+    public Future<Integer> setDefault(long userId, int addressId) {
+        final String sql = "UPDATE receive_address SET default_status=$1 WHERE id=$2 AND member_id=$3";
+        return executeUpdate(sql, Tuple.of(1, addressId, userId));
+    }
+
+    @Override
+    public Future<Integer> delete(long userId, long addressId) {
+        final String sql = "DELETE FROM receive_address WHERE id=$1 AND member_id=$2";
+        return executeUpdate(sql, Tuple.of(addressId, userId));
     }
 }

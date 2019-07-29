@@ -45,4 +45,20 @@ public interface AddressService {
      */
     Future<JsonObject> create(JsonObject obj);
 
+    /**
+     *
+     * 更新默认地址信息
+     *
+     *
+     */
+    Future<JsonObject> updateDefault(JsonObject obj);
+
+    /**
+     *
+     *
+     * 删除地址信息
+     *
+     */
+    Future<JsonObject> delete(JsonObject obj);
+
 }

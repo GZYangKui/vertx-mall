@@ -10,7 +10,6 @@ import cn.navigational.validator.UserValidator;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CookieHandler;
-import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 
 
@@ -19,9 +18,6 @@ import static cn.navigational.utils.ResponseUtils.response;
 
 @Verticle
 public class ApiVerticle extends RestVerticle {
-    public ApiVerticle() {
-        super();
-    }
 
     @Override
     public void start() throws Exception {
@@ -33,9 +29,6 @@ public class ApiVerticle extends RestVerticle {
         router.route("/api/*").handler(BodyHandler.create().setMergeFormAttributes(true));
 
         router.route("/api/*").handler(HttpDataConverter.create()).handler(RequireToken.create(vertx, config()));
-
-        //检测地址信息是否符合要求
-        router.post("/api/address/*").handler(AddressValidator.create());
 
         //用户登录
         router.post("/api/user/login").handler(UserValidator.create());
@@ -70,11 +63,18 @@ public class ApiVerticle extends RestVerticle {
         //获取地址详细信息
         router.get("/api/address/detail");
 
+        //更新默认地址
+        router.post("/api/address/updateDefault");
+
         //更新地址信息
-        router.post("/api/address/update");
+        router.post("/api/address/update").handler(AddressValidator.create());
+        ;
 
         //新增地址信息
-        router.post("/api/address/create");
+        router.post("/api/address/create").handler(AddressValidator.create());
+
+        //删除地址信息
+        router.post("/api/address/delete");
 
 
         //将请求分发到指定的分路由上去

@@ -119,11 +119,9 @@ public class BaseDao {
                 if (_rr.failed()) {
                     promise.fail(_rr.cause());
                 } else {
-                    rowSetToJson(_rr.result()).forEach(_item -> {
-                        System.out.println(_item.encodePrettily());
-                    });
                     promise.complete(1);
                 }
+                con.close();
             });
         });
 
