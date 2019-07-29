@@ -119,7 +119,7 @@ public class BaseDao {
                 if (_rr.failed()) {
                     promise.fail(_rr.cause());
                 } else {
-                    promise.complete(1);
+                    promise.complete(_rr.result().rowCount());
                 }
                 con.close();
             });
@@ -168,7 +168,7 @@ public class BaseDao {
                     return;
                 }
                 con.close();
-                promise.complete(1);
+                promise.complete(_rr.result().rowCount());
             });
         });
         return promise.future();

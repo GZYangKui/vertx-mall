@@ -116,17 +116,10 @@ body {
 }
 
 /**
-滚动条凹槽的颜色，还可以设置边框属性
- */
-::-webkit-scrollbar-track-piece {
-    background: -webkit-linear-gradient(left, #ABDCFF, #0396FF);
-}
-
-/**
 滚动条的宽度
  */
 ::-webkit-scrollbar {
-    width: 9px;
+    width: 3px;
     height: 1px;
 }
 

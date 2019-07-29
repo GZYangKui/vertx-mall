@@ -1,4 +1,4 @@
-let pageNum = 1;
+let page = 1;
 let pageSize = 10;
 let cartList = [];
 
@@ -17,7 +17,7 @@ let init = () => {
         url: '/api/cart/list',
         type: 'get',
         query: {
-            pageNum: pageNum,
+            page: page,
             pageSize: pageSize
         }
     };
@@ -27,7 +27,7 @@ let init = () => {
 
         if (data.length > 0) {
             cartList = cartList.concat(data);
-            pageNum++;
+            page++;
             loadingStatus = false;
         }
 
@@ -87,13 +87,13 @@ let createCart = (item, index) => {
         "<div class='flex-box'>" +
         "<div><input type='checkbox' id='" + index + "' class='check-box-item item-option'/>" +
         "<label for='" + index + "'></label></div>" +
-        "<div class='cart-pic' style='background-image: url(" + item.productPic + ")'></div>" +
+        "<div class='cart-pic' style='background-image: url(" + item.product_pic + ")'></div>" +
         "</div>" +
         "<div class='flex-box product-info'>" +
-        "<div><span>" + item.productName + "</span></div>" +
-        "<div><span>" + item.subTitle + "</span></div>" +
+        "<div><span>" + item.product_name + "</span></div>" +
+        "<div><span>" + (isEmpty(item.product_sub_title) ? "" : item.product_sub_title) + "</span></div>" +
         "<div class='flex-box'>" +
-        "<div><span>￥ " + item.price + "</span></div>" +
+        "<div><span>￥ " + (item.price / 100) + "</span></div>" +
         "<div class='flex-box action-box'>" +
         "<div class='reduce'></div>" +
         "<div><span>" + item.quantity + "</span></div>" +
@@ -189,7 +189,7 @@ let computerTotalAmount = () => {
     let index = layer.load();
     let products = [];
     selectedOptions.forEach((value, key, _map) => {
-        products.push({id: value.productId, count: value.quantity});
+        products.push({id: value.id, count: value.quantity});
     });
     let requestInfo = {
         url: '/api/cart/computer',
@@ -198,7 +198,7 @@ let computerTotalAmount = () => {
     };
     request(requestInfo, (rs) => {
         //设置金额
-        $("#bottomActionBox > div:nth-child(2) > span:last-child").text("￥ " + rs.data.totalAmount);
+        $("#bottomActionBox > div:nth-child(2) > span:last-child").text("￥ " + (rs.data.totalAMount/100));
         layer.close(index);
     });
 };
@@ -234,7 +234,7 @@ let handle = () => {
     } else {
         let temp = [];
         selectedOptions.forEach((value) => {
-            temp.push({id:value.productId,count:value.quantity});
+            temp.push({id: value.productId, count: value.quantity});
         });
         window.sessionStorage.setItem("cartInfo", JSON.stringify(temp));
         window.location.href = "/cart-order.html";

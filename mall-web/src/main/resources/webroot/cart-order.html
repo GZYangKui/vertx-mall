@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta content="telephone=no" name="format-detection"/>
+
+    <title>填写订单</title>
+
+    <link rel="stylesheet" href="lib/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="css/cart_order.css"/>
+
+</head>
+
+<body>
+<div class="items">
+    <div class="item address-box" onclick="toSelectAddress()">
+        <div class="flex-box">
+            <div class="flex-box address">
+                <div></div>
+                <div><span class="location-icon"></span><span></span></div>
+            </div>
+            <div class="next-box"></div>
+        </div>
+        <div>
+            <img src="img/u448.png" alt="">
+        </div>
+    </div>
+    <div class="item card-item" id="products">
+        <div>
+            <span>商品信息</span>
+        </div>
+    </div>
+    <div class="item card-item">
+        <div class="flex-box" onclick="showCoupons()">
+            <div><span>优惠券</span></div>
+            <div class="flex-box">
+                <div id="couponInfo"><span></span></div>
+                <div class="next-box"></div>
+            </div>
+        </div>
+        <div class="flex-box">
+            <div><span>选择配送时间</span></div>
+            <div class="next-box" onclick="selectDeliveryTime()"></div>
+        </div>
+    </div>
+    <div class="item card-item">
+        <div class="flex-box">
+            <div><span>商品合计</span></div>
+            <div id="payAmount"><span></span></div>
+        </div>
+        <div class="flex-box">
+            <div><span>运费</span></div>
+            <div id="freight"><span></span><span></span></div>
+        </div>
+        <div class="flex-box">
+            <div><span>优惠券</span></div>
+            <div id="couponDiscount"><span></span></div>
+        </div>
+        <div class="flex-box">
+            <div><span>配送时间</span></div>
+            <div id="deliveryInfo">
+                <span></span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="flex-box action-box">
+    <div>
+        <span id="totalAMount"></span>
+    </div>
+    <div>
+        <button onclick="handleOrder()">提交订单</button>
+    </div>
+</div>
+
+<script src="lib/jquery-3.4.1.min.js" charset="UTF-8"></script>
+<script src="lib/jquery.cookie.js" charset="UTF-8"></script>
+<script src="lib/layui/layui.all.js" charset="utf-8"></script>
+<script src="utils/http-utils.js" charset="UTF-8"></script>
+<script src="js/cart_order.js" charset="UTF-8"></script>
+
+</body>
+</html>

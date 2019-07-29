@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>支付订单</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+
+    <link href="lib/layui/css/layui.css" type="text/css" rel="stylesheet">
+    <link href="css/pay_order.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <div class="order-info-box">
+        <div class="icon-box">
+
+        </div>
+        <p><span>订单提交成功</span></p>
+        <p><span id="leftTime"></span></p>
+        <p>支付金额&nbsp;<span id="totalAmount"></span></p>
+    </div>
+    <div class="order-pay-box">
+        <div>
+            <span>支付方式</span>
+        </div>
+        <div class="flex-box">
+            <div class="flex-box">
+                <div class="pay-icon">
+                    <img src="img/svg/weixin.svg" alt=""/>
+                </div>
+                <div><span>微信支付</span></div>
+            </div>
+            <div class="next-box"></div>
+        </div>
+    </div>
+</div>
+<script src="lib/jquery-3.4.1.min.js" charset="UTF-8" type="text/javascript"></script>
+<script src="lib/jquery.cookie.js" charset="UTF-8" type="text/javascript"></script>
+<script src="utils/http-utils.js" charset="UTF-8" type="text/javascript"></script>
+<script src="lib/layui/layui.all.js" charset="UTF-8" type="text/javascript"></script>
+<script src="js/pay_order.js" charset="UTF-8" type="text/javascript"></script>
+
+</body>
+</html>
