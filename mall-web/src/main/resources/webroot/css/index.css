@@ -1,5 +1,6 @@
 .container > div {
     background-color: #FFFFFF;
+    margin-bottom: 10px;
 }
 
 .carousel-item > img {
@@ -20,6 +21,38 @@
     background-repeat: no-repeat;
     width: 35px;
     height: 35px;
+}
+
+.card{
+    justify-content: space-between !important;
+    padding: 5px;
+}
+.card-item{
+    justify-content: center;
+}
+.card-item div{
+    text-align: center;
+}
+.card-item > div > div:first-child{
+    width: 100px;
+    height: 100px;
+    background-image: url("http://39.98.190.128/mall-app/images/mainpage/u103.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin:5px 10px;
+}
+
+.more {
+    color: #B9B9B9;
+}
+
+.more i {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-image: url("../img/svg/more.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 .top-action > div:first-child > div:first-child {

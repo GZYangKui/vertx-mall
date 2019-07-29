@@ -33,12 +33,12 @@ public class CartRouter extends RouterVerticle {
     }
 
     @RequestMapping(api = "/updateNum", method = HttpMethod.POST, description = "更新购物车商品数量")
-    public Future<JsonObject> updateNum(JsonObject obj){
+    public Future<JsonObject> updateNum(JsonObject obj) {
         return service.updateNum(obj);
     }
 
     @RequestMapping(api = "/deletes", method = HttpMethod.POST, description = "删除购物车中的商品")
-    public Future<JsonObject> deletes(JsonObject obj){
+    public Future<JsonObject> deletes(JsonObject obj) {
         return service.deletes(obj);
     }
 }
