@@ -36,6 +36,8 @@ let request = (requestInfo, resultHandler) => {
         dataType: requestInfo.dataType == null ? "json" : requestInfo.dataType,
         contentType: "application/x-www-form-urlencoded; charset=UTF-8",
         data: JSON.stringify(requestInfo.data),
+        cache: false,
+        ifModified: true,
         headers: {
             Authorization: "Bearer " + token
         },
@@ -92,9 +94,9 @@ function getUrlParam(paraName) {
 }
 
 //加载js文件
-function load(url){//url：需要加载js路径
+function load(url) {//url：需要加载js路径
     const script = document.createElement("script");
-    script.type="text/javascript";
-    script.src=url;
+    script.type = "text/javascript";
+    script.src = url;
     document.body.appendChild(script)
 }

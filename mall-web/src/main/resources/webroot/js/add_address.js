@@ -20,12 +20,12 @@ function initEdit() {
         //初始化数据
         let data = response.data;
         $("#name").val(data.name);
-        $("#phone").val(data.phoneNumber);
-        $("#address").val(data.province + "-" + data.city + (data.region == null ? '' : '-' + data.region));
-        $("#detailAddress").val(data.detailAddress);
+        $("#phone").val(data.phone);
+        $("#address").val(data.province + "-" + data.city + (isEmpty(data.region) ? '' : '-' + data.region));
+        $("#detailAddress").val(data.detail_address);
         layui.use('form', function () {
             let form = layui.form;
-            if (data.isDefault !== 1) {
+            if (data.default_status !== 1) {
                 $("#isDefault").removeAttr("checked");
                 form.render();
             }
@@ -41,19 +41,19 @@ function submitData() {
     let address = $("#address").val();
     let detailAddress = $("#detailAddress").val();
 
-    if (isBlank(name)) {
-        showTitleMsg("收货人姓名不能为空!");
+    if (isEmpty(name)) {
+        layer.msg("收货人姓名不能为空!");
         return;
     }
-    if (isBlank(phone)) {
-        showTitleMsg("收货人手机不能为空!");
+    if (isEmpty(phone)) {
+        layer.msg("收货人手机不能为空!");
         return;
     }
-    if (isBlank(address)) {
-        showTitleMsg("收货人地址不能为空!");
+    if (isEmpty(address)) {
+        layer.msg("收货人地址不能为空!");
         return;
     }
-    if (isBlank(detailAddress)) {
+    if (isEmpty(detailAddress)) {
         detailAddress = "";
     }
     let list = address.toString().split('-');
@@ -68,7 +68,7 @@ function submitData() {
 
     let data = {
         name: name,
-        phoneNumber: phone,
+        phone: phone,
         province: province,
         city: city,
         region: region,
@@ -79,18 +79,20 @@ function submitData() {
         type: 'post'
     };
     //创建地址
-    if (addressId === null || addressId === undefined) {
-        requestInfo.url = '/api/address/add';
+    if (isEmpty(addressId)) {
+        requestInfo.url = '/api/address/create';
         //更新地址
     } else {
         requestInfo.url = '/api/address/update';
-        data.id = addressId;
+        data.id = parseInt(addressId);
     }
 
     requestInfo.data = data;
-    request(requestInfo, function (response) {
-        //返回上一页 并且刷新上一页的数据
-        window.history.go(-1);
+    request(requestInfo, rs => {
+        //处理成功,返回上一页 并且刷新上一页的数据
+        if (rs.flag) {
+            window.history.go(-1);
+        }
     });
 
 }

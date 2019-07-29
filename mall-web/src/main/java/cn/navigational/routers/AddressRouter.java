@@ -22,6 +22,7 @@ public class AddressRouter extends RouterVerticle {
         super.start(startPromise);
         service = new AddressServiceImpl(vertx, config());
     }
+
     @RequestMapping(api = "/list", method = HttpMethod.GET, description = "获取地址列表")
     public Future<JsonObject> list(JsonObject obj) {
         return service.list(obj);
@@ -29,6 +30,21 @@ public class AddressRouter extends RouterVerticle {
 
     @RequestMapping(api = "/default", method = HttpMethod.GET, description = "获取默认收货地址")
     public Future<JsonObject> defaultAddress(JsonObject obj) {
-        return service.getDefaultAddress(obj);
+        return service.defaultAddress(obj);
+    }
+
+    @RequestMapping(api = "/detail", method = HttpMethod.GET, description = "获取地址详情")
+    public Future<JsonObject> detail(JsonObject obj) {
+        return service.detail(obj);
+    }
+
+    @RequestMapping(api = "/update", method = HttpMethod.POST, description = "更新地址信息")
+    public Future<JsonObject> update(JsonObject obj) {
+        return service.update(obj);
+    }
+
+    @RequestMapping(api = "/create", method = HttpMethod.POST, description = "添加新地址信息")
+    public Future<JsonObject> create(JsonObject obj) {
+        return service.create(obj);
     }
 }

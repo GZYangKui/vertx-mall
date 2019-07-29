@@ -19,5 +19,30 @@ public interface AddressService {
      * 获取默认收货地址
      *
      */
-    Future<JsonObject> getDefaultAddress(JsonObject obj);
+    Future<JsonObject> defaultAddress(JsonObject obj);
+
+
+    /**
+     *
+     * 获取地址详情
+     *
+     */
+    Future<JsonObject> detail(JsonObject obj);
+
+    /**
+     *
+     * 更新地址信息
+     *
+     *
+     */
+    Future<JsonObject> update(JsonObject obj);
+
+    /**
+     *
+     *
+     * 新建收货地址
+     *
+     */
+    Future<JsonObject> create(JsonObject obj);
+
 }

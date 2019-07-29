@@ -247,7 +247,6 @@ a {
     -webkit-overflow-scrolling: touch;
     position: relative;
     z-index: 1;
-    padding-bottom: 4rem;
 }
 
 .scrolltab-item {

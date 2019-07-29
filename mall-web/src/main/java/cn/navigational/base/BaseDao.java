@@ -10,6 +10,7 @@ import io.vertx.pgclient.PgPool;
 import io.vertx.sqlclient.*;
 
 
+import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -113,6 +114,7 @@ public class BaseDao {
                 return;
             }
             final SqlConnection con = _rs.result();
+
             con.preparedQuery(sql, param, _rr -> {
                 if (_rr.failed()) {
                     promise.fail(_rr.cause());
@@ -125,6 +127,32 @@ public class BaseDao {
             });
         });
 
+        return promise.future();
+    }
+
+    /**
+     * 插入单条数据
+     *
+     * @return 返回异步自增id
+     */
+    protected Future<Integer> insertSingle(final String sql, Tuple tuple) {
+       final String reSql=sql+" RETURNING id";
+        final Promise<Integer> promise = Promise.promise();
+        getConnection().setHandler(_r -> {
+            if (_r.failed()) {
+                promise.fail(_r.cause());
+                return;
+            }
+            final SqlConnection con = _r.result();
+            con.preparedQuery(reSql, tuple, _rr -> {
+                if (_rr.failed()) {
+                    promise.fail(_rr.cause());
+                } else {
+                    promise.complete(_rr.result().iterator().next().getInteger("id"));
+                }
+                con.close();
+            });
+        });
         return promise.future();
     }
 

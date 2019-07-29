@@ -1,4 +1,4 @@
-let pageNum = 1;
+let page = 1;
 let pageSize = 10;
 //收货地址列表
 let address = [];
@@ -18,14 +18,14 @@ let init = () => {
         type: 'get',
         query: {
             pageSize: pageSize,
-            pageNum: pageNum
+            page: page
         }
     };
     request(requestInfo, (rs) => {
         layer.close(index);
         let data = rs.data;
         if (data.length > 0) {
-            pageNum++;
+            page++;
             loadingStatus = false;
         }
         address = address.concat(data);
@@ -63,8 +63,8 @@ let init = () => {
 let createItem = (item, index) => {
     return "<div class='address-item' data-index='" + index + "'>" +
         "<div class='address-info'>" +
-        "<div><span>" + item.name + " " + item.phoneNumber + "</span><span class='non-default " + (item.isDefault === 1 ? 'default-address' : '') + "'>默认</span></div>" +
-        "<div><span>" + item.province + item.city + (item.region === null ? "" : item.region) + item.detailAddress + "</span></div>" +
+        "<div><span>" + item.name + " " + item.phone + "</span><span class='non-default " + (item.default_status === 1 ? 'default-address' : '') + "'>默认</span></div>" +
+        "<div><span>" + item.province + item.city + (isEmpty(item.region) ? "" : item.region) + item.detail_address + "</span></div>" +
         "</div>" +
         "<div class='flex-box action-box'>" +
         "<div><input type='checkbox' class='checked-item' id='item" + index + "'/><label for='item" + index + "'></label>&nbsp;&nbsp;<span>设为默认</span></div>" +

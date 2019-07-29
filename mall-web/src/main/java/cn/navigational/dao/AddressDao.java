@@ -25,5 +25,41 @@ public interface AddressDao {
      */
     Future<Optional<JsonObject>> getDefaultAddress(long userId);
 
+    /**
+     *
+     *
+     * 得到某个地址详情
+     * @param addressId 地址id
+     * @return 异步Optional
+     */
+    Future<Optional<JsonObject>> getDetail(int addressId);
+
+    /**
+     *
+     *
+     * 更新地址信息
+     * @param address 地址信息
+     *
+     */
+    Future<Integer> updateAddress(JsonObject address);
+
+
+    /**
+     *
+     *
+     * 更新默认地址
+     * @param addressId 默认地址id
+     *
+     */
+    Future<Integer> updateDefaultAddress(int addressId);
+
+    /**
+     *
+     *
+     * 创建收货地址
+     *
+     */
+    Future<Integer> create(JsonObject address,long userId);
+
 
 }

@@ -4,6 +4,7 @@ import cn.navigational.auth.RequireToken;
 import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.HttpDataConverter;
 import cn.navigational.impl.RestVerticle;
+import cn.navigational.validator.AddressValidator;
 import cn.navigational.validator.RegisterValidator;
 import cn.navigational.validator.UserValidator;
 import io.vertx.ext.web.Router;
@@ -33,6 +34,9 @@ public class ApiVerticle extends RestVerticle {
 
         router.route("/api/*").handler(HttpDataConverter.create()).handler(RequireToken.create(vertx, config()));
 
+        //检测地址信息是否符合要求
+        router.post("/api/address/*").handler(AddressValidator.create());
+
         //用户登录
         router.post("/api/user/login").handler(UserValidator.create());
 
@@ -51,7 +55,7 @@ public class ApiVerticle extends RestVerticle {
         //获取商品库存信息
         router.get("/api/sku/info");
 
-        //获取商品分离列表
+        //获取商品分类列表
         router.get("/api/productCate/list");
 
         //获取优惠券列表
@@ -62,6 +66,15 @@ public class ApiVerticle extends RestVerticle {
 
         //获取商城广告位
         router.get("/api/homeAdvertise/list");
+
+        //获取地址详细信息
+        router.get("/api/address/detail");
+
+        //更新地址信息
+        router.post("/api/address/update");
+
+        //新增地址信息
+        router.post("/api/address/create");
 
 
         //将请求分发到指定的分路由上去
