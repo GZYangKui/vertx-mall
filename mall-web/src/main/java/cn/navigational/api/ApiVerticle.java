@@ -68,13 +68,18 @@ public class ApiVerticle extends RestVerticle {
 
         //更新地址信息
         router.post("/api/address/update").handler(AddressValidator.create());
-        ;
 
         //新增地址信息
         router.post("/api/address/create").handler(AddressValidator.create());
 
         //删除地址信息
         router.post("/api/address/delete");
+
+        //获取专题分类
+        router.get("/api/subject/cateList");
+
+        //获取某个分类下的专题
+        router.get("/api/subject/list");
 
 
         //将请求分发到指定的分路由上去

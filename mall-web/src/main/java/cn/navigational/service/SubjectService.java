@@ -20,4 +20,12 @@ public interface SubjectService {
      *
      */
     Future<JsonObject> detail(JsonObject obj);
+
+    /**
+     *
+     * 获取分类列表
+     *
+     *
+     */
+    Future<JsonObject> cateList(JsonObject obj);
 }

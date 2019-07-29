@@ -37,7 +37,7 @@ let getAdvertiseList = () => {
                 elem: '#advertises',
                 interval: 3000,
                 anim: 'fade',
-                height: '220px',
+                height: '15rem',
                 width: '100%'
             })
         });

@@ -12,8 +12,10 @@ public interface SubjectDao {
      * 获取商城专题列表
      *
      * @param page 分页参数
+     * @param cateId 分类id
+     *
      */
-    Future<List<JsonObject>> getList(Paging page);
+    Future<List<JsonObject>> getList(Paging page,int cateId);
 
     /**
      * 获取专题分类信息
@@ -23,11 +25,11 @@ public interface SubjectDao {
     Future<List<JsonObject>> getSubjectCateInfo(List<Integer> ids);
 
     /**
-     * 获取专题分类列表
      *
-     * @param page 分页查询参数
+     * 获取全部专题分类列表
+     *
      */
-    Future<List<JsonObject>> getSubjectCateList(Paging page);
+    Future<List<JsonObject>> getSubjectCateList();
 
     /**
      * 获取某个专题详情

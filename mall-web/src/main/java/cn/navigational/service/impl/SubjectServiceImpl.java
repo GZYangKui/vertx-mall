@@ -27,8 +27,14 @@ public class SubjectServiceImpl extends BaseService implements SubjectService {
     @Override
     public Future<JsonObject> list(JsonObject obj) {
         final Promise<JsonObject> promise = Promise.promise();
+
+        //分页查询参数
         final Paging page = getPaging(obj);
-        dao.getList(page).setHandler(_rs -> {
+
+        //专题分类id
+        final int cateId = Integer.parseInt(getQuery(obj, "cateId"));
+
+        dao.getList(page, cateId).setHandler(_rs -> {
             if (_rs.failed()) {
                 promise.fail(_rs.cause());
                 return;
@@ -85,6 +91,19 @@ public class SubjectServiceImpl extends BaseService implements SubjectService {
                 item.put("categoryInfo", _rr.result().get(0));
                 promise.complete(responseSuccessJson(item));
             });
+        });
+        return promise.future();
+    }
+
+    @Override
+    public Future<JsonObject> cateList(JsonObject obj) {
+        final Promise<JsonObject> promise = Promise.promise();
+        dao.getSubjectCateList().setHandler(_rs -> {
+            if (_rs.failed()) {
+                promise.fail(_rs.cause());
+                return;
+            }
+            promise.complete(responseSuccessJson(_rs.result()));
         });
         return promise.future();
     }

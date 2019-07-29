@@ -32,4 +32,8 @@ public class SubjectRouter extends RouterVerticle {
     public Future<JsonObject> list(JsonObject obj) {
         return service.list(obj);
     }
+    @RequestMapping(api = "/cateList",method = HttpMethod.GET,description = "获取专题分类")
+    public Future<JsonObject> cateList(JsonObject obj){
+        return service.cateList(obj);
+    }
 }

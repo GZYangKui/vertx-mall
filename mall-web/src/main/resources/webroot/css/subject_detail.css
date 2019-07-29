@@ -1,0 +1,144 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: #EDEDED;
+}
+
+.item-pic {
+    width: 100%;
+    height: 100%;
+}
+
+.category-icon {
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.subject-info {
+    margin-bottom: 10px;
+}
+
+.content {
+    padding: 10px;
+    background-color: #FFFFFF;
+    margin-bottom: 10px;
+    border: 1px #CBCBCB solid;
+}
+
+.single-product {
+    border-bottom: 1px #CBCBCB solid;
+}
+
+.category-name, .create-time {
+    position: relative;
+    top: 25%;
+    padding-left: 10px;
+}
+
+.flex-box {
+    display: flex;
+    display: -webkit-flex;
+    display: -o-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    justify-content: space-between;
+    -webkit-justify-content: space-between;
+    align-content: center;
+    -webkit-align-content: center;
+}
+
+.category-icon {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border-radius: 50% 50%;
+    background-color: gray;
+}
+
+.content img {
+    width: 100%;
+}
+
+#products {
+    background-color: #E8E9EB;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: 0 auto;
+    padding-top: 5px;
+}
+
+.product {
+    width: 46%;
+    height: 200px;
+    background-color: #FFFFFF;
+    margin: 10px 5px;
+    border-radius: 5px;
+}
+
+.product-icon {
+    width: 100%;
+    height: 120px;
+    position: relative;
+}
+
+.product-icon .recommend-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background-repeat: no-repeat;
+    background-image: url(../img/svg/recommend-icon.svg);
+    background-size: contain;
+}
+
+.product-icon > img {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+}
+
+.product-info {
+    margin: 5px;
+}
+
+.product-name {
+    font-size: 15px;
+}
+
+.product-name > span {
+    display: inline-block;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #0C0C0C;
+    font-weight: bold;
+}
+
+.product-price {
+    color: #CB4662;
+    font-size: 15px;
+}
+
+.product-sale {
+    color: gray;
+    font-size: 12px;
+}
+
+.add-cart {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    background-image: url(../img/svg/add-cart.svg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin-right: 6px;
+}
+
+.layui-carousel-ind ul {
+    background-color: transparent !important;
+}

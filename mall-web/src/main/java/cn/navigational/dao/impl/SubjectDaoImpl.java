@@ -17,9 +17,19 @@ public class SubjectDaoImpl extends BaseDao implements SubjectDao {
     }
 
     @Override
-    public Future<List<JsonObject>> getList(Paging page) {
-        final String sql = "SELECT * FROM mall_subject WHERE show_status=$1 LIMIT $2 OFFSET $3";
-        final Tuple tuple = Tuple.of(1, page.getPageSize(), page.getInitOffset());
+    public Future<List<JsonObject>> getList(Paging page, int cateId) {
+        final String sql;
+        final Tuple tuple = Tuple.tuple();
+        tuple.addValue(1);
+        if (cateId == 0) {
+            sql = "SELECT * FROM mall_subject WHERE show_status=$1 LIMIT $2 OFFSET $3";
+
+        } else {
+            sql = "SELECT * FROM mall_subject WHERE show_status=$1 AND category_id=$2 LIMIT $3 OFFSET $4";
+            tuple.addValue(cateId);
+        }
+        tuple.addValue(page.getPageSize());
+        tuple.addValue(page.getInitOffset());
         return executeQuery(sql, tuple);
     }
 
@@ -44,7 +54,7 @@ public class SubjectDaoImpl extends BaseDao implements SubjectDao {
     }
 
     @Override
-    public Future<List<JsonObject>> getSubjectCateList(Paging page) {
+    public Future<List<JsonObject>> getSubjectCateList() {
         final String sql = "SELECT * FROM subject_category WHERE show_status=$1";
         return executeQuery(sql, Tuple.of(1));
     }
@@ -52,6 +62,6 @@ public class SubjectDaoImpl extends BaseDao implements SubjectDao {
     @Override
     public Future<Optional<JsonObject>> getSubjectInfo(int subjectId) {
         final String sql = "SELECT * FROM mall_subject WHERE id=$1 AND show_status=$2";
-        return findAny(sql,Tuple.of(subjectId,1));
+        return findAny(sql, Tuple.of(subjectId, 1));
     }
 }

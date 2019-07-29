@@ -3,7 +3,11 @@
 公共样式
 
  */
-body,html{
+html {
+    font-size: 62.5%; /***设置html根节点字体大小为10px**/
+}
+
+body, html {
     background-color: #EDEDED;
     height: 100%;
 }

@@ -74,6 +74,7 @@ body {
 .action-box {
     color: #C8C8C8;
     border-top: 1px solid #f6f6f6;
+    justify-content: space-between;
 }
 
 .action-box img {

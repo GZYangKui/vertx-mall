@@ -1,4 +1,4 @@
-let pageNum = 1;
+let page = 1;
 let pageSize = 10;
 
 //加载数据状态 false表示无加载任务 true 表示正在加载
@@ -16,7 +16,7 @@ let cateList = () => {
         url: "/api/subject/cateList",
         type: 'GET',
     };
-    httpRequest(requestInfo, (rs) => {
+    request(requestInfo, (rs) => {
         categories = rs.data;
         rs.data.forEach((item, _index, _self) => {
             let cateItem = "<div class='flex-box cate-item' data-id='" + item.id + "'>" +
@@ -40,7 +40,7 @@ let cateList = () => {
                 }
             }
             cateId = temp;
-            pageNum = 1;
+            page = 1;
             $("#subjects").empty();
             getSubjectFromCate()
         })
@@ -55,20 +55,20 @@ let getSubjectFromCate = () => {
         url: '/api/subject/list',
         type: 'get',
         query: {
-            pageNum: pageNum,
+            page: page,
             pageSize: pageSize,
             cateId: cateId
         }
     };
 
-    httpRequest(requestInfo, (rs) => {
+    request(requestInfo, (rs) => {
 
         loadingStatus = true;
 
         $(".ax_default").css("display", "none");
 
         if (rs.data.length > 0) {
-            pageNum++;
+            page++;
             rs.data.forEach((item) => {
                 createSubject(item);
             });
@@ -89,7 +89,7 @@ let getSubjectFromCate = () => {
 //创建专题
 let createSubject = (subject) => {
 
-    let category = findCateById(subject.categoryId);
+    let category = findCateById(subject.category_id);
 
     //由于数据库中有的分类已经不存在 故作此处理
     if (category === undefined) {
@@ -105,7 +105,7 @@ let createSubject = (subject) => {
         "<div class='title-box'><span>" + subject.title + "</span></div>" +
         "<div class='description-box'><span>" + subject.description + "</span></div>" +
         "<div class='flex-box action-box'>" +
-        "<div><img src='../img/svg/watch.svg' alt=''/><span>&nbsp;&nbsp;" + subject.readCount + "</span></div>" +
+        "<div><img src='../img/svg/watch.svg' alt=''/><span>&nbsp;&nbsp;" + subject.read_count + "</span></div>" +
         "<div></div>" +
         "</div>" +
         "</div>" +
@@ -121,3 +121,8 @@ let findCateById = (id) => {
         }
     }
 };
+
+$(document).ready(() => {
+    cateList();
+    getSubjectFromCate();
+});
