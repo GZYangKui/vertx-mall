@@ -315,7 +315,7 @@ a {
 }
 
 .scrolltab-item.crt .scrolltab-title {
-    color: #0FC59E;
+    color: #7300BC;
 }
 
 .scrolltab-item.crt:after {
@@ -327,9 +327,9 @@ a {
     width: 0.2rem;
     height: 1.5rem;
     background-image: -webkit-gradient(linear, bottom top, right top, from(#f5dcbb), to(#fe7923));
-    background-image: -webkit-linear-gradient(bottom, #f5dcbb, #fe7923);
-    background-image: -moz-linear-gradient(bottom, #f5dcbb, #fe7923);
-    background-image: linear-gradient(to bottom, #f5dcbb, #fe7923);
+    background-image: -webkit-linear-gradient(bottom, #7300BA, #7300BC);
+    background-image: -moz-linear-gradient(bottom, #7300BA, #7300BC);
+    background-image: linear-gradient(to bottom, #7300BA, #7300BC);
     background-color: #7300BC;
     border-radius: 0.5rem;
 }
@@ -553,7 +553,6 @@ a {
 }
 
 .rolling {
-    padding-bottom: 2.0rem;
     height: 100%;
 }
 

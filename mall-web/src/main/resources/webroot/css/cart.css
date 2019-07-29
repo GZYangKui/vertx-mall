@@ -1,5 +1,6 @@
-body {
+body,html {
     background-color: #EDEDED;
+    height: 100%;
 }
 
 .rolling {
@@ -18,14 +19,12 @@ body {
 }
 
 .bottom-action-box {
-    position: fixed;
-    left: 0;
-    bottom: 0;
     z-index: 999999;
     height: 50px;
     background-color: #FFFFFF;
     width: 100%;
-    align-items: baseline;
+    align-items: baseline !important;
+    justify-content: space-between !important;
 }
 
 .bottom-action-box > div {
@@ -154,7 +153,7 @@ body {
     z-index: 10000;
     position: fixed;
     right: 20px;
-    bottom: 100px;
+    bottom: 7rem;
     border-style: solid;
 }
 
@@ -198,4 +197,56 @@ body {
 
 .hidden-edit {
     display: none;
+}
+
+.bottom-box {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+/*
+
+公共样式
+
+ */
+body {
+    background-color: #EDEDED;
+}
+
+.flex-box {
+    display: flex;
+    display: -webkit-flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+
+.container {
+    padding-bottom: 3.5rem;
+    height: 100%;
+    overflow-y: scroll;
+    position: relative;
+    left: 0;
+    top: 0;
+}
+
+/**底部导航栏样式**/
+.bottom-navigator img {
+    width: 25px;
+    height: 25px;
+}
+
+.bottom-navigator > div {
+    text-align: center;
+}
+
+.bottom-navigator {
+    width: 100%;
+    color: #7300BC;
+    background-color: #FBFBFB;
+    padding: 5px 0;
+    z-index: 99999;
+    justify-content: space-around !important;
 }

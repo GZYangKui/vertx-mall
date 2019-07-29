@@ -3,8 +3,9 @@
 公共样式
 
  */
-body {
+body,html{
     background-color: #EDEDED;
+    height: 100%;
 }
 
 .flex-box {
@@ -16,8 +17,9 @@ body {
 
 
 .container {
-    padding-bottom: 4.0rem;
+    padding-bottom: 3.5rem;
     height: 100%;
+    overflow-y: scroll;
 }
 
 /**底部导航栏样式**/

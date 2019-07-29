@@ -420,10 +420,7 @@ body {
     box-sizing: border-box;
 }
 
-html,
-body,
-.container,
-.scroller {
+html, body .scroller {
     height: 100%;
 }
 
@@ -437,12 +434,6 @@ body,
     padding-left: 5px;
     cursor: pointer;
     height: 100%;
-}
-
-.container {
-    position: relative;
-    overflow: hidden;
-    background: #f3f3f3;
 }
 
 .menu-trigger {
@@ -7195,7 +7186,8 @@ body {
     border-bottom: 1px solid #CACACA;
     justify-content: space-between;
 }
-.list-item > div:last-child{
+
+.list-item > div:last-child {
     border-width: 0;
 }
 

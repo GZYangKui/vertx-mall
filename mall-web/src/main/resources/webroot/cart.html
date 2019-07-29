@@ -7,7 +7,6 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta content="telephone=no" name="format-detection"/>
 
-    <link href="css/style.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="lib/layui/css/layui.css" media="all">
     <link rel="stylesheet" href="css/cart.css" type="text/css">
 
@@ -16,51 +15,57 @@
 </head>
 
 <body>
-<div class="rolling">
+
+<div class="container">
     <div id="carts">
 
     </div>
-</div>
-<div class="edit" onclick="changeModel()"><span>编辑</span></div>
 
-<div class="flex-box bottom-action-box" id="bottomActionBox">
-    <div>
-        <input type="checkbox" id="selectAll" class="check-box-item"/>
-        <label for="selectAll"></label>
-        <span>全选</span>
-    </div>
-    <div>
-        <span>商品总价</span>
-        &nbsp;&nbsp;<span>￥ 0</span>
-    </div>
-    <div>
-        <button class="action-button" onclick="handle()">去结算</button>
-    </div>
+    <div class="edit" onclick="changeModel()"><span>编辑</span></div>
+
 </div>
 
-<!--底部导航栏-->
-<div class="flex-box bottom-navigator">
-    <div onclick="window.location.href='home.html'">
-        <img src="img/navigator/home.svg"/>
-        <p><span>首页</span></p>
+
+<div class="bottom-box">
+    <div class="flex-box bottom-action-box" id="bottomActionBox">
+        <div>
+            <input type="checkbox" id="selectAll" class="check-box-item"/>
+            <label for="selectAll"></label>
+            <span>全选</span>
+        </div>
+        <div>
+            <span>商品总价</span>
+            &nbsp;&nbsp;<span>￥ 0</span>
+        </div>
+        <div>
+            <button class="action-button" onclick="handle()">去结算</button>
+        </div>
     </div>
-    <div onclick="window.location.href='category.html'">
-        <img src="img/navigator/category.svg"/>
-        <p><span>分类</span></p>
-    </div>
-    <div>
-        <img src="img/navigator/cart.svg" alt=""/>
-        <p><span>购物车</span></p>
-    </div>
-    <div onclick="window.location.href='subject.html'">
-        <img src="img/navigator/subject.svg"/>
-        <p><span>专题</span></p>
-    </div>
-    <div onclick="window.location.href='my.html'">
-        <img src="img/navigator/my.svg"/>
-        <p><span>我的</span></p>
+    <!--底部导航栏-->
+    <div class="flex-box bottom-navigator">
+        <div onclick="window.location.href='index.html'">
+            <img src="img/navigator/home.svg"/>
+            <p><span>首页</span></p>
+        </div>
+        <div onclick="window.location.href='category.html'">
+            <img src="img/navigator/category.svg"/>
+            <p><span>分类</span></p>
+        </div>
+        <div>
+            <img src="img/navigator/cart.svg" alt=""/>
+            <p><span>购物车</span></p>
+        </div>
+        <div onclick="window.location.href='subject.html'">
+            <img src="img/navigator/subject.svg"/>
+            <p><span>专题</span></p>
+        </div>
+        <div onclick="window.location.href='my.html'">
+            <img src="img/navigator/my.svg"/>
+            <p><span>我的</span></p>
+        </div>
     </div>
 </div>
+
 
 <script src="lib/jquery-3.4.1.min.js" charset="UTF-8"></script>
 <script src="lib/jquery-ui.min.js" charset="UTF-8"></script>
@@ -71,8 +76,6 @@
 
 <script>
     $(document).ready(function () {
-        $("#bottomActionBox").css("bottom", $(".bottom-navigator").outerHeight(true));
-        $(".edit").css("bottom", $(".bottom_navigator").outerHeight(true) + $(".action-box").outerHeight(true) + 150);
         $("#selectAll").on('click', selectAll);
         init();
         //检测滑动到底 加载数据
