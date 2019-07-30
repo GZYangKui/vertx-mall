@@ -27,4 +27,5 @@ public class ProductCateRouter extends RouterVerticle {
     public Future<JsonObject> list(JsonObject obj) {
         return service.list(obj);
     }
+
 }

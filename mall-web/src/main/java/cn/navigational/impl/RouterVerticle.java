@@ -77,7 +77,7 @@ public abstract class RouterVerticle extends BaseVerticle {
     }
 
     private JsonObject notFound(final String action) {
-        final JsonObject msg = responseFailed("API NOT FOUND", 404);
+        final JsonObject msg = responseFailed("处理程序未定义", 404);
         msg.put(EVENT_ADDRESS, action);
         return msg;
     }

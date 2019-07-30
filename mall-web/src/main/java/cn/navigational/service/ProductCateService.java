@@ -8,8 +8,8 @@ public interface ProductCateService {
      *
      * 获取分类列表
      *
-     * @param obj
-     * @return
+     *
      */
     Future<JsonObject> list(JsonObject obj);
+
 }

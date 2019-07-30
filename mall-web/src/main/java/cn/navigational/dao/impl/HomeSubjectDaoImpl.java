@@ -26,7 +26,7 @@ public class HomeSubjectDaoImpl extends BaseDao implements HomeSubjectDao {
         final StringBuilder sb = new StringBuilder();
         final Tuple tuple = Tuple.tuple();
         sb.append("SELECT * FROM mall_subject WHERE id IN(");
-        pingIn(sb, tuple, ids);
+        pingIn(sb, tuple, ids,1);
         return executeQuery(sb.toString(), tuple);
     }
 }

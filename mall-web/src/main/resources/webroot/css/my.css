@@ -4464,16 +4464,14 @@ img.aui-img-round {
 }
 
 .aui-my-info-back {
-    background-image: url("../img/my-bj.jpg");
+    /*background-image: url("../img/my-bj.jpg");*/
     width: 100%;
-    height: 220px;
+    height: 15rem;
     overflow: hidden;
     background-position: center;
     background-repeat: no-repeat;
     -webkit-background-size: cover;
     background-size: cover;
-    /*-webkit-filter: blur(5px);*/
-    /*filter: blur(5px);*/
 }
 
 .aui-jump {

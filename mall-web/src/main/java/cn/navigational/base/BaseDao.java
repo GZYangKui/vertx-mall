@@ -11,6 +11,7 @@ import io.vertx.sqlclient.*;
 
 
 import java.sql.ResultSet;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -180,9 +181,9 @@ public class BaseDao {
      * @param tuple sql参数
      * @param list 参数值
      */
-    protected void pingIn(StringBuilder sb, Tuple tuple, List list) {
+    protected void pingIn(StringBuilder sb, Tuple tuple, List list,int initIndex) {
         for (int i = 0; i < list.size(); i++) {
-            final int index = i + 1;
+            final int index = i + initIndex;
             sb.append("$").append(index);
             tuple.addValue(list.get(i));
             if (i == list.size() - 1) {
@@ -219,7 +220,9 @@ public class BaseDao {
                 if (val != null) {
                     if (val instanceof LocalDateTime) {
                         temp.put(_row.getColumnName(i), val.toString());
-                    } else {
+                    }else if(val instanceof LocalDate){
+                        temp.put(_row.getColumnName(i),val.toString());
+                    }else {
                         temp.put(_row.getColumnName(i), val);
                     }
                 }

@@ -35,6 +35,7 @@
 .card-item div {
     text-align: center;
     width: 50%;
+    margin: 10px 0;
 }
 
 .card-item > div > div {
@@ -43,10 +44,33 @@
 
 .card-item > div > div:first-child {
     height: 150px;
-    background-image: url("http://39.98.190.128/mall-app/images/mainpage/u103.png");
-    background-size: cover;
+    background-size: contain;
+    background-position: center;
     background-repeat: no-repeat;
     margin: 5px 10px;
+    position: relative;
+}
+
+.card-item > div > div:first-child i {
+    position: absolute;
+    display: inline-block;
+    width: 45px;
+    height: 45px;
+    border-radius: 50% 50%;
+    background-color: #FF0000;
+    color: #FFFFFF;
+    right: 0;
+    top: -20px;
+    line-height: 300%;
+}
+
+.card-item > div > div:last-child > p:first-child{
+    font-size: 1.4rem;
+    color: #333333;
+}
+.card-item > div > div:last-child > p:last-child{
+    font-size: 1.2rem;
+    color: #999999;
 }
 
 .more {
@@ -100,7 +124,7 @@
     font-size: 1.5rem;
 }
 
-.recommend-item > div:last-child p:last-child{
+.recommend-item > div:last-child p:last-child {
     font-size: 1.3rem;
     color: #B9B9B9;
 }

@@ -28,7 +28,7 @@ public class CartDaoImpl extends BaseDao implements CartDao {
         final StringBuilder sb = new StringBuilder();
         final Tuple tuple = Tuple.tuple();
         sb.append("SELECT * FROM cart_item WHERE id IN(");
-        pingIn(sb, tuple, ids);
+        pingIn(sb, tuple, ids,1);
         return executeQuery(sb.toString(), tuple);
     }
 

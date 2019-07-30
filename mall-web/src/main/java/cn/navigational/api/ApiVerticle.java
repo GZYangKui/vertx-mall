@@ -93,6 +93,9 @@ public class ApiVerticle extends RestVerticle {
         //获取首页专题推荐列表
         router.get("/api/homeSubject/list");
 
+        //获取今日推荐商品列表
+        router.get("/api/product/toadyRecommend");
+
 
         //将请求分发到指定的分路由上去
         router.route("/api/*").handler(this::sendMessage);

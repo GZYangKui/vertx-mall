@@ -27,4 +27,7 @@ public class ProductRouter extends RouterVerticle {
     public Future<JsonObject> list(JsonObject obj) {
         return service.list(obj);
     }
+
+    @RequestMapping(api = "/todayRecommend",method = HttpMethod.GET,description = "今日推荐")
+    public Future<JsonObject> todayRecommend(JsonObject obj){return service.todayRecommend(obj);}
 }

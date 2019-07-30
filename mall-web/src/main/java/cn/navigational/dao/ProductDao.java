@@ -24,4 +24,13 @@ public interface ProductDao {
      *
      */
     Future<List<JsonObject>> list(List<Integer> productIds);
+
+    /**
+     * 获取今日推荐商品
+     *
+     * @param paging 分页查询参数
+     * @return 异步返回推荐商品列表
+     *
+     */
+    Future<List<JsonObject>> getTodayRecommend(Paging paging);
 }
