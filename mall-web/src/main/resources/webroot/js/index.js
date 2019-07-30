@@ -79,7 +79,7 @@ let getRecommendSubject = () => {
                 elem: '#recommendSubject',
                 interval: 5000,
                 anim: 'fade',
-                height: '25rem',
+                height: '22rem',
                 width: '100%'
             });
         });

@@ -111,13 +111,14 @@
 }
 
 .recommend-item > div:first-child {
-    height: 80%;
-    background-size: cover;
+    height: 70%;
+    background-size: contain;
+    background-position: center;
     background-repeat: no-repeat;
 }
 
 .recommend-item > div:last-child {
-    height: 20%;
+    height: 30%;
 }
 
 .recommend-item > div:last-child p:first-child {
