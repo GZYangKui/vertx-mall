@@ -61,7 +61,7 @@ let request = (requestInfo, resultHandler) => {
 
 //判断字符串是否为空
 let isEmpty = (i) => {
-    return i === undefined || i === null || i.trim() === "";
+    return i === undefined || i === null || i.toString().trim() === "";
 };
 
 

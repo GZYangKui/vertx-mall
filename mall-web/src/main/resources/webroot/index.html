@@ -126,9 +126,17 @@
     <div>
         <div class="flex-box card">
             <div><span>专题精选</span></div>
-            <div class="more flex-box">
+            <div class="more flex-box" onclick="window.location.href='/subject.html'">
                 <span>更多专题</span>
                 <i></i>
+            </div>
+        </div>
+        <div>
+            <!--推荐专题轮播-->
+            <div class="layui-carousel" id="recommendSubject" lay-filter="recommendSubject">
+                <div carousel-item="" id="recommendItem">
+
+                </div>
             </div>
         </div>
     </div>

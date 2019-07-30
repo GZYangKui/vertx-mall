@@ -15,6 +15,7 @@
     margin-bottom: 5px;
     padding: 5px;
 }
+
 .top-action > div > div:first-child {
     background-size: contain;
     background-repeat: no-repeat;
@@ -22,28 +23,30 @@
     height: 35px;
 }
 
-.card{
+.card {
     justify-content: space-between !important;
     padding: 5px;
 }
-.card-item{
+
+.card-item {
     justify-content: center;
 }
-.card-item div{
+
+.card-item div {
     text-align: center;
     width: 50%;
 }
 
-.card-item > div > div{
+.card-item > div > div {
     width: 90%;
 }
 
-.card-item > div > div:first-child{
+.card-item > div > div:first-child {
     height: 150px;
     background-image: url("http://39.98.190.128/mall-app/images/mainpage/u103.png");
     background-size: cover;
     background-repeat: no-repeat;
-    margin:5px 10px;
+    margin: 5px 10px;
 }
 
 .more {
@@ -73,4 +76,41 @@
 
 .top-action > div:nth-child(4) > div:first-child {
     background-image: url("../img/svg/sign.svg");
+}
+
+.recommend-item {
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.recommend-item > div:first-child {
+    height: 80%;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.recommend-item > div:last-child {
+    height: 20%;
+}
+
+.recommend-item > div:last-child p:first-child {
+    font-size: 1.5rem;
+}
+
+.recommend-item > div:last-child p:last-child{
+    font-size: 1.3rem;
+    color: #B9B9B9;
+}
+
+.recommend-item > div:last-child span {
+    display: inline-block;
+    width: 100%;
+    overflow: hidden;
+    word-break: keep-all;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding: 2px 5px;
 }

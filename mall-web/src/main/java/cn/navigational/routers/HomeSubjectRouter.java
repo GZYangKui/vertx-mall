@@ -28,5 +28,4 @@ public class HomeSubjectRouter extends RouterVerticle {
         return service.list(obj);
     }
 
-
 }
