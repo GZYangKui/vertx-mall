@@ -99,6 +99,9 @@ public class ApiVerticle extends RestVerticle {
         //获取秒杀时刻表
         router.get("/api/secKill/home");
 
+        //获取指定时间段的商品列表
+        router.get("/api/secKill/timeSlotWithProduct");
+
 
         //将请求分发到指定的分路由上去
         router.route("/api/*").handler(this::sendMessage);

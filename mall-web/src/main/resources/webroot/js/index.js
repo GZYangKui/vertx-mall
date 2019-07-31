@@ -158,7 +158,7 @@ let getSecKill = () => {
 
         getRandomArrayElements(data.products, 4).forEach((_item, _index, _self) => {
             let product = _item.product;
-            let item = "<div>" +
+            let item = "<div class='flash_item'>" +
                 "<div style='background-image: url(" + product.pic + ")'>" +
                 "<i class='seckill-price'>￥" + _item.flash_promotion_price + "</i>" +
                 "</div>" +
@@ -172,6 +172,9 @@ let getSecKill = () => {
             } else {
                 $("#secKill02").append(item);
             }
+        });
+        $(".flash_item").on("click", function () {
+            window.location.href = "/seckill_list.html";
         });
     });
 };

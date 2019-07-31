@@ -107,4 +107,47 @@ public class SecKillServiceImpl extends BaseService implements SecKillService {
         });
         return promise.future();
     }
+
+    @Override
+    public Future<JsonObject> timeSlots(JsonObject obj) {
+        final Promise<JsonObject> promise = Promise.promise();
+        dao.getTimeSlot().setHandler(_rs -> {
+            if (_rs.failed()) {
+                promise.fail(_rs.cause());
+                return;
+            }
+            final List<JsonObject> list = _rs.result();
+            list.forEach(_item -> {
+                final long now = LocalTime.now().toNanoOfDay();
+                final long startTime = LocalTime.parse(_item.getString("start_time")).toNanoOfDay();
+                final long endTime = LocalTime.parse(_item.getString("end_time")).toNanoOfDay();
+                //设置当前状态为抢购中
+                if (startTime <= now && now <= endTime) {
+                    _item.put("status", 1);
+                } else if (now > endTime) {
+                    //设置状态已开抢
+                    _item.put("status", 2);
+                } else {
+                    //设置状态为即将开抢
+                    _item.put("status", 3);
+                }
+            });
+            promise.complete(responseSuccessJson(list));
+        });
+        return promise.future();
+    }
+
+    @Override
+    public Future<JsonObject> timeSlotWithProduct(JsonObject obj) {
+        final Promise<JsonObject> promise = Promise.promise();
+        final long id = Long.parseLong(getQuery(obj,"timeSlotId"));
+        dao.getTimeSlotForProduct(id).setHandler(_rs->{
+           if (_rs.failed()){
+               promise.fail(_rs.cause());
+               return;
+           }
+           promise.complete(responseSuccessJson(_rs.result()));
+        });
+        return promise.future();
+    }
 }
