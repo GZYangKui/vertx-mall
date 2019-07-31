@@ -13,6 +13,7 @@ import io.vertx.sqlclient.*;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -177,11 +178,12 @@ public class BaseDao {
 
     /**
      * 拼接sql IN语法
-     * @param sb sql语句
+     *
+     * @param sb    sql语句
      * @param tuple sql参数
-     * @param list 参数值
+     * @param list  参数值
      */
-    protected void pingIn(StringBuilder sb, Tuple tuple, List list,int initIndex) {
+    protected void pingIn(StringBuilder sb, Tuple tuple, List list, int initIndex) {
         for (int i = 0; i < list.size(); i++) {
             final int index = i + initIndex;
             sb.append("$").append(index);
@@ -220,9 +222,11 @@ public class BaseDao {
                 if (val != null) {
                     if (val instanceof LocalDateTime) {
                         temp.put(_row.getColumnName(i), val.toString());
-                    }else if(val instanceof LocalDate){
-                        temp.put(_row.getColumnName(i),val.toString());
-                    }else {
+                    } else if (val instanceof LocalDate) {
+                        temp.put(_row.getColumnName(i), val.toString());
+                    } else if (val instanceof LocalTime) {
+                        temp.put(_row.getColumnName(i), val.toString());
+                    } else {
                         temp.put(_row.getColumnName(i), val);
                     }
                 }

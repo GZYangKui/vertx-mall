@@ -20,5 +20,5 @@ public interface ProductService {
      *
      *
      */
-    Future<JsonObject> todayRecommend(JsonObject object);
+    Future<JsonObject> recommendProduct(JsonObject object);
 }

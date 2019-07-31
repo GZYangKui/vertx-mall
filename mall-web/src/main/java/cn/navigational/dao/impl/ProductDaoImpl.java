@@ -34,8 +34,8 @@ public class ProductDaoImpl extends BaseDao implements ProductDao {
     }
 
     @Override
-    public Future<List<JsonObject>> getTodayRecommend(Paging paging) {
-        final String sql = "SELECT * FROM today_recommend WHERE show_status=$1 AND recommend_date=$2 LIMIT $3 OFFSET $4";
-        return executeQuery(sql, Tuple.of(1, LocalDate.now(),paging.getPageSize(), paging.getInitOffset()));
+    public Future<List<JsonObject>> getRecommend(Paging paging) {
+        final String sql = "SELECT * FROM product WHERE delete_status=$1 AND publish_status=$2 AND recommend_status=$3 LIMIT $4 OFFSET $5";
+        return executeQuery(sql, Tuple.of(0,1,1,paging.getPageSize(), paging.getInitOffset()));
     }
 }

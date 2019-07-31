@@ -64,11 +64,21 @@
     line-height: 300%;
 }
 
-.card-item > div > div:last-child > p:first-child{
+.card-item > div > div:last-child span, .recommend-item > div:last-child span {
+    overflow: hidden;
+    word-break: keep-all;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: inline-block;
+    width: 100%;
+}
+
+.card-item > div > div:last-child > p:first-child {
     font-size: 1.4rem;
     color: #333333;
 }
-.card-item > div > div:last-child > p:last-child{
+
+.card-item > div > div:last-child > p:last-child {
     font-size: 1.2rem;
     color: #999999;
 }
@@ -131,11 +141,5 @@
 }
 
 .recommend-item > div:last-child span {
-    display: inline-block;
-    width: 100%;
-    overflow: hidden;
-    word-break: keep-all;
-    white-space: nowrap;
-    text-overflow: ellipsis;
     padding: 2px 5px;
 }

@@ -101,20 +101,19 @@ let getRecommendSubject = () => {
  */
 let todayRecommend = () => {
     let requestInfo = {
-        url: "/api/product/todayRecommend",
+        url: "/api/product/recommend",
         method: 'get',
         query: {page: 1, pageSize: 10}
     };
     request(requestInfo, (rs) => {
         getRandomArrayElements(rs.data, 4).forEach((_item, _index, _self) => {
-            let product = _item.product;
             let item = "<div>" +
-                "<div style='background-image: url(" + product.pic + ")'>" +
-                "<i>￥"+(product.price/100)+"</i>" +
+                "<div style='background-image: url(" + _item.pic + ")'>" +
+                "<i>￥" + (_item.price / 100) + "</i>" +
                 "</div>" +
                 "<div>" +
-                "<p><span>" + product.title + "</span></p>" +
-                "<p><span>" + product.subtitle + "</span></p>" +
+                "<p><span>" + _item.title + "</span></p>" +
+                "<p><span>" + _item.subtitle + "</span></p>" +
                 "</div>" +
                 "</div>";
             if (_index <= 1) {
@@ -123,6 +122,17 @@ let todayRecommend = () => {
                 $("#today02").append(item);
             }
         });
+    });
+};
+
+//获取秒杀信息
+let getSecKill = () => {
+    let requestInfo = {
+        url:"/api/secKill/home",
+        method: "get"
+    };
+    request(requestInfo,(rs)=>{
+
     });
 };
 
@@ -163,4 +173,5 @@ $(document).ready(() => {
     getAdvertiseList();
     getRecommendSubject();
     todayRecommend();
+    getSecKill();
 });

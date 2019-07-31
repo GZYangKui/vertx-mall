@@ -93,8 +93,11 @@ public class ApiVerticle extends RestVerticle {
         //获取首页专题推荐列表
         router.get("/api/homeSubject/list");
 
-        //获取今日推荐商品列表
-        router.get("/api/product/toadyRecommend");
+        //获取推荐商品列表
+        router.get("/api/product/recommend");
+
+        //获取秒杀时刻表
+        router.get("/api/secKill/home");
 
 
         //将请求分发到指定的分路由上去
