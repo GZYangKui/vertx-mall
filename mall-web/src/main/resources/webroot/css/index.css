@@ -44,24 +44,25 @@
 
 .card-item > div > div:first-child {
     height: 150px;
-    background-size: contain;
+    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     margin: 5px 10px;
     position: relative;
 }
 
-.card-item > div > div:first-child i {
+.recommend-icon {
     position: absolute;
     display: inline-block;
-    width: 45px;
-    height: 45px;
-    border-radius: 50% 50%;
-    background-color: #FF0000;
+    width: 30px;
+    height: 30px;
     color: #FFFFFF;
-    right: 0;
-    top: -20px;
-    line-height: 300%;
+    left: 0;
+    top: 0;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    background-image: url("../img/svg/recommend_icon.svg");
 }
 
 .card-item > div > div:last-child span, .recommend-item > div:last-child span {
@@ -142,4 +143,30 @@
 
 .recommend-item > div:last-child span {
     padding: 2px 5px;
+}
+
+.seckill-price {
+    position: absolute;
+    display: inline-block;
+    width: 45px;
+    height: 45px;
+    background-color: red;
+    color: #FFFFFF;
+    right: 0;
+    top: -20px;
+    line-height: 40px;
+    border-radius: 50% 50%;
+    font-style: normal;
+}
+.seckill-time{
+    text-align: center;
+}
+.seckill-time > p:last-child span{
+    display: inline-block;
+    width: 30px;
+    height: 20px;
+    background-color: #333333;
+    text-align: center;
+    color: #FFFFFF;
+    margin-right: 5px;
 }

@@ -42,7 +42,11 @@ public class SecKillServiceImpl extends BaseService implements SecKillService {
                 promise.complete(responseSuccessJson());
                 return;
             }
+
             final LocalTime current = LocalTime.now();
+
+            //秒杀时间段信息
+            final JsonObject timeSlot;
 
             //首先查找是否有当前时间段存在秒杀活动
             final Optional<JsonObject> optional = list.stream().filter(_r -> {
@@ -50,7 +54,6 @@ public class SecKillServiceImpl extends BaseService implements SecKillService {
                 final LocalTime endTime = LocalTime.parse(_r.getString("end_time"));
                 return current.toNanoOfDay() >= startTime.toNanoOfDay() && current.toNanoOfDay() <= endTime.toNanoOfDay();
             }).findAny();
-            final JsonObject timeSlot;
             //如果当前时间段不存在查早最近时间段
             if (optional.isEmpty()) {
                 final Optional<JsonObject> o = list.stream().filter(_r -> {
@@ -66,7 +69,6 @@ public class SecKillServiceImpl extends BaseService implements SecKillService {
             } else {
                 timeSlot = optional.get();
             }
-
 
             dao.getTimeSlotForProduct(timeSlot.getLong("id")).setHandler(_r -> {
                 if (_r.failed()) {

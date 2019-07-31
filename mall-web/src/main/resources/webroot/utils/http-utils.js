@@ -100,3 +100,41 @@ function load(url) {//url：需要加载js路径
     script.src = url;
     document.body.appendChild(script)
 }
+
+/**
+ *
+ * 将秒数换成时分秒格式
+ *
+ */
+
+function formatSeconds(value) {
+    let theTime = parseInt(value);// 秒
+    let theTime1 = 0;// 分
+    let theTime2 = 0;// 小时
+    if (theTime > 60) {
+        theTime1 = parseInt(theTime / 60);
+        theTime = parseInt(theTime % 60);
+        if (theTime1 > 60) {
+            theTime2 = parseInt(theTime1 / 60);
+            theTime1 = parseInt(theTime1 % 60);
+        }
+    }
+    let result = {};
+    if (theTime > 0) {
+        result.second = parseInt(theTime) > 9 ? theTime.toString() : "0" + theTime;
+    } else {
+        result.second = "00";
+    }
+    if (theTime1 > 0) {
+        result.minute = parseInt(theTime1) > 9 ? theTime1.toString() : "0" + theTime1;
+    } else {
+        result.minute = "00";
+    }
+    if (theTime2 > 0) {
+        result.hour = parseInt(theTime2) > 9 ? theTime2.toString() : "0" + theTime2;
+    } else {
+        result.hour = "00";
+    }
+    return result;
+}
+

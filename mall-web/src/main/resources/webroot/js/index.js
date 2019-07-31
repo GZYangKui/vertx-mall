@@ -109,7 +109,7 @@ let todayRecommend = () => {
         getRandomArrayElements(rs.data, 4).forEach((_item, _index, _self) => {
             let item = "<div>" +
                 "<div style='background-image: url(" + _item.pic + ")'>" +
-                "<i>￥" + (_item.price / 100) + "</i>" +
+                "<i class='recommend-icon'></i>" +
                 "</div>" +
                 "<div>" +
                 "<p><span>" + _item.title + "</span></p>" +
@@ -128,11 +128,51 @@ let todayRecommend = () => {
 //获取秒杀信息
 let getSecKill = () => {
     let requestInfo = {
-        url:"/api/secKill/home",
+        url: "/api/secKill/home",
         method: "get"
     };
-    request(requestInfo,(rs)=>{
+    request(requestInfo, (rs) => {
+        let data = rs.data;
+        if (isEmpty(data)) {
+            return
+        }
+        let now = new Date();
+        let temp = rs.data.end_time.split(":");
+        let endTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), parseInt(temp[0]), parseInt(temp[1]));
 
+        let leftSeconds = (endTime.getTime() - now.getTime()) / 1000;
+
+        let interval = setInterval(function () {
+            let leftTime = formatSeconds(leftSeconds);
+
+            $("#secKillLeftTime > span:first-child").text(leftTime.hour);
+            $("#secKillLeftTime > span:nth-child(2)").text(leftTime.minute);
+            $("#secKillLeftTime > span:last-child").text(leftTime.second);
+
+            leftSeconds--;
+            if (leftSeconds <= 0) {
+                clearInterval(interval);
+                $("#secKillLeftTime").html("<span>本场次秒杀已结束</span>");
+            }
+        }, 1000);
+
+        getRandomArrayElements(data.products, 4).forEach((_item, _index, _self) => {
+            let product = _item.product;
+            let item = "<div>" +
+                "<div style='background-image: url(" + product.pic + ")'>" +
+                "<i class='seckill-price'>￥" + _item.flash_promotion_price + "</i>" +
+                "</div>" +
+                "<div>" +
+                "<p><span>" + product.title + "</span></p>" +
+                "<p><span>" + product.subtitle + "</span></p>" +
+                "</div>" +
+                "</div>";
+            if (_index <= 1) {
+                $("#secKill01").append(item);
+            } else {
+                $("#secKill02").append(item);
+            }
+        });
     });
 };
 

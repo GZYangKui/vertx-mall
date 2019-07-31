@@ -78,34 +78,6 @@ function createAdvance(index) {
     });
 }
 
-/**
- *
- * 将秒数换成时分秒格式
- *
- */
-
-function formatSeconds(value) {
-    let theTime = parseInt(value);// 秒
-    let theTime1 = 0;// 分  
-    let theTime2 = 0;// 小时  
-    if (theTime > 60) {
-        theTime1 = parseInt(theTime / 60);
-        theTime = parseInt(theTime % 60);
-        if (theTime1 > 60) {
-            theTime2 = parseInt(theTime1 / 60);
-            theTime1 = parseInt(theTime1 % 60);
-        }
-    }
-    let result = "" + parseInt(theTime) + "秒";
-    if (theTime1 > 0) {
-        result = "" + parseInt(theTime1) + "分" + result;
-    }
-    if (theTime2 > 0) {
-        result = "" + parseInt(theTime2) + "小时" + result;
-    }
-    return result;
-}
-
 //注入微信配置信息
 function wxConfig() {
     let requestInfo = {
