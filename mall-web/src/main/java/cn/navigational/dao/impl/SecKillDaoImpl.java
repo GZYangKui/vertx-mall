@@ -8,7 +8,6 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.sqlclient.Tuple;
 
 import java.util.List;
-import java.util.Optional;
 
 public class SecKillDaoImpl extends BaseDao implements SecKillDao {
     public SecKillDaoImpl(Vertx vertx, JsonObject config) {

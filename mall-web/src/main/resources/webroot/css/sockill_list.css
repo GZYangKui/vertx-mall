@@ -1,6 +1,6 @@
 .carousel-item {
     background-size: cover;
-    background-image: url("../img/background.png");
+    background-image: url("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1564647963454&di=aef977ba0da417af52afe483ed7f410b&imgtype=0&src=http%3A%2F%2Fpic.90sjimg.com%2Fdesign%2F00%2F17%2F72%2F82%2F577a1387681b6.jpg");
     background-position: center;
     background-repeat: no-repeat;
     width: 100%;
@@ -12,6 +12,7 @@
     background-color: #FFFFFF;
     border-top: 1px solid #CBCBCB;
     border-bottom: 1px solid #CBCBCB;
+    padding: 10px 5px;
 }
 
 .flash-item > div:first-child {
@@ -25,6 +26,32 @@
 
 .flash-item > div:last-child {
     flex: 7;
+    padding-left: 10px;
+}
+
+.flash-item > div:last-child > div:last-child {
+    width: 100%;
+    justify-content: space-between;
+}
+
+.flash-item > div:last-child > div:last-child button {
+    padding: 5px;
+}
+
+.flash-item > div:last-child > div:last-child button:first-child {
+    border-radius: 30px;
+    border: #8300BE solid 1px;
+    color: #8300BE;
+    background: none;
+    width: 100px;
+}
+
+.flash-item > div:last-child > div:last-child button:last-child {
+    border-radius: 5px;
+    border-width: 0;
+    color: #FFFFFF;
+    background: #8300BE;
+    width: 100px;
 }
 
 .flash-info {
@@ -32,4 +59,31 @@
     justify-content: space-between;
     align-items: flex-start;
     height: 120px;
+}
+
+.flash-info span {
+    text-rendering: optimizelegibility;
+    font-feature-settings: "kern";
+    font-kerning: normal;
+    font-family: "Arial Normal", Arial;
+    font-weight: 400;
+}
+.flash-info div:first-child{
+    color: rgb(51,51,51);
+    font-size: 1.5rem;
+}
+
+.flash-info div:nth-child(2){
+    color: rgb(153,153,153);
+    font-size: 1.3rem;
+}
+.flash-info div:nth-child(3){
+    color: rgb(102,102,102);
+}
+.flash-info div:nth-child(3) > span{
+    color: rgb(251,0,23);
+    font-size: 1.7rem;
+}
+.layui-tab{
+    margin: 0;
 }

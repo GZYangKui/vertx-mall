@@ -170,3 +170,7 @@
     color: #FFFFFF;
     margin-right: 5px;
 }
+.flash-price{
+    color: #FB0017 !important;
+    font-size: 1.4rem !important;
+}
