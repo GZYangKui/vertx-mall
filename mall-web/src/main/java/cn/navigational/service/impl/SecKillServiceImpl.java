@@ -158,9 +158,7 @@ public class SecKillServiceImpl extends BaseService implements SecKillService {
                     if (optional.isEmpty()) {
                         destroy.add(_item);
                     } else {
-                        final JsonObject product = optional.get();
-                        product.remove("price");
-                        _item.put("product", product);
+                        _item.put("product", optional.get());
                     }
                 });
                 //去除无效商品

@@ -6,3 +6,30 @@
     width: 100%;
     height: 100%;
 }
+
+.flash-item {
+    margin: 5px 0;
+    background-color: #FFFFFF;
+    border-top: 1px solid #CBCBCB;
+    border-bottom: 1px solid #CBCBCB;
+}
+
+.flash-item > div:first-child {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    width: 100%;
+    height: 120px;
+    flex: 3;
+}
+
+.flash-item > div:last-child {
+    flex: 7;
+}
+
+.flash-info {
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    height: 120px;
+}

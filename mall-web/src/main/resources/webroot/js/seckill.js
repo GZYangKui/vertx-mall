@@ -62,7 +62,7 @@ let initData = () => {
     };
     request(requestInfo, (rs) => {
         let target = null;
-        //现寻找对应的内容面板
+        //先找对应的内容面板
         $("#tabContent > div").each((_index, _item) => {
             let flag = parseInt($(_item).data("flag"));
             if (flag === currentIndex) {
@@ -81,10 +81,24 @@ let initData = () => {
  * @param item
  */
 let createFlashProduct = (item, index) => {
-    return "<div class='flex-box' data-index='" + index + "'>" +
-        "<div></div>" +
-        "<div></div>" +
+    let product = item.product;
+    return "<div class='flex-box flash-item' data-index='" + index + "'>" +
+        "<div style='background-image: url(" + product.pic + ")'></div>" +
+        "<div class='flex-box flash-info'>" +
+        "<div><span>" + product.title + "</span></div>" +
+        "<div><span>" + product.subtitle + "</span></div>" +
+        "<div>秒杀价:<span>" + (item.flash_promotion_price / 100) + "</span>&nbsp;&nbsp;原价:" + (product.price / 100) + "</div>" +
+        "<div>" + formatStatus(temp) + "</div>" +
+        "</div>" +
         "</div>";
+};
+
+/**
+ * 格式化状态
+ *
+ */
+let formatStatus = (item) => {
+    return "";
 };
 $(document).ready(() => {
     getTimeSlots();
