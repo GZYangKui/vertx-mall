@@ -69,40 +69,14 @@ public class SecKillServiceImpl extends BaseService implements SecKillService {
             } else {
                 timeSlot = optional.get();
             }
-
-            dao.getTimeSlotForProduct(timeSlot.getLong("id")).setHandler(_r -> {
+            final long timeSlotId = timeSlot.getLong("id");
+            getProducts(timeSlotId).setHandler(_r -> {
                 if (_r.failed()) {
                     promise.fail(_r.cause());
                     return;
                 }
-                final List<JsonObject> temp = _r.result();
-                if (temp.isEmpty()) {
-                    promise.complete(responseSuccessJson());
-                    return;
-                }
-                final List<Integer> productIds = temp.stream().map(_rr -> _rr.getInteger("product_id")).collect(Collectors.toList());
-                productDao.list(productIds).setHandler(_rrr -> {
-                    if (_r.failed()) {
-                        promise.fail(_rrr.cause());
-                        return;
-                    }
-                    final List<JsonObject> destroy = new ArrayList<>();
-                    temp.forEach(_item -> {
-                        long productId = _item.getLong("product_id");
-                        final Optional<JsonObject> optional1 = _rrr.result().stream().filter(_a -> _a.getLong("id") == productId).findAny();
-                        if (optional1.isEmpty()) {
-                            destroy.add(_item);
-                        } else {
-                            final JsonObject product = optional1.get();
-                            product.remove("price");
-                            _item.put("product", product);
-                        }
-                    });
-                    //去除无效商品
-                    destroy.forEach(temp::remove);
-                    timeSlot.put("products", temp);
-                    promise.complete(responseSuccessJson(timeSlot));
-                });
+                timeSlot.put("products", _r.result());
+                promise.complete(responseSuccessJson(timeSlot));
             });
         });
         return promise.future();
@@ -140,13 +114,59 @@ public class SecKillServiceImpl extends BaseService implements SecKillService {
     @Override
     public Future<JsonObject> timeSlotWithProduct(JsonObject obj) {
         final Promise<JsonObject> promise = Promise.promise();
-        final long id = Long.parseLong(getQuery(obj,"timeSlotId"));
-        dao.getTimeSlotForProduct(id).setHandler(_rs->{
-           if (_rs.failed()){
-               promise.fail(_rs.cause());
-               return;
-           }
-           promise.complete(responseSuccessJson(_rs.result()));
+        final long id = Long.parseLong(getQuery(obj, "timeSlotId"));
+        getProducts(id).setHandler(_rs -> {
+            if (_rs.failed()) {
+                promise.fail(_rs.cause());
+                return;
+            }
+            promise.complete(responseSuccessJson(_rs.result()));
+        });
+        return promise.future();
+    }
+
+    /**
+     * 获取产品列表
+     *
+     * @param slotId @分段时间列表
+     * @return 发布异步商品集合
+     */
+    private Future<List<JsonObject>> getProducts(long slotId) {
+        final Promise<List<JsonObject>> promise = Promise.promise();
+        //得到时间段对应的商品信息
+        dao.getTimeSlotForProduct(slotId).setHandler(_r -> {
+            if (_r.failed()) {
+                promise.fail(_r.cause());
+                return;
+            }
+            final List<JsonObject> productRelate = _r.result();
+            if (productRelate.isEmpty()) {
+                promise.complete(List.of());
+                return;
+            }
+            final List<Integer> productIds = productRelate.stream().map(_rr -> _rr.getInteger("product_id")).collect(Collectors.toList());
+            //获取商品信息
+            productDao.list(productIds).setHandler(_rrr -> {
+                if (_r.failed()) {
+                    promise.fail(_rrr.cause());
+                    return;
+                }
+                final List<JsonObject> destroy = new ArrayList<>();
+                productRelate.forEach(_item -> {
+                    long productId = _item.getLong("product_id");
+                    final Optional<JsonObject> optional = _rrr.result().stream().filter(_a -> _a.getLong("id") == productId).findAny();
+                    if (optional.isEmpty()) {
+                        destroy.add(_item);
+                    } else {
+                        final JsonObject product = optional.get();
+                        product.remove("price");
+                        _item.put("product", product);
+                    }
+                });
+                //去除无效商品
+                destroy.forEach(productRelate::remove);
+                promise.complete(productRelate);
+            });
         });
         return promise.future();
     }

@@ -32,7 +32,7 @@ let getTimeSlots = () => {
                 item = "<li lay-id='" + _item.id + "'>" + _item.name + "</li>";
             }
             $("#tabHeader").append(item);
-            $("#tabContent").append("<div></div>");
+            $("#tabContent").append("<div data-flag='" + _index + "'></div>");
         });
         initData();
     });
@@ -61,8 +61,30 @@ let initData = () => {
         }
     };
     request(requestInfo, (rs) => {
-
+        let target = null;
+        //现寻找对应的内容面板
+        $("#tabContent > div").each((_index, _item) => {
+            let flag = parseInt($(_item).data("flag"));
+            if (flag === currentIndex) {
+                target = $(_item);
+            }
+        });
+        rs.data.forEach((_item, _index, _self) => {
+            target.append(createFlashProduct(_item, _index));
+        })
     });
+};
+
+/**
+ * 创建抢购商品
+ *
+ * @param item
+ */
+let createFlashProduct = (item, index) => {
+    return "<div class='flex-box' data-index='" + index + "'>" +
+        "<div></div>" +
+        "<div></div>" +
+        "</div>";
 };
 $(document).ready(() => {
     getTimeSlots();
