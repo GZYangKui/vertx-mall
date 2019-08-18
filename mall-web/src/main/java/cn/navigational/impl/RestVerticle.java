@@ -26,7 +26,11 @@ public class RestVerticle extends BaseVerticle {
         });
     }
 
-    //异常处理
+    /**
+     * 拦截http异常状态码,根据http状态码自定义回复信息#目前只处理500/404
+     *
+     * @param router http请求路由
+     */
     protected void exHandler(Router router) {
         router.errorHandler(500, _routingContext -> {
             _routingContext.failure().printStackTrace();
@@ -34,7 +38,8 @@ public class RestVerticle extends BaseVerticle {
         });
 
         router.errorHandler(404, _routingContext -> {
-            response(_routingContext, http404());
+            final JsonObject info = responseTemplate("你访问的资源去了火星", 404, false, EventBusDataType.JSON);
+            response(_routingContext, info);
         });
     }
 
@@ -42,10 +47,6 @@ public class RestVerticle extends BaseVerticle {
         final JsonObject msg = responseTemplate("服务器错误", 500, false, EventBusDataType.JSON);
         msg.put(CAUSE, Objects.isNull(_t.getMessage()) ? "NULL" : _t.getMessage());
         return msg;
-    }
-
-    protected JsonObject http404() {
-        return responseTemplate("你访问的资源去了火星", 404, false, EventBusDataType.JSON);
     }
 
 }
