@@ -22,7 +22,7 @@ import static cn.navigational.config.Constants.*;
 
 public class BaseDao {
 
-    protected final PgPool client;
+    private final PgPool client;
 
     public BaseDao(Vertx vertx, JsonObject config) {
         final JsonObject dbConfig = config.getJsonObject(DATA_SOURCE);
@@ -41,26 +41,20 @@ public class BaseDao {
     }
 
     /**
+     *
      * 执行查询
      *
      * @param sql sql语句
-     * @return
+     * @return 返回json数据集合
      */
     protected Future<List<JsonObject>> executeQuery(final String sql) {
         final Promise<List<JsonObject>> promise = Promise.promise();
-        getConnection().setHandler(_rs -> {
+        client.query(sql, _rs -> {
             if (_rs.failed()) {
                 promise.fail(_rs.cause());
                 return;
             }
-            final SqlConnection con = _rs.result();
-            con.query(sql, _rr -> {
-                if (_rr.failed()) {
-                    promise.fail(_rr.cause());
-                } else {
-                    promise.complete(rowSetToJson(_rr.result()));
-                }
-            });
+            promise.complete(rowSetToJson(_rs.result()));
         });
         return promise.future();
     }
@@ -69,21 +63,14 @@ public class BaseDao {
 
         final Promise<List<JsonObject>> promise = Promise.promise();
 
-        getConnection().setHandler(_rs -> {
+        client.preparedQuery(sql, param, _rs -> {
             if (_rs.failed()) {
                 promise.fail(_rs.cause());
                 return;
             }
-            final SqlConnection con = _rs.result();
-            con.preparedQuery(sql, param, _rr -> {
-                if (_rr.failed()) {
-                    promise.fail(_rr.cause());
-                } else {
-                    promise.complete(rowSetToJson(_rr.result()));
-                }
-                con.close();
-            });
+            promise.complete(rowSetToJson(_rs.result()));
         });
+
         return promise.future();
     }
 
@@ -110,21 +97,12 @@ public class BaseDao {
     protected Future<Integer> executeUpdate(String sql, Tuple param) {
         final Promise<Integer> promise = Promise.promise();
 
-        getConnection().setHandler(_rs -> {
+        client.preparedQuery(sql, param, _rs -> {
             if (_rs.failed()) {
                 promise.fail(_rs.cause());
                 return;
             }
-            final SqlConnection con = _rs.result();
-
-            con.preparedQuery(sql, param, _rr -> {
-                if (_rr.failed()) {
-                    promise.fail(_rr.cause());
-                } else {
-                    promise.complete(_rr.result().rowCount());
-                }
-                con.close();
-            });
+            promise.complete(_rs.result().rowCount());
         });
 
         return promise.future();
@@ -138,40 +116,31 @@ public class BaseDao {
     protected Future<Integer> insertSingle(final String sql, Tuple tuple) {
         final String reSql = sql + " RETURNING id";
         final Promise<Integer> promise = Promise.promise();
-        getConnection().setHandler(_r -> {
-            if (_r.failed()) {
-                promise.fail(_r.cause());
-                return;
+        client.preparedQuery(reSql, tuple, _rs -> {
+            if (_rs.failed()) {
+                promise.fail(_rs.cause());
+            } else {
+                promise.complete(_rs.result().iterator().next().getInteger("id"));
             }
-            final SqlConnection con = _r.result();
-            con.preparedQuery(reSql, tuple, _rr -> {
-                if (_rr.failed()) {
-                    promise.fail(_rr.cause());
-                } else {
-                    promise.complete(_rr.result().iterator().next().getInteger("id"));
-                }
-                con.close();
-            });
         });
         return promise.future();
     }
 
+    /**
+     * 批量更新
+     *
+     * @param sql    sql语句
+     * @param tuples 数据集合
+     * @return 返回被影响数据条目
+     */
     protected Future<Integer> batchUpdate(String sql, List<Tuple> tuples) {
         final Promise<Integer> promise = Promise.promise();
-        getConnection().setHandler(_rs -> {
+        client.preparedBatch(sql, tuples, _rs -> {
             if (_rs.failed()) {
                 promise.fail(_rs.cause());
                 return;
             }
-            final SqlConnection con = _rs.result();
-            con.preparedBatch(sql, tuples, _rr -> {
-                if (_rr.failed()) {
-                    promise.fail(_rr.cause());
-                    return;
-                }
-                con.close();
-                promise.complete(_rr.result().rowCount());
-            });
+            promise.complete(_rs.result().rowCount());
         });
         return promise.future();
     }
@@ -197,7 +166,7 @@ public class BaseDao {
     }
 
     /**
-     * 获取连接
+     * 获取连接(通常是要使用事物等操作才会主动获取连接否则使用client#...方法即可)
      *
      * @return 返回连接对象
      */
@@ -213,6 +182,12 @@ public class BaseDao {
         return promise.future();
     }
 
+    /**
+     * 将查出来的jdbc数据类型转换为json类型
+     *
+     * @param rowSet jdbc数据集合
+     * @return json数据集合
+     */
     private List<JsonObject> rowSetToJson(RowSet rowSet) {
         final List<JsonObject> list = new ArrayList<>();
         rowSet.forEach(_row -> {

@@ -160,10 +160,10 @@ let getSecKill = () => {
             let product = _item.product;
             let item = "<div class='flash_item'>" +
                 "<div style='background-image: url(" + product.pic + ")'>" +
-                "<i class='seckill-price'>￥" + (product.price/100) + "</i>" +
+                "<i class='seckill-price'>￥" + (product.price / 100) + "</i>" +
                 "</div>" +
                 "<div>" +
-                "<p class='flash-price'>秒杀价 ￥"+(_item.flash_promotion_price)/100+"</p>" +
+                "<p class='flash-price'>秒杀价 ￥" + (_item.flash_promotion_price) / 100 + "</p>" +
                 "<p><span>" + product.title + "</span></p>" +
                 "<p><span>" + product.subtitle + "</span></p>" +
                 "</div>" +

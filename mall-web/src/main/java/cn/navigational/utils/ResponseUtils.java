@@ -51,6 +51,13 @@ public class ResponseUtils {
         return headers;
     }
 
+    /**
+     *
+     * 回复请求信息
+     * @param rcx 请求上下文对象
+     * @param info 回复数据
+     *
+     */
     public static void response(RoutingContext rcx, JsonObject info) {
         final HttpServerResponse response = rcx.response();
         final EventBusDataType type = EventBusDataType.valueOf(info.getString(TYPE));

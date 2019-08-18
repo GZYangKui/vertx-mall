@@ -71,7 +71,12 @@ let initData = () => {
         });
         rs.data.forEach((_item, _index, _self) => {
             target.append(createFlashProduct(_item, _index));
-        })
+        });
+        //打开产品详情页
+        $(".to-see").on('click', function () {
+            let productId = $(this).data("id");
+            window.location.href = "product_detail.html?id=" + productId;
+        });
     });
 };
 
@@ -105,15 +110,15 @@ let formatStatus = (item) => {
     let status = timeSlots[currentIndex].status;
     let left = item.flash_promotion_count - item.flash_promotion_receive;
     let temp = "";
-
+    let id = item.product.id;
     if (left <= 0) {
-        temp += "<button>被抢光啦</button><button>去看看</button>"
+        temp += "<button>被抢光啦</button><button class='to-see' data-id='" + id + "'>去看看</button>"
     } else {
 
         if (status === 1 || status === 2) {
-            temp += "<button>仅剩" + left + "件</button><button>马上抢</button>"
+            temp += "<button>仅剩" + left + "件</button><button class='to-see' data-id='" + id + "'>马上抢</button>"
         } else if (status === 3) {
-            temp += "<button>限量" + left + "件</button><button>去看看</button>"
+            temp += "<button>限量" + left + "件</button><button class='to-see' data-id='" + id + "'>去看看</button>"
         }
     }
     return temp;
