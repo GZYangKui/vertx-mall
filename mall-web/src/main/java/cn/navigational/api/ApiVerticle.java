@@ -14,7 +14,6 @@ import io.vertx.ext.web.handler.StaticHandler;
 
 
 import static cn.navigational.config.Constants.PORT;
-import static cn.navigational.utils.ResponseUtils.response;
 
 @Verticle
 public class ApiVerticle extends RestVerticle {
@@ -23,6 +22,9 @@ public class ApiVerticle extends RestVerticle {
     public void start() throws Exception {
         super.start();
         final Router router = Router.router(vertx);
+
+        //请求异常处理
+        exHandler(router);
 
         router.route("/api/*").handler(CookieHandler.create());
 
@@ -111,13 +113,6 @@ public class ApiVerticle extends RestVerticle {
 
         final int port = config().getInteger(PORT, 8080);
 
-        router.errorHandler(500, _routingContext -> {
-            _routingContext.failure().printStackTrace();
-            response(_routingContext, executeException(_routingContext.failure()));
-        });
-        router.errorHandler(404, _routingContext -> {
-            response(_routingContext, http404());
-        });
 
         vertx.createHttpServer().requestHandler(router).listen(port, _rs -> {
             if (_rs.succeeded()) {

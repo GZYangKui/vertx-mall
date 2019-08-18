@@ -3,6 +3,7 @@ package cn.navigational.impl;
 import cn.navigational.base.BaseVerticle;
 import cn.navigational.enums.EventBusDataType;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 
 import java.util.Objects;
@@ -25,7 +26,19 @@ public class RestVerticle extends BaseVerticle {
         });
     }
 
-    protected JsonObject executeException(Throwable _t) {
+    //异常处理
+    protected void exHandler(Router router) {
+        router.errorHandler(500, _routingContext -> {
+            _routingContext.failure().printStackTrace();
+            response(_routingContext, executeException(_routingContext.failure()));
+        });
+
+        router.errorHandler(404, _routingContext -> {
+            response(_routingContext, http404());
+        });
+    }
+
+    private JsonObject executeException(Throwable _t) {
         final JsonObject msg = responseTemplate("服务器错误", 500, false, EventBusDataType.JSON);
         msg.put(CAUSE, Objects.isNull(_t.getMessage()) ? "NULL" : _t.getMessage());
         return msg;
