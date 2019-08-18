@@ -18,6 +18,7 @@
         <module>mall-web</module>
         <module>mall-admin</module>
         <module>mall-portable</module>
+        <module>mall-admin-client</module>
     </modules>
     <dependencies>
         <dependency>
