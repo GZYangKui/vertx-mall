@@ -1,14 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import java.net.URL?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            prefHeight="400.0" prefWidth="600.0">
+<?import javafx.scene.control.Label?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Tooltip?>
+<?import com.jfoenix.controls.JFXTextField?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+            prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.999-ea" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="cn.navigational.admin.client.controller.LoginController"
+            styleClass="container">
     <stylesheets>
-        <URL value="@../css/login.css"></URL>
+        <URL value="@/css/login.css"/>
     </stylesheets>
-
-</AnchorPane>
+    <top>
+        <HBox alignment="CENTER_RIGHT">
+            <JFXButton onAction="#exit" focusTraversable="false">
+                <tooltip>
+                    <Tooltip text="退出应用"/>
+                </tooltip>
+                <graphic>
+                    <ImageView>
+                        <Image url="@../assets/exit.png" requestedHeight="30" requestedWidth="30" smooth="true"/>
+                    </ImageView>
+                </graphic>
+            </JFXButton>
+        </HBox>
+    </top>
+    <center>
+        <VBox alignment="CENTER" styleClass="content">
+            <HBox>
+                <ImageView>
+                    <Image requestedHeight="56" requestedWidth="56" url="@../assets/mall_icon.png"/>
+                </ImageView>
+            </HBox>
+            <HBox>
+                <Label styleClass="title">管理员登录</Label>
+            </HBox>
+            <HBox>
+                <JFXTextField>
+                    <promptText>用户名</promptText>
+                </JFXTextField>
+            </HBox>
+            <HBox>
+                <JFXTextField>
+                    <promptText>密码</promptText>
+                </JFXTextField>
+            </HBox>
+            <HBox>
+                <JFXButton text="登录" styleClass="action"/>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>
