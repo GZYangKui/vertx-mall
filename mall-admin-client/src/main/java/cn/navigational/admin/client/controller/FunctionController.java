@@ -1,6 +1,8 @@
 package cn.navigational.admin.client.controller;
 
 import cn.navigational.admin.client.monitors.WindowDragMonitor;
+import cn.navigational.admin.client.service.HttpService;
+import cn.navigational.admin.client.views.LoginView;
 import com.jfoenix.controls.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -28,7 +30,19 @@ public class FunctionController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        operationBox.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
+            final String label = newValue.getText();
+            final Stage stage = (Stage) navigatorBar.getScene().getWindow();
+            switch (label) {
+                case "首页":
+                    break;
+                case "注销":
+                    stage.close();
+                    new LoginView();
+                    break;
+                default:
+            }
+        }));
     }
 
     //弹出菜单
@@ -55,11 +69,12 @@ public class FunctionController implements Initializable {
         WindowDragMonitor.register(obj.getScene().getWindow(), obj);
     }
 
+    //弹出菜单
     private final class PopMenu extends Popup {
-        private Label maximization = new Label("最大化");
-        private Label minimize = new Label("最小化");
-        private Label normal = new Label("正常窗口");
-        private JFXListView<Label> list = new JFXListView<>();
+        private final Label maximization = new Label("最大化");
+        private final Label minimize = new Label("最小化");
+        private final Label normal = new Label("正常窗口");
+        private final JFXListView<Label> list = new JFXListView<>();
 
         private PopMenu() {
             list.getItems().addAll(maximization, normal, minimize);

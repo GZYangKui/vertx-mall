@@ -1,23 +1,16 @@
 package cn.navigational.admin.client.views;
 
-import javafx.fxml.FXMLLoader;
+import cn.navigational.admin.client.utils.ResourceUtils;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.io.IOException;
 
 public class FunctionView extends Stage {
 
     public FunctionView() {
-        final Parent root;
-        try {
-            root = FXMLLoader.load(ClassLoader.getSystemResource("fxml/function.fxml"));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
+        final Parent root = ResourceUtils.loadFXML("fxml/function.fxml");
         Scene scene = new Scene(root);
         setScene(scene);
         setWidth(1200);
