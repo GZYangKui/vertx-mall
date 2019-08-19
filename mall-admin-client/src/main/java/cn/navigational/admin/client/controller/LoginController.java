@@ -4,6 +4,7 @@ import cn.navigational.admin.client.monitors.WindowDragMonitor;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.input.MouseEvent;
@@ -41,7 +42,8 @@ public class LoginController implements Initializable {
     }
 
     @FXML
-    public void exit() {
+    public void exit(ActionEvent e) {
+        e.consume();
         Platform.exit();
     }
 }
