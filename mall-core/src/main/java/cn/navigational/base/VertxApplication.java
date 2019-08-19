@@ -1,7 +1,8 @@
 package cn.navigational.base;
 
-import cn.navigational.annotation.*;
-import io.vertx.codegen.annotations.Fluent;
+import cn.navigational.annotation.Application;
+import cn.navigational.annotation.ScanPackage;
+import cn.navigational.annotation.Verticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.file.FileSystem;
@@ -185,7 +186,6 @@ public class VertxApplication {
      *
      * @param config 配置文件
      */
-    @Fluent
     public VertxApplication setConfig(String config) {
         this.config = config;
         return this;

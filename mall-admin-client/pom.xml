@@ -39,7 +39,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.3</version>
                 <configuration>
-                    <mainClass>cn.navigational.admin.client.views.LoginView</mainClass>
+                    <mainClass>cn.navigational.admin.client.App</mainClass>
                 </configuration>
             </plugin>
         </plugins>
