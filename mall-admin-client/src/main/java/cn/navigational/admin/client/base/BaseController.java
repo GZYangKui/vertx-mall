@@ -16,6 +16,15 @@ public abstract class BaseController implements Initializable {
     private Parent root;
 
     public BaseController() {
+        init();
+    }
+
+    public BaseController(Stage stage) {
+        this.stage = stage;
+        init();
+    }
+
+    private void init() {
         final Layout layout = this.getClass().getAnnotation(Layout.class);
         if (layout == null) {
             throw new RuntimeException("请指定fxml文件");
@@ -24,7 +33,7 @@ public abstract class BaseController implements Initializable {
         if (url.trim().equals("")) {
             throw new RuntimeException("url不能为空");
         }
-        final FXMLLoader loader =new  FXMLLoader();
+        final FXMLLoader loader = new FXMLLoader();
         try {
             root = loader.load(ClassLoader.getSystemResource(url));
         } catch (IOException e) {
@@ -39,9 +48,6 @@ public abstract class BaseController implements Initializable {
         return stage;
     }
 
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
 
     public Parent getRoot() {
         return root;

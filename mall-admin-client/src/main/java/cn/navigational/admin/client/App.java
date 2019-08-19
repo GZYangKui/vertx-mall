@@ -11,6 +11,6 @@ public class App extends Application {
         stage.setIconified(false);
         stage.setHeight(300);
         stage.setWidth(200);
-        new LoginView().setStage(stage);
+        new LoginView(stage);
     }
 }
