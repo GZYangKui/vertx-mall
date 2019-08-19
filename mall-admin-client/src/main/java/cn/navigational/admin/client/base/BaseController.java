@@ -11,16 +11,9 @@ import java.io.IOException;
 
 
 public abstract class BaseController implements Initializable {
-    private Stage stage = new Stage();
-
     private Parent root;
 
     public BaseController() {
-        init();
-    }
-
-    public BaseController(Stage stage) {
-        this.stage = stage;
         init();
     }
 
@@ -39,15 +32,7 @@ public abstract class BaseController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        final Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
     }
-
-    public Stage getStage() {
-        return stage;
-    }
-
 
     public Parent getRoot() {
         return root;
