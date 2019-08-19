@@ -13,6 +13,9 @@ public class WindowDragMonitor {
     private WindowDragMonitor(Window window, Node node) {
 
         node.addEventHandler(EventType.ROOT, e -> {
+            if (!(e instanceof MouseEvent)) {
+                return;
+            }
 
             final MouseEvent event = (MouseEvent) e;
 

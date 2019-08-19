@@ -1,6 +1,8 @@
 package cn.navigational.admin.client.controller;
 
 import cn.navigational.admin.client.monitors.WindowDragMonitor;
+import cn.navigational.admin.client.views.FunctionView;
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
@@ -9,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -37,8 +40,10 @@ public class LoginController implements Initializable {
     }
 
     @FXML
-    public void login() {
-        System.out.println("---------");
+    public void login(ActionEvent e) {
+        final Stage stage = (Stage) ((JFXButton) e.getSource()).getScene().getWindow();
+        stage.close();
+        new FunctionView();
     }
 
     @FXML

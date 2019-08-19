@@ -1,0 +1,22 @@
+.menu {
+    -fx-padding: 0;
+    -fx-pref-width: 20em;
+}
+
+.menu * {
+    -fx-background-color: #333B58;
+}
+
+.content HBox, VBox {
+    -fx-background-color: #FFFFFF;
+
+}
+
+.navigator-bar {
+    -fx-pref-height: 3em;
+}
+
+.separator {
+    /*-fx-text-origin: #E6E6E6;*/
+    -fx-padding: 0;
+}
