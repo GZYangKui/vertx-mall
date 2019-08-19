@@ -9,6 +9,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Popup;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
 
 import java.net.URL;
@@ -21,8 +23,6 @@ public class FunctionController implements Initializable {
     private JFXComboBox<Label> operationBox;
     @FXML
     private HBox navigatorBar;
-
-    private final Popup popup = new PopMenu();
 
     private boolean isRegister = false;
 
@@ -38,7 +38,11 @@ public class FunctionController implements Initializable {
             return;
         }
         final HBox box = (HBox) e.getSource();
-        popup.show(box.getScene().getWindow());
+        final Popup popup = new PopMenu();
+        final Window window = box.getScene().getWindow();
+        popup.setX(e.getX() + window.getX() + 300);
+        popup.setY(e.getY() + window.getY() + 25);
+        popup.show(window);
     }
 
     @FXML
@@ -51,7 +55,7 @@ public class FunctionController implements Initializable {
         WindowDragMonitor.register(obj.getScene().getWindow(), obj);
     }
 
-    final class PopMenu extends Popup {
+    private final class PopMenu extends Popup {
         private Label maximization = new Label("最大化");
         private Label minimize = new Label("最小化");
         private Label normal = new Label("正常窗口");
@@ -62,10 +66,23 @@ public class FunctionController implements Initializable {
             getContent().add(list);
             setAutoHide(true);
             setAutoFix(true);
-            list.selectionModelProperty().addListener((observable, oldValue, newValue) -> {
-                System.out.println(newValue);
-                this.hide();
-            });
+            setWidth(50);
+            setHeight(50);
+            list.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
+                final String label = newValue.getText();
+                final Stage stage = (Stage) navigatorBar.getScene().getWindow();
+                switch (label) {
+                    case "最大化":
+                        stage.setMaximized(true);
+                        break;
+                    case "最小化":
+                        stage.setIconified(true);
+                        break;
+                    default:
+                        stage.setMaximized(false);
+                }
+                hide();
+            }));
         }
     }
 }
