@@ -11,6 +11,7 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import javafx.scene.control.Tooltip?>
 <?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXPasswordField?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
             prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.999-ea" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="cn.navigational.admin.client.controller.LoginController"
@@ -19,7 +20,7 @@
         <URL value="@/css/login.css"/>
     </stylesheets>
     <top>
-        <HBox alignment="CENTER_RIGHT">
+        <HBox alignment="CENTER_RIGHT" onMouseEntered="#register">
             <JFXButton onAction="#exit" focusTraversable="false">
                 <tooltip>
                     <Tooltip text="退出应用"/>
@@ -43,17 +44,17 @@
                 <Label styleClass="title">管理员登录</Label>
             </HBox>
             <HBox>
-                <JFXTextField>
+                <JFXTextField fx:id="username">
                     <promptText>用户名</promptText>
                 </JFXTextField>
             </HBox>
             <HBox>
-                <JFXTextField>
+                <JFXPasswordField fx:id="password">
                     <promptText>密码</promptText>
-                </JFXTextField>
+                </JFXPasswordField>
             </HBox>
             <HBox>
-                <JFXButton text="登录" styleClass="action"/>
+                <JFXButton text="登录" styleClass="action" onAction="#login"/>
             </HBox>
         </VBox>
     </center>
