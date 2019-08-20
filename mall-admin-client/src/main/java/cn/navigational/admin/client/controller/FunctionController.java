@@ -1,10 +1,13 @@
 package cn.navigational.admin.client.controller;
 
 import cn.navigational.admin.client.controls.NavigationBar;
+import cn.navigational.admin.client.factory.RouterFactory;
 import cn.navigational.admin.client.monitors.WindowDragMonitor;
-import cn.navigational.admin.client.service.HttpService;
 import cn.navigational.admin.client.views.LoginView;
 import com.jfoenix.controls.*;
+import io.vertx.core.file.FileSystem;
+import io.vertx.core.json.JsonObject;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -15,14 +18,18 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static cn.navigational.admin.client.App.getVertx;
+
 public class FunctionController implements Initializable {
     @FXML
-    private JFXTreeView leftDrawer;
+    private JFXTreeView<HBox> leftDrawer;
     @FXML
     private JFXComboBox<Label> operationBox;
     @FXML
@@ -30,11 +37,14 @@ public class FunctionController implements Initializable {
     @FXML
     private NavigationBar navigationBar;
 
+    private static final Logger logger = LogManager.getLogger(FunctionController.class);
+
     private boolean isRegister = false;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        navigationBar.getItems().addAll(new TreeItem("首页"),new TreeItem("销售额"),new TreeItem("今日销售额"));
+        initRouter();
+        navigationBar.getItems().addAll(new TreeItem("首页"), new TreeItem("销售额"), new TreeItem("今日销售额"));
         operationBox.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
             final String label = newValue.getText();
             final Stage stage = (Stage) topActionBox.getScene().getWindow();
@@ -104,5 +114,18 @@ public class FunctionController implements Initializable {
                 hide();
             }));
         }
+    }
+
+    private void initRouter() {
+        final FileSystem fs = getVertx().fileSystem();
+        fs.readFile("router/router.json", ar -> {
+            if (ar.failed()) {
+                logger.error("加载路由配置文件失败，原因:{}", ar.cause().getMessage());
+                return;
+            }
+            final JsonObject router = ar.result().toJsonObject();
+            final RouterFactory factory = RouterFactory.create(router).build();
+            Platform.runLater(() -> leftDrawer.setRoot(factory.getRoot()));
+        });
     }
 }

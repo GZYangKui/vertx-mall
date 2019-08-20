@@ -32,13 +32,13 @@ public class NavigationBarSkin implements Skin<NavigationBar> {
             separator.setAlignment(Pos.CENTER);
             if (bar.getOrientation() == Pos.CENTER_LEFT) {
                 if (i == 0) {
-                    hBox.getChildren().addAll(action);
+                    hBox.getChildren().add(action);
                 } else {
                     hBox.getChildren().addAll(separator, action);
                 }
             } else {
                 if (i == obs.size() - 1) {
-                    hBox.getChildren().addAll(action);
+                    hBox.getChildren().add(action);
                 } else {
                     hBox.getChildren().addAll(action, separator);
                 }

@@ -1,0 +1,10 @@
+.router-item {
+    -fx-padding: 5px;
+    -fx-spacing: 5px;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.router-item .label {
+    -fx-text-fill: #C0C8DB;
+    -fx-font-size: 1.2em;
+}

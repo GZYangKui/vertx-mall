@@ -1,0 +1,29 @@
+{
+  "root": {
+    "title": "vertx-mall",
+    "icon": "mall_icon.png",
+    "redirect": "",
+    "children": [
+      {
+        "title": "商品",
+        "icon": "product_icon.png",
+        "redirect": ""
+      },
+      {
+        "title": "商城专题",
+        "icon": "subject_icon.png",
+        "redirect": ""
+      },
+      {
+        "title": "订单",
+        "icon": "order_icon.png",
+        "redirect": ""
+      },
+      {
+        "title": "营销",
+        "icon": "promotion_icon.png",
+        "redirect": ""
+      }
+    ]
+  }
+}
