@@ -3,6 +3,7 @@ package cn.navigational.impl;
 import cn.navigational.annotation.RequestMapping;
 import cn.navigational.annotation.Router;
 import cn.navigational.base.BaseVerticle;
+import cn.navigational.model.EBRequest;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.json.JsonObject;
@@ -50,6 +51,9 @@ public abstract class RouterVerticle extends BaseVerticle {
         }
         vertx.eventBus().<JsonObject>consumer(getAPi(), _msg -> {
             final JsonObject data = _msg.body();
+
+            EBRequest ebRequest = EBRequest.create(data);
+
             final String path = data.getString(PATH);
             final String httpMethod = data.getString(HTTP_METHOD);
             //检查当前api是否存在,以及请求方法是否符合@RequestMapping中设定的请求方法
