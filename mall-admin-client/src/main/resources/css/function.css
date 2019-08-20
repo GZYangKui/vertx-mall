@@ -1,9 +1,9 @@
-.menu {
+.left-drawer {
     -fx-padding: 0;
     -fx-pref-width: 20em;
 }
 
-.menu * {
+.left-drawer * {
     -fx-background-color: #333B58;
 }
 

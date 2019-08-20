@@ -1,5 +1,6 @@
 package cn.navigational.admin.client.controller;
 
+import cn.navigational.admin.client.controls.NavigationBar;
 import cn.navigational.admin.client.monitors.WindowDragMonitor;
 import cn.navigational.admin.client.service.HttpService;
 import cn.navigational.admin.client.views.LoginView;
@@ -7,6 +8,7 @@ import com.jfoenix.controls.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.TreeItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -20,19 +22,22 @@ import java.util.ResourceBundle;
 
 public class FunctionController implements Initializable {
     @FXML
-    private JFXTreeView navigatorMenu;
+    private JFXTreeView leftDrawer;
     @FXML
     private JFXComboBox<Label> operationBox;
     @FXML
-    private HBox navigatorBar;
+    private HBox topActionBox;
+    @FXML
+    private NavigationBar navigationBar;
 
     private boolean isRegister = false;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        navigationBar.getItems().addAll(new TreeItem("首页"),new TreeItem("销售额"),new TreeItem("今日销售额"));
         operationBox.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
             final String label = newValue.getText();
-            final Stage stage = (Stage) navigatorBar.getScene().getWindow();
+            final Stage stage = (Stage) topActionBox.getScene().getWindow();
             switch (label) {
                 case "首页":
                     break;
@@ -85,7 +90,7 @@ public class FunctionController implements Initializable {
             setHeight(50);
             list.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
                 final String label = newValue.getText();
-                final Stage stage = (Stage) navigatorBar.getScene().getWindow();
+                final Stage stage = (Stage) topActionBox.getScene().getWindow();
                 switch (label) {
                     case "最大化":
                         stage.setMaximized(true);

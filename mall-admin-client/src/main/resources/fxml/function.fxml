@@ -3,10 +3,11 @@
 
 <?import java.net.URL?>
 <?import com.jfoenix.controls.JFXComboBox?>
-<?import com.jfoenix.controls.JFXDrawer?>
 <?import javafx.scene.control.Label?>
 <?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.Separator?>
+<?import cn.navigational.admin.client.controls.NavigationBar?>
+<?import com.jfoenix.controls.JFXTreeView?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="cn.navigational.admin.client.controller.FunctionController"
@@ -15,21 +16,28 @@
         <URL value="@/css/function.css"/>
     </stylesheets>
     <left>
-        <JFXDrawer styleClass="menu" direction="LEFT">
+        <JFXTreeView styleClass="left-drawer" fx:id="leftDrawer">
 
-        </JFXDrawer>
+        </JFXTreeView>
     </left>
     <center>
         <VBox styleClass="content">
-            <HBox styleClass="navigator-bar" alignment="CENTER_RIGHT" onMouseEntered="#register" fx:id="navigatorBar" onMouseClicked="#requestContextMenu">
-                <JFXComboBox promptText="admin" fx:id="operationBox">
-                    <items>
-                        <FXCollections fx:factory="observableArrayList">
-                            <Label>首页</Label>
-                            <Label>注销</Label>
-                        </FXCollections>
-                    </items>
-                </JFXComboBox>
+            <HBox>
+                <HBox HBox.hgrow="ALWAYS">
+                    <NavigationBar fx:id="navigationBar">
+                    </NavigationBar>
+                </HBox>
+                <HBox styleClass="top-action-box" alignment="CENTER_RIGHT" onMouseEntered="#register"
+                      fx:id="topActionBox" onMouseClicked="#requestContextMenu">
+                    <JFXComboBox promptText="admin" fx:id="operationBox">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <Label>首页</Label>
+                                <Label>注销</Label>
+                            </FXCollections>
+                        </items>
+                    </JFXComboBox>
+                </HBox>
             </HBox>
             <Separator/>
             <VBox VBox.vgrow="ALWAYS">
