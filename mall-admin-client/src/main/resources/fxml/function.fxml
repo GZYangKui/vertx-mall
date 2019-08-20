@@ -39,9 +39,7 @@
                 </HBox>
             </HBox>
             <Separator/>
-            <VBox VBox.vgrow="ALWAYS">
-
-            </VBox>
+            <VBox VBox.vgrow="ALWAYS"/>
         </VBox>
     </center>
 </BorderPane>

@@ -4,6 +4,8 @@ import cn.navigational.admin.client.controls.RouterItem;
 import cn.navigational.admin.client.model.RouterModel;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+import javafx.scene.control.TreeItem;
+import javafx.scene.layout.HBox;
 
 import java.util.Objects;
 
@@ -42,9 +44,18 @@ public class RouterFactory {
             root = item;
             parent = item;
         } else {
-
             parent.getChildren().add(item);
         }
+        TreeItem<HBox> temp = null;
+        int grade = 0;
+
+        //判断节点深度
+        do {
+            item.getModel().setGrade(grade);
+            grade++;
+            temp = parent.getParent();
+        } while (temp != null);
+
         if (children.isEmpty()) {
             return;
         }

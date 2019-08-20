@@ -2,7 +2,6 @@ package cn.navigational.admin.client.controls;
 
 import cn.navigational.admin.client.model.RouterModel;
 import cn.navigational.admin.client.utils.ResourceUtils;
-import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
@@ -27,7 +26,7 @@ public class RouterItem extends TreeItem<HBox> {
     }
 
     private void renderNode() {
-        final ImageView icon = new ImageView(ResourceUtils.loadImage(ROOT_PATH + model.getIcon(), 30.0, 30.0));
+        final ImageView icon = new ImageView(ResourceUtils.loadImage(ROOT_PATH + model.getIcon(), 30.0 - model.getGrade() * 2, 30.0 - model.getGrade() * 2));
         final Label title = new Label(model.getTitle());
         box.getChildren().addAll(icon, title);
         box.getStyleClass().add(DEFAULT_STYLE_CLASS);
@@ -39,6 +38,9 @@ public class RouterItem extends TreeItem<HBox> {
         return ResourceUtils.loadCSS("css/controls/router-item.css");
     }
 
+    public RouterModel getModel() {
+        return model;
+    }
 }
 
 

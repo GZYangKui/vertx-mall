@@ -17,6 +17,9 @@ public class RouterModel {
     //子路由
     private List children = new ArrayList<>();
 
+    //等级
+    private int grade;
+
     public String getTitle() {
         return title;
     }
@@ -47,5 +50,13 @@ public class RouterModel {
 
     public void setChildren(List children) {
         this.children = children;
+    }
+
+    public int getGrade() {
+        return grade;
+    }
+
+    public void setGrade(int grade) {
+        this.grade = grade;
     }
 }
