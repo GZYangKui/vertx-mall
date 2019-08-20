@@ -4,7 +4,6 @@ import cn.navigational.admin.client.controls.NavigationBar;
 import com.jfoenix.controls.JFXButton;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -26,15 +25,29 @@ public class NavigationBarSkin implements Skin<NavigationBar> {
     //渲染节点
     private void renderNode() {
         final ObservableList<TreeItem> obs = bar.getItems();
-        obs.forEach(item -> {
+        for (int i = 0; i < obs.size(); i++) {
+            final TreeItem item = obs.get(i);
             final Label separator = new Label(bar.getSeparator());
-            separator.setAlignment(Pos.CENTER);
             final JFXButton action = new JFXButton(item.getValue().toString());
-            hBox.getChildren().addAll(separator, action);
-        });
+            separator.setAlignment(Pos.CENTER);
+            if (bar.getOrientation() == Pos.CENTER_LEFT) {
+                if (i == 0) {
+                    hBox.getChildren().addAll(action);
+                } else {
+                    hBox.getChildren().addAll(separator, action);
+                }
+            } else {
+                if (i == obs.size() - 1) {
+                    hBox.getChildren().addAll(action);
+                } else {
+                    hBox.getChildren().addAll(action, separator);
+                }
+            }
+        }
+
         /****obs移除元素监听******/
         obs.removeListener((ListChangeListener<TreeItem>) c -> {
-            System.out.println("移除元素"+c.getRemoved());
+            System.out.println("移除元素" + c.getRemoved());
         });
     }
 

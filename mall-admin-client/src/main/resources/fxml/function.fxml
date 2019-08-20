@@ -24,8 +24,7 @@
         <VBox styleClass="content">
             <HBox>
                 <HBox HBox.hgrow="ALWAYS">
-                    <NavigationBar fx:id="navigationBar">
-                    </NavigationBar>
+                    <NavigationBar fx:id="navigationBar" separator=">" orientation="CENTER_RIGHT"/>
                 </HBox>
                 <HBox styleClass="top-action-box" alignment="CENTER_RIGHT" onMouseEntered="#register"
                       fx:id="topActionBox" onMouseClicked="#requestContextMenu">

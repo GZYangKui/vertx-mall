@@ -4,6 +4,7 @@ import cn.navigational.admin.client.skins.NavigationBarSkin;
 import cn.navigational.admin.client.utils.ResourceUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 import javafx.scene.control.TreeItem;
@@ -18,6 +19,9 @@ public class NavigationBar extends Control {
 
     //默认分隔符
     private String separator = "/";
+
+    //分隔符方向
+    private Pos orientation = Pos.CENTER_LEFT;
 
     private ObservableList<TreeItem> items = FXCollections.observableArrayList();
 
@@ -55,5 +59,13 @@ public class NavigationBar extends Control {
     //获取css url
     public URL getUserAgentStyle() {
         return ResourceUtils.loadCSS("css/controls/navigation-bar.css");
+    }
+
+    public Pos getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(Pos orientation) {
+        this.orientation = orientation;
     }
 }
