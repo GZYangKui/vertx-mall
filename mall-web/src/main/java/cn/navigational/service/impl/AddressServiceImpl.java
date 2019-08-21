@@ -1,6 +1,5 @@
 package cn.navigational.service.impl;
 
-import cn.navigational.base.BaseService;
 import cn.navigational.dao.AddressDao;
 import cn.navigational.dao.impl.AddressDaoImpl;
 import cn.navigational.model.JwtUser;
@@ -14,15 +13,11 @@ import io.vertx.core.json.JsonObject;
 import java.util.List;
 import java.util.Optional;
 
-import static cn.navigational.config.Constants.BODY;
-import static cn.navigational.utils.ResponseUtils.responseFailed;
-import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
 
-public class AddressServiceImpl extends BaseService implements AddressService {
+public class AddressServiceImpl implements AddressService {
     private final AddressDao dao;
 
     public AddressServiceImpl(Vertx vertx, JsonObject config) {
-        super(vertx, config);
         dao = new AddressDaoImpl(vertx, config);
     }
 

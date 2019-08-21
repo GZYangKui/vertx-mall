@@ -1,6 +1,5 @@
 package cn.navigational.service.impl;
 
-import cn.navigational.base.BaseService;
 import cn.navigational.dao.PreferenceDao;
 import cn.navigational.dao.ProductDao;
 import cn.navigational.dao.impl.PreferenceDaoImpl;
@@ -17,13 +16,14 @@ import java.util.stream.Collectors;
 
 import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
 
-public class PreferenceServiceImpl extends BaseService implements PreferenceService {
+public class PreferenceServiceImpl implements PreferenceService {
 
-    private final PreferenceDao dao = new PreferenceDaoImpl(vertx, config);
-    private final ProductDao productDao = new ProductDaoImpl(vertx, config);
+    private final PreferenceDao dao;
+    private final ProductDao productDao;
 
     public PreferenceServiceImpl(Vertx vertx, JsonObject config) {
-        super(vertx, config);
+        dao = new PreferenceDaoImpl(vertx, config);
+        productDao = new ProductDaoImpl(vertx, config);
     }
 
     @Override

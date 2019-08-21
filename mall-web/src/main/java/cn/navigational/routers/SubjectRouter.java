@@ -28,13 +28,7 @@ public class SubjectRouter extends RouterVerticle {
     @RequestMapping(api = "/detail", description = "获取某一个专题详情", method = HttpMethod.GET)
     public void detail(final EBRequest request, final Promise<JsonObject> promise) {
         final int subjectId = Integer.parseInt(request.getQuery("subjectId"));
-        service.detail(subjectId).setHandler(_rs -> {
-            if (_rs.failed()) {
-                promise.fail(_rs.cause());
-                return;
-            }
-            promise.complete(_rs.result());
-        });
+        futureStatus(service.detail(subjectId),promise);
     }
 
     @RequestMapping(api = "/list", description = "获取商城专题列表", method = HttpMethod.GET)

@@ -1,6 +1,5 @@
 package cn.navigational.service.impl;
 
-import cn.navigational.base.BaseService;
 import cn.navigational.dao.UserDao;
 import cn.navigational.dao.impl.UserDaoImpl;
 import cn.navigational.model.RegisterInfo;
@@ -13,6 +12,8 @@ import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
@@ -26,11 +27,13 @@ import static cn.navigational.utils.StringUtils.getCurrentTime;
 import static cn.navigational.utils.TokenUtils.generateKey;
 import static cn.navigational.utils.TokenUtils.sha1;
 
-public class UserServiceImpl extends BaseService implements UserService {
+public class UserServiceImpl implements UserService {
     private final UserDao dao;
+    private final JsonObject config;
+    private static final Logger logger = LogManager.getLogger(UserService.class);
 
     public UserServiceImpl(Vertx vertx, JsonObject config) {
-        super(vertx, config);
+        this.config = config;
         dao = new UserDaoImpl(vertx, config);
     }
 

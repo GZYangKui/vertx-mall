@@ -1,6 +1,5 @@
 package cn.navigational.service.impl;
 
-import cn.navigational.base.BaseService;
 import cn.navigational.dao.ProductSkuDao;
 import cn.navigational.dao.impl.ProductSkuDaoImpl;
 import cn.navigational.service.ProductSkuService;
@@ -13,12 +12,11 @@ import java.util.List;
 
 import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
 
-public class ProductSkuServiceImpl extends BaseService implements ProductSkuService {
+public class ProductSkuServiceImpl  implements ProductSkuService {
 
     private final ProductSkuDao dao;
 
     public ProductSkuServiceImpl(Vertx vertx, JsonObject config) {
-        super(vertx, config);
         dao = new ProductSkuDaoImpl(vertx, config);
     }
 

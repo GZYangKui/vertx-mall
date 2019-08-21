@@ -33,25 +33,13 @@ public class UserRouter extends RouterVerticle {
     @RequestMapping(api = "/login", description = "用户登录", method = HttpMethod.POST)
     public void login(final EBRequest request, final Promise<JsonObject> promise) {
         final User user = request.getBodyAsJson().mapTo(User.class);
-        service.login(user).setHandler(_rs -> {
-            if (_rs.failed()) {
-                promise.fail(_rs.cause());
-                return;
-            }
-            promise.complete(_rs.result());
-        });
+        futureStatus(service.login(user), promise);
     }
 
     @RequestMapping(api = "/register", description = "用户注册", method = HttpMethod.POST)
     public void register(final EBRequest request, final Promise<JsonObject> promise) {
         final RegisterInfo registerInfo = request.getBodyAsJson().mapTo(RegisterInfo.class);
-        service.register(registerInfo).setHandler(_rs -> {
-            if (_rs.failed()) {
-                promise.fail(_rs.cause());
-                return;
-            }
-            promise.complete(_rs.result());
-        });
+        futureStatus(service.register(registerInfo), promise);
     }
 
 }

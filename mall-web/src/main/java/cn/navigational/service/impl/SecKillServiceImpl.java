@@ -1,6 +1,5 @@
 package cn.navigational.service.impl;
 
-import cn.navigational.base.BaseService;
 import cn.navigational.dao.ProductDao;
 import cn.navigational.dao.SecKillDao;
 import cn.navigational.dao.impl.ProductDaoImpl;
@@ -17,16 +16,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
 
 
-public class SecKillServiceImpl extends BaseService implements SecKillService {
-    private SecKillDao dao = new SecKillDaoImpl(vertx, config);
+public class SecKillServiceImpl implements SecKillService {
+    private SecKillDao dao;
 
-    private ProductDao productDao = new ProductDaoImpl(vertx, config);
+    private ProductDao productDao;
 
     public SecKillServiceImpl(Vertx vertx, JsonObject config) {
-        super(vertx, config);
+        dao = new SecKillDaoImpl(vertx, config);
+        productDao = new ProductDaoImpl(vertx, config);
     }
 
     @Override

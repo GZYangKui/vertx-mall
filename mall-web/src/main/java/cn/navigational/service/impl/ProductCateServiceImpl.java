@@ -1,6 +1,5 @@
 package cn.navigational.service.impl;
 
-import cn.navigational.base.BaseService;
 import cn.navigational.dao.ProductCateDao;
 import cn.navigational.dao.impl.ProductCateDaoImpl;
 import cn.navigational.model.Paging;
@@ -10,20 +9,17 @@ import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
-import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
 
 
-public class ProductCateServiceImpl extends BaseService implements ProductCateService {
+public class ProductCateServiceImpl implements ProductCateService {
     private final ProductCateDao dao;
 
     public ProductCateServiceImpl(Vertx vertx, JsonObject config) {
-        super(vertx, config);
         dao = new ProductCateDaoImpl(vertx, config);
     }
 

@@ -119,7 +119,12 @@ public abstract class RouterVerticle extends BaseVerticle {
                 promise.fail(_rs.cause());
                 return;
             }
-            promise.complete(responseSuccessJson(future.result()));
+            T t = future.result();
+            if (t instanceof JsonObject && ((JsonObject) t).containsKey(CODE)) {
+                promise.complete((JsonObject) t);
+            } else {
+                promise.complete(responseSuccessJson(future.result()));
+            }
         });
     }
 }

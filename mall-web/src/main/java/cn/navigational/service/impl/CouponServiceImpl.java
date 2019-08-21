@@ -1,6 +1,6 @@
 package cn.navigational.service.impl;
 
-import cn.navigational.base.BaseService;
+
 import cn.navigational.dao.CouponDao;
 import cn.navigational.dao.impl.CouponDaoImpl;
 import cn.navigational.model.Paging;
@@ -12,15 +12,14 @@ import io.vertx.core.json.JsonObject;
 
 import java.util.List;
 
-import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
 
 
-public class CouponServiceImpl extends BaseService implements CouponService {
+public class CouponServiceImpl  implements CouponService {
 
-    private CouponDao dao = new CouponDaoImpl(vertx, config);
+    private CouponDao dao;
 
     public CouponServiceImpl(Vertx vertx, JsonObject config) {
-        super(vertx, config);
+        dao =  new CouponDaoImpl(vertx, config);
     }
 
     @Override

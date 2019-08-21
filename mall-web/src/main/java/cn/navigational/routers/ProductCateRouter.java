@@ -28,13 +28,7 @@ public class ProductCateRouter extends RouterVerticle {
 
     @RequestMapping(api = "/list", method = HttpMethod.GET, description = "获取分类列表")
     public void list(final EBRequest request, final Promise<JsonObject> promise) {
-        service.list().setHandler(_rs -> {
-            if (_rs.failed()) {
-                promise.fail(_rs.cause());
-                return;
-            }
-            promise.complete(responseSuccessJson(_rs.result()));
-        });
+        futureStatus(service.list(), promise);
     }
 
 }

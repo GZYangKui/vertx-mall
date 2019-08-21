@@ -1,6 +1,6 @@
 package cn.navigational.service.impl;
 
-import cn.navigational.base.BaseService;
+
 import cn.navigational.dao.HomeSubjectDao;
 import cn.navigational.dao.impl.HomeSubjectDaoImpl;
 import cn.navigational.service.HomeSubjectService;
@@ -14,14 +14,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
 
-public class HomeSubjectServiceImpl extends BaseService implements HomeSubjectService {
+public class HomeSubjectServiceImpl implements HomeSubjectService {
 
-    private final HomeSubjectDao dao = new HomeSubjectDaoImpl(vertx, config);
+    private final HomeSubjectDao dao;
 
     public HomeSubjectServiceImpl(Vertx vertx, JsonObject config) {
-        super(vertx, config);
+
+        dao = new HomeSubjectDaoImpl(vertx, config);
     }
 
     @Override

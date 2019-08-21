@@ -1,6 +1,5 @@
 package cn.navigational.service.impl;
 
-import cn.navigational.base.BaseService;
 import cn.navigational.dao.CartDao;
 import cn.navigational.dao.impl.CartDaoImpl;
 import cn.navigational.model.Paging;
@@ -8,23 +7,21 @@ import cn.navigational.service.CartService;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static cn.navigational.config.Constants.BODY;
 import static cn.navigational.utils.ResponseUtils.responseFailed;
 import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
 
-public class CartServiceImpl extends BaseService implements CartService {
+public class CartServiceImpl implements CartService {
 
-    private final CartDao dao = new CartDaoImpl(vertx, config);
+    private final CartDao dao;
 
-    public CartServiceImpl(Vertx vertx, JsonObject config) {
-        super(vertx, config);
+    public CartServiceImpl(Vertx vertx, JsonObject config){
+        dao = new CartDaoImpl(vertx, config);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package cn.navigational.service.impl;
 
-import cn.navigational.base.BaseService;
+
 import cn.navigational.dao.SubjectDao;
 import cn.navigational.dao.impl.SubjectDaoImpl;
 import cn.navigational.model.Paging;
@@ -17,15 +17,15 @@ import java.util.stream.Collectors;
 import static cn.navigational.utils.ResponseUtils.responseFailed;
 import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
 
-public class SubjectServiceImpl extends BaseService implements SubjectService {
-    private final SubjectDao dao = new SubjectDaoImpl(vertx, config);
+public class SubjectServiceImpl implements SubjectService {
+    private final SubjectDao dao;
 
     public SubjectServiceImpl(Vertx vertx, JsonObject config) {
-        super(vertx, config);
+        dao = new SubjectDaoImpl(vertx, config);
     }
 
     @Override
-    public Future<List<JsonObject>> list(Paging paging,int cateId) {
+    public Future<List<JsonObject>> list(Paging paging, int cateId) {
         final Promise<List<JsonObject>> promise = Promise.promise();
 
         dao.getList(paging, cateId).setHandler(_rs -> {

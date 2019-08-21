@@ -68,13 +68,7 @@ public class AddressRouter extends RouterVerticle {
 
     @RequestMapping(api = "/create", method = HttpMethod.POST, description = "添加新地址信息")
     public void create(final EBRequest request, final Promise<JsonObject> promise) {
-        service.create(request.getBodyAsJson(), request.getUser().getUserId()).setHandler(_rs -> {
-            if (_rs.failed()) {
-                promise.fail(_rs.cause());
-                return;
-            }
-            promise.complete(responseSuccessJson());
-        });
+        futureStatus(service.create(request.getBodyAsJson(), request.getUser().getUserId()),promise);
     }
 
     @RequestMapping(api = "/updateDefault", method = HttpMethod.POST, description = "更新默认地址")
