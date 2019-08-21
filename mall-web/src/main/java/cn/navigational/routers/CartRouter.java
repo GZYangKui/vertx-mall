@@ -31,13 +31,7 @@ public class CartRouter extends RouterVerticle {
 
     @RequestMapping(api = "/list", method = HttpMethod.GET, description = "获取购物车商品列表")
     public void list(final EBRequest request, final Promise<JsonObject> promise) {
-        service.list(request.getUser().getUserId(), request.getPaging()).setHandler(_rs -> {
-            if (_rs.failed()) {
-                promise.fail(_rs.cause());
-                return;
-            }
-            promise.complete(responseSuccessJson(_rs.result()));
-        });
+        futureStatus(service.list(request.getUser().getUserId(), request.getPaging()),promise);
     }
 
     @RequestMapping(api = "/computer", method = HttpMethod.POST, description = "计算购物车内商品价格")
@@ -60,13 +54,7 @@ public class CartRouter extends RouterVerticle {
     public void updateNum(final EBRequest request, final Promise<JsonObject> promise) {
         final long number = request.getBodyAsJson().getLong("number");
         final long cartId = Long.parseLong(request.getQuery("cartId"));
-        service.updateNum(number, cartId).setHandler(_rs -> {
-            if (_rs.failed()) {
-                promise.fail(_rs.cause());
-                return;
-            }
-            promise.complete(_rs.result());
-        });
+        futureStatus(service.updateNum(number, cartId),promise);
     }
 
     @RequestMapping(api = "/deletes", method = HttpMethod.POST, description = "删除购物车中的商品")

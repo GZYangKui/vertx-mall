@@ -30,7 +30,7 @@ public class SecKillServiceImpl extends BaseService implements SecKillService {
     }
 
     @Override
-    public Future<JsonObject> home(JsonObject obj) {
+    public Future<JsonObject> home() {
         final Promise<JsonObject> promise = Promise.promise();
         dao.getTimeSlot().setHandler(_rs -> {
             if (_rs.failed()) {
@@ -39,7 +39,7 @@ public class SecKillServiceImpl extends BaseService implements SecKillService {
             }
             final List<JsonObject> list = _rs.result();
             if (list.isEmpty()) {
-                promise.complete(responseSuccessJson());
+                promise.complete(new JsonObject());
                 return;
             }
 
@@ -62,7 +62,7 @@ public class SecKillServiceImpl extends BaseService implements SecKillService {
                 }).findFirst();
                 //如果为空,说明今天没有秒杀活动
                 if (o.isEmpty()) {
-                    promise.complete(responseSuccessJson());
+                    promise.complete(new JsonObject());
                     return;
                 }
                 timeSlot = o.get();
@@ -76,15 +76,15 @@ public class SecKillServiceImpl extends BaseService implements SecKillService {
                     return;
                 }
                 timeSlot.put("products", _r.result());
-                promise.complete(responseSuccessJson(timeSlot));
+                promise.complete(timeSlot);
             });
         });
         return promise.future();
     }
 
     @Override
-    public Future<JsonObject> timeSlots(JsonObject obj) {
-        final Promise<JsonObject> promise = Promise.promise();
+    public Future<List<JsonObject>> timeSlots() {
+        final Promise<List<JsonObject>> promise = Promise.promise();
         dao.getTimeSlot().setHandler(_rs -> {
             if (_rs.failed()) {
                 promise.fail(_rs.cause());
@@ -106,21 +106,20 @@ public class SecKillServiceImpl extends BaseService implements SecKillService {
                     _item.put("status", 3);
                 }
             });
-            promise.complete(responseSuccessJson(list));
+            promise.complete(list);
         });
         return promise.future();
     }
 
     @Override
-    public Future<JsonObject> timeSlotWithProduct(JsonObject obj) {
-        final Promise<JsonObject> promise = Promise.promise();
-        final long id = Long.parseLong(getQuery(obj, "timeSlotId"));
+    public Future<List<JsonObject>> timeSlotWithProduct(long id) {
+        final Promise<List<JsonObject>> promise = Promise.promise();
         getProducts(id).setHandler(_rs -> {
             if (_rs.failed()) {
                 promise.fail(_rs.cause());
                 return;
             }
-            promise.complete(responseSuccessJson(_rs.result()));
+            promise.complete(_rs.result());
         });
         return promise.future();
     }

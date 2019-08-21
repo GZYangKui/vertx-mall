@@ -4,6 +4,7 @@ import cn.navigational.annotation.RequestMapping;
 import cn.navigational.annotation.Router;
 import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
+import cn.navigational.model.EBRequest;
 import cn.navigational.service.SecKillService;
 import cn.navigational.service.impl.SecKillServiceImpl;
 import io.vertx.core.Future;
@@ -24,18 +25,19 @@ public class SecKillRouter extends RouterVerticle {
     }
 
     @RequestMapping(api = "/home", description = "获取首页秒杀信息")
-    public Future<JsonObject> list(JsonObject obj) {
-        return service.home(obj);
+    public void list(final EBRequest request, final Promise<JsonObject> promise) {
+        futureStatus(service.home(), promise);
     }
 
-    @RequestMapping(api = "/timeSlots",method = HttpMethod.GET,description = "获取请购时间段")
-    public Future<JsonObject> timeSlots(JsonObject obj){
-        return service.timeSlots(obj);
+    @RequestMapping(api = "/timeSlots", method = HttpMethod.GET, description = "获取请购时间段")
+    public void timeSlots(final EBRequest request, final Promise<JsonObject> promise) {
+        futureStatus(service.timeSlots(), promise);
     }
 
-    @RequestMapping(api = "/timeSlotWithProduct",method = HttpMethod.GET,description = "获取某个时间段的商品信息")
-    public Future<JsonObject> timeSlotWithProduct(JsonObject obj){
-        return service.timeSlotWithProduct(obj);
+    @RequestMapping(api = "/timeSlotWithProduct", method = HttpMethod.GET, description = "获取某个时间段的商品信息")
+    public void timeSlotWithProduct(final EBRequest request, final Promise<JsonObject> promise) {
+        final long timeSlotId = Long.parseLong(request.getQuery("timeSlotId"));
+        futureStatus(service.timeSlotWithProduct(timeSlotId), promise);
     }
 
 }

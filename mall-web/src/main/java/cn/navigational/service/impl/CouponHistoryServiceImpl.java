@@ -28,13 +28,15 @@ public class CouponHistoryServiceImpl extends BaseService implements CouponHisto
     }
 
     @Override
-    public Future<JsonObject> list(JsonObject obj) {
-        final Promise<JsonObject> promise = Promise.promise();
-        final long userId = getUser(obj).getUserId();
-        final Paging paging = getPaging(obj);
+    public Future<List<JsonObject>> list(long userId, Paging paging) {
+        final Promise<List<JsonObject>> promise = Promise.promise();
         dao.getList(userId, paging).setHandler(_rs -> {
             if (_rs.failed()) {
                 promise.fail(_rs.cause());
+                return;
+            }
+            if (_rs.result().isEmpty()) {
+                promise.complete(List.of());
                 return;
             }
             final List<JsonObject> list = _rs.result();
@@ -45,37 +47,34 @@ public class CouponHistoryServiceImpl extends BaseService implements CouponHisto
                     return;
                 }
                 //优惠券已经不存在,存储然后异步删除
-                final List<JsonObject> destroy = new ArrayList<>();
+
+                final JsonArray destroy = new JsonArray();
                 list.forEach(_i -> {
                     final Optional<JsonObject> optional = _rr.result().stream().filter(_in -> _in.getInteger("id") == _i.getInteger("coupon_id")).findAny();
                     if (optional.isEmpty()) {
-                        destroy.add(_i);
+                        destroy.add(_i.getInteger("id"));
                         return;
                     }
                     _i.put("coupon", optional.get());
                 });
                 if (!destroy.isEmpty()) {
-                    final List<Integer> temp = destroy.stream().map(_r -> _r.getInteger("id")).collect(Collectors.toList());
-                    final JsonObject msg = new JsonObject();
-                    msg.put(BODY, new JsonObject().put("ids", temp));
-                    deleteHistory(msg);
+                    deleteHistory(destroy);
                 }
-                promise.complete(responseSuccessJson(list));
+                promise.complete(list);
             });
         });
         return promise.future();
     }
 
     @Override
-    public Future<JsonObject> deleteHistory(JsonObject obj) {
-        final Promise<JsonObject> promise = Promise.promise();
-        final JsonArray deleteList = obj.getJsonObject(BODY).getJsonArray("ids");
-        dao.deleteHistory(deleteList).setHandler(_rs -> {
+    public Future<Integer> deleteHistory(JsonArray ids) {
+        final Promise<Integer> promise = Promise.promise();
+        dao.deleteHistory(ids).setHandler(_rs -> {
             if (_rs.failed()) {
                 promise.fail(_rs.cause());
                 return;
             }
-            promise.complete(responseSuccessJson());
+            promise.complete(_rs.result());
         });
         return promise.future();
     }

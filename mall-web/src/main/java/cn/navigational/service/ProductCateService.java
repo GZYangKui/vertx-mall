@@ -3,6 +3,8 @@ package cn.navigational.service;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 
+import java.util.List;
+
 public interface ProductCateService {
     /**
      *
@@ -10,6 +12,6 @@ public interface ProductCateService {
      *
      *
      */
-    Future<JsonObject> list(JsonObject obj);
+    Future<List<JsonObject>> list();
 
 }

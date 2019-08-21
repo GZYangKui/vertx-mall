@@ -25,16 +25,10 @@ public class SubjectServiceImpl extends BaseService implements SubjectService {
     }
 
     @Override
-    public Future<JsonObject> list(JsonObject obj) {
-        final Promise<JsonObject> promise = Promise.promise();
+    public Future<List<JsonObject>> list(Paging paging,int cateId) {
+        final Promise<List<JsonObject>> promise = Promise.promise();
 
-        //分页查询参数
-        final Paging page = getPaging(obj);
-
-        //专题分类id
-        final int cateId = Integer.parseInt(getQuery(obj, "cateId"));
-
-        dao.getList(page, cateId).setHandler(_rs -> {
+        dao.getList(paging, cateId).setHandler(_rs -> {
             if (_rs.failed()) {
                 promise.fail(_rs.cause());
                 return;
@@ -43,7 +37,7 @@ public class SubjectServiceImpl extends BaseService implements SubjectService {
             final List<Integer> cateIds = list.stream().map(_r -> _r.getInteger("category_id"))
                     .distinct().collect(Collectors.toList());
             if (list.isEmpty() || cateIds.isEmpty()) {
-                promise.complete(responseSuccessJson(List.of()));
+                promise.complete(List.of());
                 return;
             }
             dao.getSubjectCateInfo(cateIds).setHandler(_rr -> {
@@ -58,16 +52,16 @@ public class SubjectServiceImpl extends BaseService implements SubjectService {
                         temp.add(_tt);
                     });
                 });
-                promise.complete(responseSuccessJson(temp));
+                promise.complete(temp);
             });
         });
         return promise.future();
     }
 
     @Override
-    public Future<JsonObject> detail(JsonObject obj) {
+    public Future<JsonObject> detail(int subjectId) {
         final Promise<JsonObject> promise = Promise.promise();
-        final int subjectId = Integer.parseInt(getQuery(obj, "subjectId"));
+
         dao.getSubjectInfo(subjectId).setHandler(_rs -> {
             if (_rs.failed()) {
                 promise.fail(_rs.cause());
@@ -96,14 +90,14 @@ public class SubjectServiceImpl extends BaseService implements SubjectService {
     }
 
     @Override
-    public Future<JsonObject> cateList(JsonObject obj) {
-        final Promise<JsonObject> promise = Promise.promise();
+    public Future<List<JsonObject>> cateList() {
+        final Promise<List<JsonObject>> promise = Promise.promise();
         dao.getSubjectCateList().setHandler(_rs -> {
             if (_rs.failed()) {
                 promise.fail(_rs.cause());
                 return;
             }
-            promise.complete(responseSuccessJson(_rs.result()));
+            promise.complete(_rs.result());
         });
         return promise.future();
     }

@@ -25,8 +25,8 @@ public class HomeSubjectServiceImpl extends BaseService implements HomeSubjectSe
     }
 
     @Override
-    public Future<JsonObject> list(JsonObject obj) {
-        final Promise<JsonObject> promise = Promise.promise();
+    public Future<List<JsonObject>> list() {
+        final Promise<List<JsonObject>> promise = Promise.promise();
         dao.getList().setHandler(_rs -> {
             if (_rs.failed()) {
                 promise.fail(_rs.cause());
@@ -34,7 +34,7 @@ public class HomeSubjectServiceImpl extends BaseService implements HomeSubjectSe
             }
             final List<JsonObject> list = _rs.result();
             if (list.isEmpty()) {
-                promise.complete(responseSuccessJson(List.of()));
+                promise.complete(List.of());
                 return;
             }
             final List<Integer> ids = list.stream().map(_r -> _r.getInteger("subject_id")).collect(Collectors.toList());
@@ -57,7 +57,7 @@ public class HomeSubjectServiceImpl extends BaseService implements HomeSubjectSe
                 //去除专题不存在的数据
                 destroy.forEach(list::remove);
 
-                promise.complete(responseSuccessJson(list));
+                promise.complete(list);
             });
         });
         return promise.future();

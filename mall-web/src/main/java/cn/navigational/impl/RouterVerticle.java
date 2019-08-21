@@ -15,9 +15,11 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import static cn.navigational.config.Constants.*;
 import static cn.navigational.utils.ResponseUtils.responseFailed;
+import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
 
 /**
  * 用eventBus和通过注解反射方式来执行特定的方法
@@ -68,6 +70,7 @@ public abstract class RouterVerticle extends BaseVerticle {
             try {
 
                 final Method method = (Method) requestMapping.get(path).get("execute");
+
                 final Promise<JsonObject> promise = Promise.promise();
 
                 method.invoke(this, ebRequest, promise);
@@ -81,7 +84,8 @@ public abstract class RouterVerticle extends BaseVerticle {
                     _msg.reply(_rs.result());
                 });
             } catch (IllegalAccessException | InvocationTargetException e) {
-                logger.error("reflect execute failed cause:{}", e.getCause().getMessage());
+                logger.error("reflect execute failed cause:{}", Optional.of(e.getCause()).orElse(new Exception("NullPointException")).getMessage());
+                e.printStackTrace();
                 _msg.reply(error(e.getCause()));
             }
         });
@@ -109,13 +113,13 @@ public abstract class RouterVerticle extends BaseVerticle {
         }
     }
 
-    protected <T> Future<T> futureStatus(Future<T> future, Promise promise) {
-        final Promise<T> promise1 = Promise.promise();
-        if (future.failed()) {
-            promise.fail(future.cause());
-        } else {
-            promise1.complete(future.result());
-        }
-        return promise1.future();
+    protected <T> void futureStatus(Future<T> future, Promise<JsonObject> promise) {
+        future.setHandler(_rs -> {
+            if (_rs.failed()) {
+                promise.fail(_rs.cause());
+                return;
+            }
+            promise.complete(responseSuccessJson(future.result()));
+        });
     }
 }

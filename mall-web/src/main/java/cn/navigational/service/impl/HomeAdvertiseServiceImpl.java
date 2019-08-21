@@ -9,6 +9,8 @@ import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 
+import java.util.List;
+
 import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
 
 public class HomeAdvertiseServiceImpl extends BaseService implements HomeAdvertiseService {
@@ -19,15 +21,14 @@ public class HomeAdvertiseServiceImpl extends BaseService implements HomeAdverti
     }
 
     @Override
-    public Future<JsonObject> list(JsonObject obj) {
-        final Promise<JsonObject> promise = Promise.promise();
-        final int type = Integer.parseInt(getQuery(obj, "type"));
+    public Future<List<JsonObject>> list(int type) {
+        final Promise<List<JsonObject>> promise = Promise.promise();
         dao.getList(type).setHandler(_rs -> {
             if (_rs.failed()) {
                 promise.fail(_rs.cause());
                 return;
             }
-            promise.complete(responseSuccessJson(_rs.result()));
+            promise.complete(_rs.result());
         });
         return promise.future();
     }

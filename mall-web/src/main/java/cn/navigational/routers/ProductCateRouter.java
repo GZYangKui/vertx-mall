@@ -4,6 +4,7 @@ import cn.navigational.annotation.RequestMapping;
 import cn.navigational.annotation.Router;
 import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
+import cn.navigational.model.EBRequest;
 import cn.navigational.service.ProductCateService;
 import cn.navigational.service.impl.ProductCateServiceImpl;
 import io.vertx.core.Future;
@@ -11,6 +12,8 @@ import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
+
+import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
 
 @Verticle()
 @Router(api = "/api/productCate")
@@ -23,9 +26,15 @@ public class ProductCateRouter extends RouterVerticle {
         service = new ProductCateServiceImpl(vertx, config());
     }
 
-    @RequestMapping(api = "/list",method = HttpMethod.GET,description = "获取分类列表")
-    public Future<JsonObject> list(JsonObject obj) {
-        return service.list(obj);
+    @RequestMapping(api = "/list", method = HttpMethod.GET, description = "获取分类列表")
+    public void list(final EBRequest request, final Promise<JsonObject> promise) {
+        service.list().setHandler(_rs -> {
+            if (_rs.failed()) {
+                promise.fail(_rs.cause());
+                return;
+            }
+            promise.complete(responseSuccessJson(_rs.result()));
+        });
     }
 
 }

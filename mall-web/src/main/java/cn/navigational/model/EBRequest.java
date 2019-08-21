@@ -116,6 +116,7 @@ public class EBRequest {
         ebRequest.setPath(obj.getString(PATH));
         ebRequest.setHeaders(obj.getJsonObject(HEADERS));
         ebRequest.setMethod(HttpMethod.valueOf(obj.getString(HTTP_METHOD)));
+        ebRequest.setQuery(obj.getJsonObject(QUERY));
         if (ebRequest.getMethod() == HttpMethod.POST) {
             ebRequest.setBody(obj.getValue(BODY));
         }

@@ -33,24 +33,12 @@ public class AddressRouter extends RouterVerticle {
     public void list(final EBRequest request, final Promise<JsonObject> promise) {
         final JwtUser user = request.getUser();
         final Paging paging = request.getPaging();
-        service.list(paging, user).setHandler(_rs -> {
-            if (_rs.failed()) {
-                promise.fail(_rs.cause());
-                return;
-            }
-            promise.complete(responseSuccessJson(_rs.result()));
-        });
+        futureStatus(service.list(paging, user),promise);
     }
 
     @RequestMapping(api = "/default", method = HttpMethod.GET, description = "获取默认收货地址")
     public void defaultAddress(final EBRequest request, final Promise<JsonObject> promise) {
-        service.defaultAddress(request.getUser()).setHandler(_rs -> {
-            if (_rs.failed()) {
-                promise.fail(_rs.cause());
-                return;
-            }
-            promise.complete(_rs.result());
-        });
+        futureStatus(service.defaultAddress(request.getUser()),promise);
     }
 
     @RequestMapping(api = "/detail", method = HttpMethod.GET, description = "获取地址详情")

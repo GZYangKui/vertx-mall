@@ -29,28 +29,27 @@ public class ProductServiceImpl extends BaseService implements ProductService {
     }
 
     @Override
-    public Future<JsonObject> list(JsonObject obj) {
-        final Promise<JsonObject> promise = Promise.promise();
-        dao.list(getPaging(obj)).setHandler(_rs -> {
+    public Future<List<JsonObject>> list(Paging paging) {
+        final Promise<List<JsonObject>> promise = Promise.promise();
+        dao.list(paging).setHandler(_rs -> {
             if (_rs.failed()) {
                 promise.fail(_rs.cause());
                 return;
             }
-            promise.complete(responseSuccessJson(_rs.result()));
+            promise.complete(_rs.result());
         });
         return promise.future();
     }
 
     @Override
-    public Future<JsonObject> recommendProduct(JsonObject object) {
-        final Promise<JsonObject> promise = Promise.promise();
-        final Paging page = getPaging(object);
-        dao.getRecommend(page).setHandler(_rs -> {
+    public Future<List<JsonObject>> recommendProduct(Paging paging) {
+        final Promise<List<JsonObject>> promise = Promise.promise();
+        dao.getRecommend(paging).setHandler(_rs -> {
             if (_rs.failed()) {
                 promise.fail(_rs.cause());
                 return;
             }
-            promise.complete(responseSuccessJson(_rs.result()));
+            promise.complete(_rs.result());
         });
         return promise.future();
     }

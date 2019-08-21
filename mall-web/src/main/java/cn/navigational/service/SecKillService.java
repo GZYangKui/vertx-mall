@@ -4,12 +4,14 @@ package cn.navigational.service;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 
+import java.util.List;
+
 
 public interface SecKillService {
     /**
      * 获取首页最近时间段秒杀情况
      */
-    Future<JsonObject> home(JsonObject obj);
+    Future<JsonObject> home();
 
     /**
      *
@@ -20,7 +22,7 @@ public interface SecKillService {
      * 3 表示该时间段即将开抢
      *
      */
-    Future<JsonObject> timeSlots(JsonObject obj);
+    Future<List<JsonObject>> timeSlots();
 
     /**
      *
@@ -28,6 +30,6 @@ public interface SecKillService {
      *
      *
      */
-    Future<JsonObject> timeSlotWithProduct(JsonObject obj);
+    Future<List<JsonObject>> timeSlotWithProduct(long id);
 
 }

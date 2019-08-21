@@ -23,16 +23,15 @@ public class ProductSkuServiceImpl extends BaseService implements ProductSkuServ
     }
 
     @Override
-    public Future<JsonObject> sku(JsonObject obj) {
-        final Promise<JsonObject> promise = Promise.promise();
-        final int id = Integer.parseInt(getQuery(obj, "productId"));
-        dao.getSku(id).setHandler(_rs -> {
+    public Future<List<JsonObject>> sku(int productId) {
+        final Promise<List<JsonObject>> promise = Promise.promise();
+        dao.getSku(productId).setHandler(_rs -> {
             if (_rs.failed()) {
                 promise.fail(_rs.cause());
                 return;
             }
             final List<JsonObject> list = _rs.result();
-            promise.complete(responseSuccessJson(list));
+            promise.complete(list);
         });
         return promise.future();
     }

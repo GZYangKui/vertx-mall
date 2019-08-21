@@ -28,8 +28,8 @@ public class ProductCateServiceImpl extends BaseService implements ProductCateSe
     }
 
     @Override
-    public Future<JsonObject> list(JsonObject obj) {
-        final Promise<JsonObject> promise = Promise.promise();
+    public Future<List<JsonObject>> list() {
+        final Promise<List<JsonObject>> promise = Promise.promise();
 
         dao.getCateList().setHandler(_rs -> {
             if (_rs.failed()) {
@@ -39,7 +39,7 @@ public class ProductCateServiceImpl extends BaseService implements ProductCateSe
             final List<JsonObject> list = _rs.result();
 
             if (list.isEmpty()) {
-                promise.complete(responseSuccessJson(List.of()));
+                promise.complete(List.of());
                 return;
             }
 
@@ -55,7 +55,7 @@ public class ProductCateServiceImpl extends BaseService implements ProductCateSe
             //倒叙排列
             categories.sort(Comparator.comparing(_rr -> ((JsonObject) _rr).getInteger("sort")).reversed());
 
-            promise.complete(responseSuccessJson(categories));
+            promise.complete(categories);
         });
 
         return promise.future();

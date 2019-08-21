@@ -10,7 +10,6 @@ import cn.navigational.service.PreferenceService;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 import java.util.List;
@@ -28,10 +27,8 @@ public class PreferenceServiceImpl extends BaseService implements PreferenceServ
     }
 
     @Override
-    public Future<JsonObject> list(JsonObject obj) {
-        final Promise<JsonObject> promise = Promise.promise();
-
-        final Paging paging = getPaging(obj);
+    public Future<List<JsonObject>> list(Paging paging) {
+        final Promise<List<JsonObject>> promise = Promise.promise();
 
         dao.getList(paging).setHandler(_rs -> {
             if (_rs.failed()) {
@@ -40,7 +37,7 @@ public class PreferenceServiceImpl extends BaseService implements PreferenceServ
             }
             final List<JsonObject> list = _rs.result();
             if (list.isEmpty()) {
-                promise.complete(responseSuccessJson(List.of()));
+                promise.complete(List.of());
                 return;
             }
 
@@ -62,7 +59,7 @@ public class PreferenceServiceImpl extends BaseService implements PreferenceServ
                 final List<Integer> products = temp.stream().map(_r -> _r.getInteger("product_id")).collect(Collectors.toList());
 
                 if (products.isEmpty()) {
-                    promise.complete(responseSuccessJson(list));
+                    promise.complete(list);
                     return;
                 }
 
@@ -89,7 +86,7 @@ public class PreferenceServiceImpl extends BaseService implements PreferenceServ
                                 .collect(Collectors.toList());
                         _t.put("products", p);
                     });
-                    promise.complete(responseSuccessJson(list));
+                    promise.complete(list);
                 });
             });
         });
