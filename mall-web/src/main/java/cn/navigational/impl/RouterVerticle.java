@@ -108,4 +108,14 @@ public abstract class RouterVerticle extends BaseVerticle {
             return "";
         }
     }
+
+    protected <T> Future<T> futureStatus(Future<T> future, Promise promise) {
+        final Promise<T> promise1 = Promise.promise();
+        if (future.failed()) {
+            promise.fail(future.cause());
+        } else {
+            promise1.complete(future.result());
+        }
+        return promise1.future();
+    }
 }

@@ -10,11 +10,12 @@ import cn.navigational.model.Paging;
 import cn.navigational.service.AddressService;
 import cn.navigational.service.impl.AddressServiceImpl;
 
-import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 
+
+import static cn.navigational.utils.ResponseUtils.responseFailed;
 import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
 
 @Verticle
@@ -43,37 +44,74 @@ public class AddressRouter extends RouterVerticle {
 
     @RequestMapping(api = "/default", method = HttpMethod.GET, description = "获取默认收货地址")
     public void defaultAddress(final EBRequest request, final Promise<JsonObject> promise) {
-
         service.defaultAddress(request.getUser()).setHandler(_rs -> {
             if (_rs.failed()) {
                 promise.fail(_rs.cause());
                 return;
             }
+            promise.complete(_rs.result());
         });
     }
 
     @RequestMapping(api = "/detail", method = HttpMethod.GET, description = "获取地址详情")
     public void detail(final EBRequest request, final Promise<JsonObject> promise) {
-        return service.detail(obj);
+        service.detail(Integer.parseInt(request.getQuery("address_id"))).setHandler(_rs -> {
+            if (_rs.failed()) {
+                promise.fail(_rs.cause());
+                return;
+            }
+            promise.complete(_rs.result().isEmpty() ? responseFailed("未找到对应的地址信息", 200):responseSuccessJson(_rs.result()));
+        });
     }
 
     @RequestMapping(api = "/update", method = HttpMethod.POST, description = "更新地址信息")
     public void update(final EBRequest request, final Promise<JsonObject> promise) {
-        return service.update(obj);
+        final JsonObject info = request.getBodyAsJson();
+        final long userId = request.getUser().getUserId();
+        final int addressId = Integer.parseInt(request.getQuery("address_id"));
+        service.update(info, userId, addressId).setHandler(_rs -> {
+            if (_rs.failed()) {
+                promise.fail(_rs.cause());
+                return;
+            }
+            promise.complete(_rs.result() ? responseSuccessJson() : responseFailed("更新地址信息失败", 200));
+        });
     }
 
     @RequestMapping(api = "/create", method = HttpMethod.POST, description = "添加新地址信息")
     public void create(final EBRequest request, final Promise<JsonObject> promise) {
-        return service.create(obj);
+        service.create(request.getBodyAsJson(), request.getUser().getUserId()).setHandler(_rs -> {
+            if (_rs.failed()) {
+                promise.fail(_rs.cause());
+                return;
+            }
+            promise.complete(responseSuccessJson());
+        });
     }
 
     @RequestMapping(api = "/updateDefault", method = HttpMethod.POST, description = "更新默认地址")
     public void updateDefault(final EBRequest request, final Promise<JsonObject> promise) {
-        return service.updateDefault(obj);
+        final int addressId = request.getBodyAsJson().getInteger("addressId");
+        final long userId = request.getUser().getUserId();
+        service.updateDefault(addressId, userId).setHandler(_rs -> {
+            if (_rs.failed()) {
+                promise.fail(_rs.cause());
+                return;
+            }
+            promise.complete(_rs.result() ? responseSuccessJson() : responseFailed("地址信息不存在。", 200));
+        });
     }
 
     @RequestMapping(api = "/delete", method = HttpMethod.POST, description = "删除地址信息")
     public void delete(final EBRequest request, final Promise<JsonObject> promise) {
-        return service.delete(obj);
+        final int addressId = request.getBodyAsJson().getInteger("addressId");
+        final long userId = request.getUser().getUserId();
+        service.delete(addressId,userId).setHandler(_rs->{
+            if (_rs.failed()){
+                promise.fail(_rs.cause());
+                return;
+            }
+            promise.complete(_rs.result()?responseSuccessJson():responseFailed("删除失败",200));
+        });
     }
 }

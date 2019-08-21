@@ -1,6 +1,7 @@
 package cn.navigational.model;
 
 import io.vertx.core.http.HttpMethod;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 import static cn.navigational.config.Constants.*;
@@ -86,8 +87,20 @@ public class EBRequest {
         this.query = query;
     }
 
+    public JsonObject getBodyAsJson() {
+        return (JsonObject) body;
+    }
+
+    public JsonArray getBodyAsJsonArray() {
+        return (JsonArray) body;
+    }
+
+    public byte[] getBodyAsByte() {
+        return (byte[]) body;
+    }
+
     //获取query中制定参数的值
-    public String getQuery(JsonObject object, String key) {
+    public String getQuery(String key) {
         return getQuery().getString(key);
     }
 
