@@ -1,17 +1,23 @@
 package cn.navigational.service;
 
+import cn.navigational.model.JwtUser;
+import cn.navigational.model.Paging;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
+
+import java.util.List;
 
 public interface AddressService {
     /**
      *
      * 获取收货地址列表
      *
-     * @param obj
+     * @param  paging 分页参数
+     * @param user 用户信息
+     *
      * @return
      */
-    Future<JsonObject> list(JsonObject obj);
+    Future<List<JsonObject>> list(Paging paging, JwtUser user);
 
     /**
      *
@@ -19,7 +25,7 @@ public interface AddressService {
      * 获取默认收货地址
      *
      */
-    Future<JsonObject> defaultAddress(JsonObject obj);
+    Future<JsonObject> defaultAddress(JwtUser user);
 
 
     /**

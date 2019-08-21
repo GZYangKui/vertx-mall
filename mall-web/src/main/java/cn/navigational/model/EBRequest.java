@@ -24,6 +24,8 @@ public class EBRequest {
     //请求body
     private Object body;
 
+    private JwtUser user;
+
     private EBRequest() {
     }
 
@@ -68,6 +70,14 @@ public class EBRequest {
         this.eventAddress = eventAddress;
     }
 
+    public JwtUser getUser() {
+        return user;
+    }
+
+    public void setUser(JwtUser user) {
+        this.user = user;
+    }
+
     public JsonObject getQuery() {
         return query;
     }
@@ -76,16 +86,33 @@ public class EBRequest {
         this.query = query;
     }
 
+    //获取query中制定参数的值
+    public String getQuery(JsonObject object, String key) {
+        return getQuery().getString(key);
+    }
+
+    //获取分页参数
+    public Paging getPaging() {
+        return new Paging(getQuery());
+    }
+
     public static EBRequest create(JsonObject obj) {
+
         final EBRequest ebRequest = new EBRequest();
+        ebRequest.setEventAddress(obj.getString(EVENT_ADDRESS));
         ebRequest.setPath(obj.getString(PATH));
         ebRequest.setHeaders(obj.getJsonObject(HEADERS));
         ebRequest.setMethod(HttpMethod.valueOf(obj.getString(HTTP_METHOD)));
         if (ebRequest.getMethod() == HttpMethod.POST) {
             ebRequest.setBody(obj.getValue(BODY));
         }
-        ebRequest.setEventAddress(obj.getString(EVENT_ADDRESS));
-        System.out.println(JsonObject.mapFrom(ebRequest).encodePrettily());
+
+        final JsonObject user = obj.getJsonObject(USER);
+
+        if (user != null) {
+            final JwtUser jwtUser = user.mapTo(JwtUser.class);
+            ebRequest.setUser(jwtUser);
+        }
         return ebRequest;
     }
 }

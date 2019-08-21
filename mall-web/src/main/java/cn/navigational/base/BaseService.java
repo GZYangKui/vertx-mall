@@ -37,14 +37,18 @@ public class BaseService {
     }
 
     /**
+     *
      * 获取query中制定参数的值
+     *
      */
     protected String getQuery(JsonObject object, String key) {
         return getQuery(object).getString(key);
     }
 
     /**
+     *
      * 获取分页参数
+     *
      */
     protected Paging getPaging(JsonObject obj) {
         return new Paging(getQuery(obj));

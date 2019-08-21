@@ -6,6 +6,7 @@ import cn.navigational.base.BaseVerticle;
 import cn.navigational.model.EBRequest;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 
 import java.lang.annotation.Annotation;
@@ -19,7 +20,7 @@ import static cn.navigational.config.Constants.*;
 import static cn.navigational.utils.ResponseUtils.responseFailed;
 
 /**
- * 用eventBus和通过注解发射方式来执行特定的方法
+ * 用eventBus和通过注解反射方式来执行特定的方法
  *
  * @author GZYangKui
  * @see io.vertx.core.eventbus.EventBus
@@ -43,7 +44,7 @@ public abstract class RouterVerticle extends BaseVerticle {
                 if (annotation.annotationType() == RequestMapping.class) {
                     final RequestMapping map = (RequestMapping) annotation;
                     final Map<String, Object> info = new HashMap<>();
-                    info.put(HTTP_METHOD, ((RequestMapping) annotation).method().toString());
+                    info.put(HTTP_METHOD, ((RequestMapping) annotation).method());
                     info.put("execute", method);
                     requestMapping.put(router.api() + map.api(), info);
                 }
@@ -52,19 +53,26 @@ public abstract class RouterVerticle extends BaseVerticle {
         vertx.eventBus().<JsonObject>consumer(getAPi(), _msg -> {
             final JsonObject data = _msg.body();
 
-            EBRequest ebRequest = EBRequest.create(data);
+            final EBRequest ebRequest = EBRequest.create(data);
 
-            final String path = data.getString(PATH);
-            final String httpMethod = data.getString(HTTP_METHOD);
+            final String path = ebRequest.getPath();
+            final HttpMethod httpMethod = ebRequest.getMethod();
+
             //检查当前api是否存在,以及请求方法是否符合@RequestMapping中设定的请求方法
-            if (!requestMapping.containsKey(path) || !requestMapping.get(path).get(HTTP_METHOD).equals(httpMethod)) {
+            if (!requestMapping.containsKey(path) || requestMapping.get(path).get(HTTP_METHOD) != httpMethod) {
                 _msg.reply(notFound(path));
                 return;
             }
+
             //反射执行特定方法
             try {
+
                 final Method method = (Method) requestMapping.get(path).get("execute");
-                ((Future<JsonObject>) method.invoke(this, data)).setHandler(_rs -> {
+                final Promise<JsonObject> promise = Promise.promise();
+
+                method.invoke(this, ebRequest, promise);
+
+                promise.future().setHandler(_rs -> {
                     if (_rs.failed()) {
                         logger.error("业务逻辑处理失败:{}", _rs.cause().getMessage());
                         _msg.reply(error(_rs.cause()));
