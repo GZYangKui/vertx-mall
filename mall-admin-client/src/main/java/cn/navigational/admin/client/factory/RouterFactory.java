@@ -7,8 +7,6 @@ import io.vertx.core.json.JsonObject;
 import javafx.scene.control.TreeItem;
 import javafx.scene.layout.HBox;
 
-import java.util.Objects;
-
 import static cn.navigational.admin.client.config.Constants.*;
 
 /**
@@ -25,43 +23,30 @@ public class RouterFactory {
 
     //执行解析json成TreeItem工作
     public RouterFactory build() {
-        final JsonObject root = router.getJsonObject(ROOT);
-        analysis(root, null);
+        final JsonObject rootInfo = router.getJsonObject(ROOT);
+        final RouterModel model = rootInfo.mapTo(RouterModel.class);
+        root = new RouterItem(model);
+        analysis(rootInfo, root);
         return this;
     }
 
     /**
-     * 通过递归方式解析子节点
+     * 通过递归方式解析子节点root
      *
      * @param obj    路由信息
      * @param parent 父节点
      */
     private void analysis(JsonObject obj, RouterItem parent) {
         final JsonArray children = obj.getJsonArray(CHILDREN, new JsonArray());
-        final RouterModel model = obj.mapTo(RouterModel.class);
-        final RouterItem item = new RouterItem(model);
-        if (Objects.isNull(parent)) {
-            root = item;
-            parent = item;
-        } else {
-            parent.getChildren().add(item);
-        }
-        TreeItem<HBox> temp = null;
-        int grade = 0;
-
-        //判断节点深度
-        do {
-            item.getModel().setGrade(grade);
-            grade++;
-            temp = parent.getParent();
-        } while (temp != null);
-
-        if (children.isEmpty()) {
-            return;
-        }
         for (int i = 0; i < children.size(); i++) {
-            final JsonObject o = children.getJsonObject(i);
-            analysis(o, parent);
+
+            final JsonObject it = children.getJsonObject(i);
+            final RouterModel model = it.mapTo(RouterModel.class);
+            final RouterItem item = new RouterItem(model);
+
+            parent.getChildren().add(item);
+
+            analysis(it, item);
         }
     }
 

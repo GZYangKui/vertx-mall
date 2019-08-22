@@ -6,7 +6,6 @@
 
 .router-item .label {
     -fx-text-fill: #C0C8DB;
-    -fx-font-size: 1.2em;
 }
 
 HBox, HBox * {

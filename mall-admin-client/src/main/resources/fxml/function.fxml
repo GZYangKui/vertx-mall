@@ -23,10 +23,10 @@
     <center>
         <VBox styleClass="content">
             <HBox>
-                <HBox HBox.hgrow="ALWAYS">
+                <HBox HBox.hgrow="ALWAYS" onMouseEntered="#register">
                     <NavigationBar fx:id="navigationBar" separator=">" orientation="CENTER_RIGHT"/>
                 </HBox>
-                <HBox styleClass="top-action-box" alignment="CENTER_RIGHT" onMouseEntered="#register"
+                <HBox styleClass="top-action-box" alignment="CENTER_RIGHT"
                       fx:id="topActionBox" onMouseClicked="#requestContextMenu">
                     <JFXComboBox promptText="admin" fx:id="operationBox">
                         <items>

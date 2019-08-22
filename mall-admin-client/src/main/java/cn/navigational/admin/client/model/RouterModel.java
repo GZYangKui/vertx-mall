@@ -1,6 +1,8 @@
 package cn.navigational.admin.client.model;
 
 
+import io.vertx.core.json.JsonObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,11 +16,11 @@ public class RouterModel {
     //重定向操作类
     private String redirect;
 
+    //节点深度
+    private int depth = 0;
+
     //子路由
     private List children = new ArrayList<>();
-
-    //等级
-    private int grade;
 
     public String getTitle() {
         return title;
@@ -52,11 +54,16 @@ public class RouterModel {
         this.children = children;
     }
 
-    public int getGrade() {
-        return grade;
+    public int getDepth() {
+        return depth;
     }
 
-    public void setGrade(int grade) {
-        this.grade = grade;
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
+
+    @Override
+    public String toString() {
+        return JsonObject.mapFrom(this).encodePrettily();
     }
 }
