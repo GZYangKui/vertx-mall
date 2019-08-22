@@ -1,6 +1,7 @@
 package cn.navigational.admin.client.controller;
 
 import cn.navigational.admin.client.controls.NavigationBar;
+import cn.navigational.admin.client.controls.RouterItem;
 import cn.navigational.admin.client.factory.RouterFactory;
 import cn.navigational.admin.client.monitors.WindowDragMonitor;
 import cn.navigational.admin.client.views.LoginView;
@@ -8,6 +9,8 @@ import com.jfoenix.controls.*;
 import io.vertx.core.file.FileSystem;
 import io.vertx.core.json.JsonObject;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -58,6 +61,14 @@ public class FunctionController implements Initializable {
                 default:
             }
         }));
+
+        leftDrawer.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            navigationBar.push(newValue);
+        });
+
+        navigationBar.currentProperty.addListener((observable, oldValue, newValue) -> {
+
+        });
     }
 
     //弹出菜单
