@@ -27,7 +27,7 @@ public class ResourceUtils {
             root = FXMLLoader.load(ClassLoader.getSystemResource(url));
         } catch (IOException e) {
             e.printStackTrace();
-            logger.error("加载fxml文件失败:{}", Optional.of(e.getCause()).orElse(new Exception("图片不存在")).getMessage());
+            logger.error("加载fxml文件失败:{}", Optional.ofNullable(e.getCause()).orElse(new Exception("图片不存在")).getMessage());
         }
         return root;
     }

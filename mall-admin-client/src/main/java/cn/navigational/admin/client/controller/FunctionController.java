@@ -1,16 +1,17 @@
 package cn.navigational.admin.client.controller;
 
+
+import cn.navigational.admin.client.base.BaseRouteContent;
 import cn.navigational.admin.client.controls.NavigationBar;
-import cn.navigational.admin.client.controls.RouterItem;
 import cn.navigational.admin.client.factory.RouterFactory;
+import cn.navigational.admin.client.model.RouterModel;
 import cn.navigational.admin.client.monitors.WindowDragMonitor;
+import cn.navigational.admin.client.routers.NotFoundRouter;
 import cn.navigational.admin.client.views.LoginView;
 import com.jfoenix.controls.*;
 import io.vertx.core.file.FileSystem;
 import io.vertx.core.json.JsonObject;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -18,6 +19,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -26,6 +28,7 @@ import org.apache.logging.log4j.Logger;
 
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 import static cn.navigational.admin.client.App.getVertx;
@@ -39,6 +42,12 @@ public class FunctionController implements Initializable {
     private HBox topActionBox;
     @FXML
     private NavigationBar navigationBar;
+    @FXML
+    private VBox contentPane;
+
+    private BaseRouteContent current;
+
+    private static final NotFoundRouter a404 = new NotFoundRouter();
 
     private static final Logger logger = LogManager.getLogger(FunctionController.class);
 
@@ -67,8 +76,17 @@ public class FunctionController implements Initializable {
         });
 
         navigationBar.currentProperty.addListener((observable, oldValue, newValue) -> {
-
+            setState(newValue.getModel());
         });
+    }
+
+    private void setState(RouterModel model) {
+        contentPane.getChildren().clear();
+        String redirectClass = model.getRedirect();
+        if (Objects.isNull(redirectClass) || redirectClass.trim().equals("")) {
+            a404.initState();
+            contentPane.getChildren().add(a404.getContainer());
+        }
     }
 
     //弹出菜单
@@ -139,4 +157,5 @@ public class FunctionController implements Initializable {
             Platform.runLater(() -> leftDrawer.setRoot(factory.getRoot()));
         });
     }
+
 }

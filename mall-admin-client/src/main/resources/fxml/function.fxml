@@ -39,7 +39,7 @@
                 </HBox>
             </HBox>
             <Separator/>
-            <VBox VBox.vgrow="ALWAYS"/>
+            <VBox VBox.vgrow="ALWAYS" fx:id="contentPane"/>
         </VBox>
     </center>
 </BorderPane>
