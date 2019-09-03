@@ -13,4 +13,4 @@ The project aims to implement high performance mall system with vertx。
 
 # Architecture diagram
 
-![系统架构图](document/resource/vertx-mall.png)
+![System architecture Diagram](document/resource/vertx-mall.png)
