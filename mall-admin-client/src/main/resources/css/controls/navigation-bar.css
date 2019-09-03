@@ -1,8 +1,0 @@
-.navigation-bar > HBox {
-    -fx-alignment: CENTER;
-    -fx-padding: 0 5px;
-}
-
-.navigation-bar > HBox > .jfx-button {
-    -fx-padding: 2px 4px;
-}
