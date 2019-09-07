@@ -2,29 +2,9 @@
 
 > vertx-mall admin-web
 
-## Build Setup
-
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-
-# run unit tests
-npm run unit
-
-# run e2e tests
-npm run e2e
-
-# run all tests
-npm test
-```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+### Environmental Construction
+- Download node and install it(version:12.9.1)
+- Clone the source code locally, open it with IDEA, and compile it.
+- Run the command from the IDEA command line: NPM install to download the dependencies.
+- Run the command on the IDEA command line: NPM run dev, run the project.
+- Access address: [http://localhost:8090] (http://localhost:8090) to open the background management system page.
