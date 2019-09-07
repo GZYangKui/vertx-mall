@@ -5,6 +5,8 @@ import cn.navigational.enums.EventBusDataType;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Objects;
 
@@ -13,6 +15,8 @@ import static cn.navigational.utils.ResponseUtils.response;
 import static cn.navigational.utils.ResponseUtils.responseTemplate;
 
 public class RestVerticle extends BaseVerticle {
+
+    protected Logger logger = LogManager.getLogger();
 
     protected void sendMessage(RoutingContext rcx) {
         final JsonObject msg = rcx.getBodyAsJson();

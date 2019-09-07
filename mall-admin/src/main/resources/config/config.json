@@ -1,0 +1,19 @@
+{
+  "port": 8081,
+  "skip": [
+    "/api/user/login",
+    "/api/user/register"
+  ],
+  "jwtConfig": {
+    "key": "123123gdjakjfkgnjfhgeggfffjjkjklffflllajgngekkasakkanv",
+    "issuer": "navigational.cn",
+    "term": 120
+  },
+  "dataSource": {
+    "host": "localhost",
+    "port": 5432,
+    "user": "postgres",
+    "password": "YangKui123456.",
+    "database": "mall"
+  }
+}
