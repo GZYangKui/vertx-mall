@@ -18,6 +18,11 @@ public class RestVerticle extends BaseVerticle {
 
     protected Logger logger = LogManager.getLogger();
 
+    /**
+     * 将请求信息转发到对应的子路由上去
+     *
+     * @param rcx http请求上下文
+     */
     protected void sendMessage(RoutingContext rcx) {
         final JsonObject msg = rcx.getBodyAsJson();
         final String requestAPi = msg.getString(EVENT_ADDRESS);
