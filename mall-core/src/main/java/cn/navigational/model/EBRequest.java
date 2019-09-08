@@ -109,6 +109,11 @@ public class EBRequest {
         return new Paging(getQuery());
     }
 
+    //获取指定httpHeader信息
+    public String getHeader(String key) {
+        return headers.getString(key, "");
+    }
+
     public static EBRequest create(JsonObject obj) {
 
         final EBRequest ebRequest = new EBRequest();
