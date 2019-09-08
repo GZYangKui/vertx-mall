@@ -17,6 +17,7 @@
         <module>mall-core</module>
         <module>mall-web</module>
         <module>mall-admin</module>
+        <module>mall-search</module>
     </modules>
     <build>
         <plugins>
