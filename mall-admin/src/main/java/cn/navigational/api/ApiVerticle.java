@@ -7,7 +7,6 @@ import cn.navigational.impl.RestVerticle;
 import io.vertx.core.Promise;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
-import io.vertx.ext.web.handler.CookieHandler;
 
 import static cn.navigational.config.Constants.PORT;
 import static cn.navigational.utils.ExceptionUtils.nullableStr;

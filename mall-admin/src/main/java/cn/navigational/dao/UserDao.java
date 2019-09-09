@@ -15,8 +15,8 @@ public class UserDao extends BaseDao {
     }
 
     public Future<Optional<JsonObject>> findAdminByUsername(String username) {
-        String sql = "SELECT id,username,password,icon,email,nick_name AS nickName," +
-                "create_time AS createTime,status FROM mall_admin WHERE username=$1";
+        String sql = "SELECT id,username,password,icon,email,nick_name AS \"nickName\"," +
+                "create_time AS \"createTime\",status FROM mall_admin WHERE username=$1";
         return findAny(sql, Tuple.of(username));
     }
 

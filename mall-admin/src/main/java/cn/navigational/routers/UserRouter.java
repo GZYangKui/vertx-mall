@@ -61,13 +61,14 @@ public class UserRouter extends RouterVerticle {
                 promise.complete(responseFailed("账号状态异常", 200));
                 return;
             }
-            boolean flag = false;
+            boolean flag;
             try {
                 flag = service.checkPassword(password, adminUser.getPassword());
             } catch (NoSuchAlgorithmException e) {
                 logger.error("用户密码加密过程发生错误:{}", nullableStr(e.getCause()));
                 e.printStackTrace();
                 promise.fail(e);
+                return;
             }
             if (!flag) {
                 promise.complete(responseFailed("密码不正确", 200));

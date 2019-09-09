@@ -44,7 +44,7 @@ public class HttpDataConverter extends HttpValidator {
         }
         /////调试环境建议开启,线上环境建议关闭/////////
         System.out.println("--------请求url:" + path+"--------------");
-        System.out.println(temp);
+        System.out.println(temp.encodePrettily());
         ////////////////////////////////////////
         routingContext.setBody(temp.toBuffer());
 
