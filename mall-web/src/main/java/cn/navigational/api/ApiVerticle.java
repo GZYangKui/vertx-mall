@@ -26,8 +26,6 @@ public class ApiVerticle extends RestVerticle {
         //请求异常处理
         exHandler(router);
 
-        router.route("/api/*").handler(CookieHandler.create());
-
         router.route("/api/*").handler(BodyHandler.create().setMergeFormAttributes(true));
 
         router.route("/api/*").handler(HttpDataConverter.create()).handler(RequireToken.create(vertx, config()));

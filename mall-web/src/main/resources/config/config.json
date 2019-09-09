@@ -5,7 +5,7 @@
     "/api/user/register"
   ],
   "jwtConfig": {
-    "key": "123123gdjakjfkgnjfhgeggfffjjkjklffflllajgngekkasakkanv",
+    "key": "123123gdjakjfkgnjfhgeggfffjjkjklffflllajgngekkasakabcd",
     "issuer": "navigational.cn",
     "term": 120
   },

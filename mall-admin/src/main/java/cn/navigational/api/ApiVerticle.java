@@ -1,6 +1,7 @@
 package cn.navigational.api;
 
 import cn.navigational.annotation.Verticle;
+import cn.navigational.auth.RequireToken;
 import cn.navigational.impl.HttpDataConverter;
 import cn.navigational.impl.RestVerticle;
 import io.vertx.core.Promise;
@@ -18,10 +19,13 @@ public class ApiVerticle extends RestVerticle {
         Router router = Router.router(vertx);
         //错误处理程序
         exHandler(router);
+
         //开启自动处理http请求body
         router.route("/api/*").handler(BodyHandler.create().setMergeFormAttributes(true));
         //将http请求数据转换为json
         router.route("/api/*").handler(HttpDataConverter.create());
+        //要求授权
+        router.route("/api/*").handler(RequireToken.create(vertx,config()));
 
         //用户登录
         router.post("/api/user/login");

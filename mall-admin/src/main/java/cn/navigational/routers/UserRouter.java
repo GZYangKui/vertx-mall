@@ -23,7 +23,7 @@ import static cn.navigational.utils.ResponseUtils.responseFailed;
 import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
 
 
-@Verticle()
+@Verticle
 @Router(api = "/api/user")
 public class UserRouter extends RouterVerticle {
     private UserService service;
@@ -57,7 +57,7 @@ public class UserRouter extends RouterVerticle {
                 promise.complete(responseFailed("账号不存在", 200));
                 return;
             }
-            if (adminUser.getStatus()==0){
+            if (adminUser.getStatus() == 0) {
                 promise.complete(responseFailed("账号状态异常", 200));
                 return;
             }
@@ -76,7 +76,8 @@ public class UserRouter extends RouterVerticle {
 
             JsonObject info = JsonObject.mapFrom(adminUser);
             info.remove("password");
-
+            ///生成jwt令牌///
+            info.put("token", service.getUserToken(adminUser));
             ///回复请求信息///
             promise.complete(responseSuccessJson(info));
 

@@ -31,4 +31,13 @@ public interface UserService {
      */
     void recordAdminLogging(LoginLogger logger);
 
+    /**
+     *
+     * 生成jwt令牌
+     *
+     * @param user 用户信息
+     * @return 返回jwt令牌
+     */
+    String getUserToken(AdminUser user);
+
 }

@@ -4,8 +4,10 @@ import cn.navigational.dao.UserDao;
 import cn.navigational.model.AdminUser;
 import cn.navigational.model.LoginLogger;
 import cn.navigational.service.UserService;
-import cn.navigational.utils.ExceptionUtils;
 import cn.navigational.utils.TokenUtils;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
@@ -13,10 +15,13 @@ import io.vertx.core.json.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.Optional;
 
 import static cn.navigational.utils.ExceptionUtils.nullableStr;
+import static cn.navigational.utils.TokenUtils.generateKey;
 
 public class UserServiceImpl implements UserService {
 
@@ -24,7 +29,10 @@ public class UserServiceImpl implements UserService {
 
     public Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
+    private JsonObject config;
+
     public UserServiceImpl(Vertx vertx, JsonObject config) {
+        this.config = config;
         dao = new UserDao(vertx, config);
     }
 
@@ -57,5 +65,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public void recordAdminLogging(LoginLogger logger) {
         dao.saveLoginLogging(logger);
+    }
+
+    @Override
+    public String getUserToken(AdminUser user) {
+        JsonObject claim = new JsonObject();
+        claim.put("userId", user.getId());
+        JsonObject jwtConfig = config.getJsonObject("jwtConfig");
+        Key key = generateKey(jwtConfig.getString("key"));
+        Long term = jwtConfig.getLong("term");
+        JwtBuilder jwt = Jwts.builder()
+                .setIssuer(jwtConfig.getString("issuer"))
+                //设置令牌有效期
+                .setExpiration(new Date(System.currentTimeMillis() + term * 60 * 1000))
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .signWith(SignatureAlgorithm.HS256, key);
+        jwt.addClaims(claim.getMap());
+        return jwt.compact();
     }
 }
