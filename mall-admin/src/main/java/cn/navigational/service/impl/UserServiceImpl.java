@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
 
     private UserDao dao;
 
-    public Logger logger = LogManager.getLogger(UserServiceImpl.class);
+    private Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
     private JsonObject config;
 
@@ -64,7 +64,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void recordAdminLogging(LoginLogger logger) {
-        dao.saveLoginLogging(logger);
+        dao.saveLoginLogging(logger).setHandler(ar -> {
+            if (ar.failed()) {
+                this.logger.error("保存用户登录日志失败:{}", nullableStr(ar.cause()));
+                return;
+            }
+            this.logger.info("保存用户登录记录成功,用户id:{}", logger.getAdminId());
+        });
     }
 
     @Override

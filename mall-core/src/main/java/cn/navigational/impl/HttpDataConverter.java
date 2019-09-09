@@ -58,9 +58,10 @@ public class HttpDataConverter extends HttpValidator {
         return query;
     }
 
-    private JsonObject getHeaders(HttpServerRequest routingContext) {
+    private JsonObject getHeaders(HttpServerRequest request) {
         final JsonObject headers = new JsonObject();
-        routingContext.headers().forEach(_rs -> headers.put(_rs.getKey(), _rs.getValue()));
+        request.headers().forEach(_rs -> headers.put(_rs.getKey(), _rs.getValue()));
+        headers.put("ip",request.remoteAddress().host());
         return headers;
     }
 

@@ -46,18 +46,6 @@ public class BaseTest {
 
     }
 
-    @After
-    public void stop(TestContext context) {
-        Async async = context.async();
-        vertx.close(ar -> {
-            if (ar.failed()) {
-                context.fail(ar.cause());
-                return;
-            }
-            async.complete();
-        });
-    }
-
     protected static  DeploymentOptions readConfig() {
         DeploymentOptions options = new DeploymentOptions();
         FileSystem fs = vertx.fileSystem();
@@ -66,7 +54,7 @@ public class BaseTest {
         return options;
     }
 
-    protected JsonObject commonAsset(AsyncResult<HttpResponse<Buffer>> ar,TestContext context){
+    private JsonObject commonAsset(AsyncResult<HttpResponse<Buffer>> ar, TestContext context){
         if (ar.failed()){
             context.fail(ar.cause());
             return null;
@@ -76,5 +64,10 @@ public class BaseTest {
         context.assertTrue(obj.getInteger(CODE)==200);
         context.assertTrue(obj.getBoolean(FLAG));
         return obj;
+    }
+
+    @After
+    public void stop(TestContext context) {
+        vertx.close(context.asyncAssertSuccess());
     }
 }

@@ -7,6 +7,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.sqlclient.Tuple;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public class UserDao extends BaseDao {
@@ -20,9 +21,9 @@ public class UserDao extends BaseDao {
         return findAny(sql, Tuple.of(username));
     }
 
-    public void saveLoginLogging(LoginLogger logger) {
+    public Future<Integer> saveLoginLogging(LoginLogger logger) {
         String sql = "INSERT INTO mall_admin_login_log(admin_id,create_time,ip,user_agent) VALUES($1,$2,$3,$4)";
-        Tuple tuple = Tuple.of(logger.getAdminId(), logger.getCreateTime(), logger.getId(), logger.getUserAgent());
-        executeUpdate(sql, tuple);
+        Tuple tuple = Tuple.of(logger.getAdminId(), LocalDateTime.now(), logger.getIp(), logger.getUserAgent());
+        return executeUpdate(sql, tuple);
     }
 }
