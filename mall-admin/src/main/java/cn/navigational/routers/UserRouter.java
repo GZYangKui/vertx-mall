@@ -9,7 +9,6 @@ import cn.navigational.model.EBRequest;
 import cn.navigational.model.LoginLogger;
 import cn.navigational.service.UserService;
 import cn.navigational.service.impl.UserServiceImpl;
-import cn.navigational.utils.StringUtils;
 import io.vertx.core.Promise;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
