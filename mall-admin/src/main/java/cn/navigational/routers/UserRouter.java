@@ -85,7 +85,6 @@ public class UserRouter extends RouterVerticle {
             ///保存管理员登录信息///
             LoginLogger logger = new LoginLogger();
             logger.setAdminId(adminUser.getId());
-            logger.setCreateTime(StringUtils.getCurrentTime().toString());
             logger.setUserAgent(request.getHeader("User-Agent"));
             logger.setIp(request.getHeader("ip"));
 
