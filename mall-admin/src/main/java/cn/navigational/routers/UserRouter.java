@@ -34,30 +34,30 @@ public class UserRouter extends RouterVerticle {
     }
 
     @RequestMapping(api = "/login", method = HttpMethod.POST)
-    public void login(final EBRequest request, final Promise<JsonObject> promise) {
+    public void login(final EBRequest request, final Promise<JsonObject> response) {
         JsonObject reqJson = request.getBodyAsJson();
         String username = reqJson.getString("username");
         String password = reqJson.getString("password");
         if (isEmpty(username)) {
-            promise.complete(responseFailed("用户名不能为空", 200));
+            response.complete(responseFailed("用户名不能为空", 200));
             return;
         }
         if (isEmpty(password)) {
-            promise.complete(responseFailed("密码不能为空", 200));
+            response.complete(responseFailed("密码不能为空", 200));
             return;
         }
         service.findAdminUser(username).setHandler(ar -> {
             if (ar.failed()) {
-                promise.fail(ar.cause());
+                response.fail(ar.cause());
                 return;
             }
             AdminUser adminUser = ar.result();
             if (Objects.isNull(adminUser)) {
-                promise.complete(responseFailed("账号不存在", 200));
+                response.complete(responseFailed("账号不存在", 200));
                 return;
             }
             if (adminUser.getStatus() == 0) {
-                promise.complete(responseFailed("账号状态异常", 200));
+                response.complete(responseFailed("账号状态异常", 200));
                 return;
             }
             boolean flag;
@@ -66,11 +66,11 @@ public class UserRouter extends RouterVerticle {
             } catch (NoSuchAlgorithmException e) {
                 logger.error("用户密码加密过程发生错误:{}", nullableStr(e.getCause()));
                 e.printStackTrace();
-                promise.fail(e);
+                response.fail(e);
                 return;
             }
             if (!flag) {
-                promise.complete(responseFailed("密码不正确", 200));
+                response.complete(responseFailed("密码不正确", 200));
                 return;
             }
 
@@ -79,7 +79,7 @@ public class UserRouter extends RouterVerticle {
             ///生成jwt令牌///
             info.put("token", service.getUserToken(adminUser));
             ///回复请求信息///
-            promise.complete(responseSuccessJson(info));
+            response.complete(responseSuccessJson(info));
 
             ///保存管理员登录信息///
             LoginLogger logger = new LoginLogger();
