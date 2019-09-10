@@ -3,6 +3,7 @@ package cn.navigational.service;
 import cn.navigational.model.AdminUser;
 import cn.navigational.model.LoginLogger;
 import io.vertx.core.Future;
+import io.vertx.core.json.JsonObject;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -39,5 +40,14 @@ public interface UserService {
      * @return 返回jwt令牌
      */
     String getUserToken(AdminUser user);
+
+    /**
+     *
+     * 获取用户权限列表
+     * @param adminId 用户id
+     * @return 返回JsonObject数据
+     *
+     */
+    Future<JsonObject> getUserPermission(long adminId);
 
 }

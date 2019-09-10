@@ -11,13 +11,16 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
+import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static cn.navigational.utils.ExceptionUtils.nullableStr;
@@ -88,5 +91,29 @@ public class UserServiceImpl implements UserService {
                 .signWith(SignatureAlgorithm.HS256, key);
         jwt.addClaims(claim.getMap());
         return jwt.compact();
+    }
+
+    @Override
+    public Future<JsonObject> getUserPermission(long adminId) {
+        Promise<JsonObject> promise = Promise.promise();
+        dao.getUserPermission(adminId).setHandler(ar -> {
+            if (ar.failed()) {
+                logger.error("获取用户角色和权限失败:{}", nullableStr(ar.cause()));
+                promise.fail(ar.cause());
+                ar.cause().printStackTrace();
+                return;
+            }
+            List roles = new ArrayList<>();
+            List<JsonObject> permissions = new ArrayList<>();
+            ar.result().forEach(item -> {
+                roles.add((item.remove("roleName")));
+                permissions.add(item);
+            });
+            JsonObject data = new JsonObject();
+            data.put("roles", roles);
+            data.put("permissions", permissions);
+            promise.complete(data);
+        });
+        return promise.future();
     }
 }

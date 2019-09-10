@@ -90,4 +90,16 @@ public class UserRouter extends RouterVerticle {
             service.recordAdminLogging(logger);
         });
     }
+
+    @RequestMapping(api = "/userPermission")
+    public void userPermission(final EBRequest request, final Promise<JsonObject> response) {
+        long adminId = request.getUser().getUserId();
+        service.getUserPermission(adminId).setHandler(ar -> {
+            if (ar.failed()) {
+                response.fail(ar.cause());
+                return;
+            }
+            response.complete(responseSuccessJson(ar.result()));
+        });
+    }
 }
