@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'Vue Element Admin',
+  title: 'vertx-mall',
 
   /**
    * @type {boolean} true | false
