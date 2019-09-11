@@ -5,7 +5,6 @@ import cn.navigational.api.ApiVerticle;
 import cn.navigational.routers.UserRouter;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.web.client.HttpRequest;

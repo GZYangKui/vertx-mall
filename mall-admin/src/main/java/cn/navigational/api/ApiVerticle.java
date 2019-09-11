@@ -4,6 +4,7 @@ import cn.navigational.annotation.Verticle;
 import cn.navigational.auth.RequireToken;
 import cn.navigational.impl.HttpDataConverter;
 import cn.navigational.impl.RestVerticle;
+import cn.navigational.validator.RBACValidator;
 import io.vertx.core.Promise;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
@@ -24,7 +25,9 @@ public class ApiVerticle extends RestVerticle {
         //将http请求数据转换为json
         router.route("/api/*").handler(HttpDataConverter.create());
         //要求授权
-        router.route("/api/*").handler(RequireToken.create(vertx,config()));
+        router.route("/api/*").handler(RequireToken.create(vertx, config()));
+        //检查用户权限
+        router.route("/api/*").handler(RBACValidator.create(vertx, config()));
 
         //用户登录
         router.post("/api/user/login");

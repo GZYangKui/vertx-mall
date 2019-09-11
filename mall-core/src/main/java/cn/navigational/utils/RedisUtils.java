@@ -5,11 +5,11 @@ import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
-import io.vertx.redis.client.*;
+import io.vertx.redis.RedisClient;
+import io.vertx.redis.RedisOptions;
+import io.vertx.redis.op.SetOptions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.List;
 
 import static cn.navigational.utils.ExceptionUtils.nullableStr;
 
@@ -24,47 +24,60 @@ import static cn.navigational.utils.ExceptionUtils.nullableStr;
 public class RedisUtils {
     private static final Logger LOGGER = LogManager.getLogger(RedisUtils.class);
     private static RedisUtils utils;
-    private RedisAPI redisAPI;
+    private RedisClient client;
 
     private RedisUtils(Vertx vertx, JsonObject config) {
         RedisOptions options = new RedisOptions();
-        Redis redis = Redis.createClient(vertx, options);
-        redis.connect(ar -> {
-            if (ar.failed()) {
-                LOGGER.error("创建RedisClient客户端失败:{}",
-                        nullableStr(ar.cause()));
-                return;
-            }
-            LOGGER.info("create redis-client success!");
-            redisAPI = RedisAPI.api(redis);
-        });
+        client = RedisClient.create(vertx, options);
+
     }
 
     /**
      * 向redis中写入数据
      *
-     * @param request 即将被存储进redis的数据
-     * @param handler 回调函数
+     * @param key   数据key
+     * @param value 数据值
      */
-    public void put(List<String> request, Handler<AsyncResult<Response>> handler) {
-        redisAPI.set(request, ar -> {
+    public void put(String key, String value, Handler<AsyncResult<String>> handler) {
+        client.set(key, value, ar -> {
             if (ar.failed()) {
-                LOGGER.error("Redis send message failed cause:{}", nullableStr(ar.cause()));
+                LOGGER.error("向redis写入数据发生错误(指定option):{}", nullableStr(ar.cause()));
                 handler.handle(Future.failedFuture(ar.cause()));
+                ar.cause().printStackTrace();
                 return;
             }
-            handler.handle(Future.succeededFuture(ar.result()));
+            handler.handle(Future.succeededFuture());
+        });
+    }
+
+    /**
+     * 向redis中写入数据并指定option(例如超时,过期等)
+     *
+     * @param key     键值对 key
+     * @param value   键值对 value
+     * @param options 键值对选项
+     * @param handler 回调函数
+     */
+    public void putWithOption(String key, String value, SetOptions options, Handler<AsyncResult<String>> handler) {
+        client.setWithOptions(key, value, options, ar -> {
+            if (ar.failed()) {
+                LOGGER.error("向redis写入数据发生错误:{}", nullableStr(ar.cause()));
+                handler.handle(Future.failedFuture(ar.cause()));
+                ar.cause().printStackTrace();
+                return;
+            }
+            handler.handle(Future.succeededFuture());
         });
     }
 
     /**
      * 从redis中获取数据
      *
-     * @param arg0 key
-     * @param h    异步回调接口
+     * @param key 需要获取数据的key
+     * @param h   异步回调接口
      */
-    public void get(String arg0, Handler<AsyncResult<Response>> h) {
-        redisAPI.get(arg0, ar -> {
+    public void get(String key, Handler<AsyncResult<String>> h) {
+        client.get(key, ar -> {
             if (ar.failed()) {
                 LOGGER.error("Get data from redis failde cause:{}", nullableStr(ar.cause()));
                 h.handle(Future.failedFuture(ar.cause()));
@@ -74,7 +87,7 @@ public class RedisUtils {
         });
     }
 
-    public static RedisUtils create(Vertx vertx, JsonObject config) {
+    public synchronized static RedisUtils create(Vertx vertx, JsonObject config) {
         if (utils == null) {
             utils = new RedisUtils(vertx, config);
         }
