@@ -13,6 +13,7 @@ import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 
@@ -25,6 +26,7 @@ public class BaseTest {
     protected final static Vertx vertx = Vertx.vertx();
     protected String host = "localhost";
     protected int port = 8081;
+    protected JsonObject user;
 
 
     /**
@@ -34,14 +36,15 @@ public class BaseTest {
      */
     @Before
     public void start(TestContext context) {
+        Async async = context.async();
         String url ="/api/user/login";
         JsonObject info = new JsonObject();
         info.put("username","admin");
         info.put("password","123456");
         WebClient webClient = WebClient.create(vertx);
         webClient.post(port,host,url).sendJson(info,ar->{
-            JsonObject result = commonAsset(ar,context);
-            context.async().complete();
+            user = commonAsset(ar,context);
+            async.complete();
         });
 
     }
@@ -54,7 +57,7 @@ public class BaseTest {
         return options;
     }
 
-    private JsonObject commonAsset(AsyncResult<HttpResponse<Buffer>> ar, TestContext context){
+    protected JsonObject commonAsset(AsyncResult<HttpResponse<Buffer>> ar, TestContext context){
         if (ar.failed()){
             context.fail(ar.cause());
             return null;
@@ -66,8 +69,8 @@ public class BaseTest {
         return obj;
     }
 
-    @After
-    public void stop(TestContext context) {
+    @AfterClass
+    public static void stop(TestContext context) {
         vertx.close(context.asyncAssertSuccess());
     }
 }
