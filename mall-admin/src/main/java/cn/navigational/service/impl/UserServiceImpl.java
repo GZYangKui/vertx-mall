@@ -11,7 +11,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -113,6 +112,7 @@ public class UserServiceImpl implements UserService {
             data.put("roles", roles);
             data.put("permissions", permissions);
             promise.complete(data);
+            //TODO 将权限和角色缓存进redis->再次获取先检测redis中是否存在
         });
         return promise.future();
     }
