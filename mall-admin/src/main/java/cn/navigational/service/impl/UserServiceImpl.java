@@ -4,6 +4,7 @@ import cn.navigational.dao.UserDao;
 import cn.navigational.model.AdminUser;
 import cn.navigational.model.LoginLogger;
 import cn.navigational.service.UserService;
+import cn.navigational.utils.RedisUtils;
 import cn.navigational.utils.TokenUtils;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -12,15 +13,15 @@ import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
+import io.vertx.redis.client.RedisOptions;
+import io.vertx.redis.op.SetOptions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static cn.navigational.utils.ExceptionUtils.nullableStr;
 import static cn.navigational.utils.TokenUtils.generateKey;
@@ -33,9 +34,12 @@ public class UserServiceImpl implements UserService {
 
     private JsonObject config;
 
+    private RedisUtils redis;
+
     public UserServiceImpl(Vertx vertx, JsonObject config) {
         this.config = config;
         dao = new UserDao(vertx, config);
+        redis = RedisUtils.create(vertx, config);
     }
 
     @Override
@@ -93,27 +97,55 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Future<JsonObject> getUserPermission(long adminId) {
-        Promise<JsonObject> promise = Promise.promise();
+    public Future<List<String>> getUserPermissionAndSave(long adminId) {
+        Promise<List<String>> promise = Promise.promise();
         dao.getUserPermission(adminId).setHandler(ar -> {
             if (ar.failed()) {
-                logger.error("获取用户角色和权限失败:{}", nullableStr(ar.cause()));
+                logger.error("获取用户权限失败:{}", nullableStr(ar.cause()));
                 promise.fail(ar.cause());
                 ar.cause().printStackTrace();
                 return;
             }
-            List roles = new ArrayList<>();
-            List<JsonObject> permissions = new ArrayList<>();
-            ar.result().forEach(item -> {
-                roles.add((item.remove("roleName")));
-                permissions.add(item);
-            });
-            JsonObject data = new JsonObject();
-            data.put("roles", roles);
-            data.put("permissions", permissions);
-            promise.complete(data);
-            //TODO 将权限和角色缓存进redis->再次获取先检测redis中是否存在
+            //获取权限值
+            List<String> list = ar.result().stream()
+                    .map(r -> r.getString("value"))
+                    .collect(Collectors.toList());
+
+            savePermissionToRedis(adminId, list);
+
+            //返回数据
+            promise.complete(list);
         });
         return promise.future();
+    }
+
+    @Override
+    public Future<List<String>> getUserFromRedis(long adminId) {
+        Promise<List<String>> promise = Promise.promise();
+        String key = "redis-user-"+adminId;
+        redis.get(key,ar->{
+            if (ar.failed()){
+                promise.fail(ar.cause());
+                return;
+            }
+            System.out.println(ar.result());
+            promise.complete(List.of());
+        });
+        return promise.future();
+    }
+
+    //将用户权限缓存进redis
+    private void savePermissionToRedis(long adminId, List<String> permissions) {
+        //生成rediskey
+        String key = "redis-user-" + adminId;
+        //设置过期时间
+        SetOptions options = new SetOptions();
+
+        //设置两小时过期
+        options.setEX(2 * 60 * 60);
+
+        //写进redis
+        redis.put(key, permissions.toString(), options);
+
     }
 }

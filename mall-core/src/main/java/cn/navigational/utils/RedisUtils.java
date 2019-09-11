@@ -11,6 +11,9 @@ import io.vertx.redis.op.SetOptions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Set;
+
+import static cn.navigational.config.Constants.*;
 import static cn.navigational.utils.ExceptionUtils.nullableStr;
 
 /**
@@ -28,8 +31,10 @@ public class RedisUtils {
 
     private RedisUtils(Vertx vertx, JsonObject config) {
         RedisOptions options = new RedisOptions();
+        JsonObject redisClient = config.getJsonObject(REDIS_CLIENT);
+        options.setHost(redisClient.getString(HOST));
+        options.setPort(redisClient.getInteger(PORT));
         client = RedisClient.create(vertx, options);
-
     }
 
     /**
@@ -47,6 +52,12 @@ public class RedisUtils {
                 return;
             }
             handler.handle(Future.succeededFuture());
+        });
+    }
+
+    public void put(String key, String value,SetOptions options) {
+        putWithOption(key, value, options,ar -> {
+            //Empty
         });
     }
 
@@ -87,6 +98,13 @@ public class RedisUtils {
         });
     }
 
+    /**
+     * 通过加锁方式创建单例
+     *
+     * @param vertx
+     * @param config
+     * @return 返回#RedisUtils 实例
+     */
     public synchronized static RedisUtils create(Vertx vertx, JsonObject config) {
         if (utils == null) {
             utils = new RedisUtils(vertx, config);

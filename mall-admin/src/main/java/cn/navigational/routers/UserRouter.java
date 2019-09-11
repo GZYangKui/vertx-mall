@@ -86,15 +86,16 @@ public class UserRouter extends RouterVerticle {
             logger.setAdminId(adminUser.getId());
             logger.setUserAgent(request.getHeader("User-Agent"));
             logger.setIp(request.getHeader("ip"));
-
             service.recordAdminLogging(logger);
+            //缓存用户权限
+            service.getUserPermissionAndSave(adminUser.getId());
         });
     }
 
     @RequestMapping(api = "/userPermission")
     public void userPermission(final EBRequest request, final Promise<JsonObject> response) {
         long adminId = request.getUser().getUserId();
-        service.getUserPermission(adminId).setHandler(ar -> {
+        service.getUserPermissionAndSave(adminId).setHandler(ar -> {
             if (ar.failed()) {
                 response.fail(ar.cause());
                 return;

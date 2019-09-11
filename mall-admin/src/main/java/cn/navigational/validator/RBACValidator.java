@@ -1,14 +1,15 @@
 package cn.navigational.validator;
 
 import cn.navigational.base.HttpValidator;
-import cn.navigational.dao.UserDao;
-import cn.navigational.utils.RedisUtils;
+import cn.navigational.service.UserService;
+import cn.navigational.service.impl.UserServiceImpl;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 
-import static cn.navigational.config.Constants.USER;
-import static cn.navigational.config.Constants.USER_ID;
+import java.util.List;
+
+import static cn.navigational.config.Constants.*;
 import static cn.navigational.utils.ExceptionUtils.nullableStr;
 
 /**
@@ -18,28 +19,44 @@ import static cn.navigational.utils.ExceptionUtils.nullableStr;
  * @since 1.0
  */
 public class RBACValidator extends HttpValidator {
-    private UserDao dao;
-    private RedisUtils redis;
+    private UserService service;
+    private List skips;
 
     private RBACValidator(Vertx vertx, JsonObject config) {
-        dao = new UserDao(vertx, config);
+        service = new UserServiceImpl(vertx, config);
+        skips = config.getJsonArray(SKIP).getList();
     }
 
     @Override
     public void handle(RoutingContext event) {
-        JsonObject user = event.getBodyAsJson().getJsonObject(USER);
-        long userId = user.getLong(USER_ID);
-        //生成redis存储key
-        String key = "redis-user-" + userId;
-        redis.get(key, ar -> {
+        String uri = event.request().uri();
+        if (skips.contains(uri)) {
+            event.next();
+            return;
+        }
+
+        long userId = event
+                .getBodyAsJson()
+                .getJsonObject(USER)
+                .getLong(USER_ID);
+        service.getUserFromRedis(userId).setHandler(ar -> {
             if (ar.failed()) {
-                validatorFailed(event, "授权过程发生错误");
-                logger.error("从redis中获取用户权限列表失败:{}", nullableStr(ar.cause()));
+                logger.error("从redis中获取用户权限失败:{}", nullableStr(ar.cause()));
+                validatorFailed(event, "鉴权失败");
                 return;
             }
-            //如果拥有此权限则放过
+            List<String> list = ar.result();
+
+            // '*'表示最高访问权
+            if ((list.isEmpty() || !list.contains(uri)) && !list.contains("*")) {
+                validatorFailed(event, "你没有访问改资源的权限");
+                return;
+            }
+
+            logger.error("用户id为：{} 申请访问资源:{}", userId, uri);
             event.next();
         });
+
     }
 
     public static HttpValidator create(Vertx vertx, JsonObject config) {

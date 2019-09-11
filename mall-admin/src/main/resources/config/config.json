@@ -4,6 +4,10 @@
     "/api/user/login",
     "/api/user/register"
   ],
+  "redisClient": {
+    "host": "127.0.0.1",
+    "port": 6379
+  },
   "jwtConfig": {
     "key": "123123gdjakjfkgnjfhgeggfffjjkjklffflllajgngekkasakkanv",
     "issuer": "navigational.cn",

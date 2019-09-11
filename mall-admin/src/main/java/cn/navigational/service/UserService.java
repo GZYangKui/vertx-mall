@@ -6,6 +6,8 @@ import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.Set;
 
 public interface UserService {
     /**
@@ -33,7 +35,6 @@ public interface UserService {
     void recordAdminLogging(LoginLogger logger);
 
     /**
-     *
      * 生成jwt令牌
      *
      * @param user 用户信息
@@ -42,12 +43,18 @@ public interface UserService {
     String getUserToken(AdminUser user);
 
     /**
+     * 得到用户权限并保存到redis
      *
-     * 获取用户权限列表
-     * @param adminId 用户id
-     * @return 返回JsonObject数据
-     *
+     * @param adminId
+     * @return
      */
-    Future<JsonObject> getUserPermission(long adminId);
+    Future<List<String>> getUserPermissionAndSave(long adminId);
+
+    /**
+     *
+     * 获取用户权限从redis
+     * @param adminId 用户id
+     */
+    Future<List<String>> getUserFromRedis(long adminId);
 
 }
