@@ -61,7 +61,7 @@
 <script>
 import { validUsername } from '@/utils/validate'
 import SocialSign from './components/SocialSignin'
-
+import {login} from '@/api/user'
 
 export default {
   name: 'Login',
@@ -149,10 +149,12 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-
-          return true;
+          this.loading = true;
+          login(this.loginForm).then(response=>{
+            console.log(response.code);
+          });
         } else {
-
+          console.log('error submit!!')
           return false
         }
       })

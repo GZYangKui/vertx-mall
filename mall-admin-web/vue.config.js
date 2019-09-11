@@ -35,7 +35,16 @@ module.exports = {
     overlay: {
       warnings: false,
       errors: true
-    }
+    },
+    proxy: {
+      [process.env.VUE_APP_BASE_API]: {
+        target: `http://localhost:8081`,
+        changeOrigin: true,
+        pathRewrite: {
+          ['^/api']: '/api'
+        }
+      }
+    },
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
