@@ -11,8 +11,6 @@ import io.vertx.redis.op.SetOptions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Set;
-
 import static cn.navigational.config.Constants.*;
 import static cn.navigational.utils.ExceptionUtils.nullableStr;
 

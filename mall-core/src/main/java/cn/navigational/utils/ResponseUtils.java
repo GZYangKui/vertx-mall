@@ -52,11 +52,10 @@ public class ResponseUtils {
     }
 
     /**
-     *
      * 回复请求信息
-     * @param rcx 请求上下文对象
-     * @param info 回复数据
      *
+     * @param rcx  请求上下文对象
+     * @param info 回复数据
      */
     public static void response(RoutingContext rcx, JsonObject info) {
         final HttpServerResponse response = rcx.response();
@@ -70,7 +69,7 @@ public class ResponseUtils {
                 final byte[] bytes = info.getBinary(DATA);
                 response.end(Buffer.buffer(bytes));
             } else {
-                //TODO MORE
+                //TODO MORE DATA TYPE
             }
         }
     }
