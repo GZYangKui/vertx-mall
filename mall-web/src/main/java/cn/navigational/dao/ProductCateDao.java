@@ -1,16 +1,22 @@
 package cn.navigational.dao;
 
+import cn.navigational.base.BaseDao;
 import io.vertx.core.Future;
+import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
+import io.vertx.sqlclient.Tuple;
 
 import java.util.List;
 
-public interface ProductCateDao {
-    /**
-     * 获取商品分类列表
-     *
-     * @return 异步返回分类列表
-     */
-    Future<List<JsonObject>> getCateList();
 
+public class ProductCateDao extends BaseDao{
+    public ProductCateDao(Vertx vertx, JsonObject config) {
+        super(vertx, config);
+    }
+
+
+    public Future<List<JsonObject>> getCateList() {
+        final String sql = "SELECT * FROM product_category WHERE show_status=$1";
+        return executeQuery(sql, Tuple.of(1));
+    }
 }

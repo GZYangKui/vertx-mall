@@ -2,8 +2,6 @@ package cn.navigational.service.impl;
 
 import cn.navigational.dao.PreferenceDao;
 import cn.navigational.dao.ProductDao;
-import cn.navigational.dao.impl.PreferenceDaoImpl;
-import cn.navigational.dao.impl.ProductDaoImpl;
 import cn.navigational.model.Paging;
 import cn.navigational.service.PreferenceService;
 import io.vertx.core.Future;
@@ -22,8 +20,8 @@ public class PreferenceServiceImpl implements PreferenceService {
     private final ProductDao productDao;
 
     public PreferenceServiceImpl(Vertx vertx, JsonObject config) {
-        dao = new PreferenceDaoImpl(vertx, config);
-        productDao = new ProductDaoImpl(vertx, config);
+        dao = new PreferenceDao(vertx, config);
+        productDao = new ProductDao(vertx, config);
     }
 
     @Override

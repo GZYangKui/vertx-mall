@@ -1,7 +1,6 @@
 package cn.navigational.service.impl;
 
 import cn.navigational.dao.ProductSkuDao;
-import cn.navigational.dao.impl.ProductSkuDaoImpl;
 import cn.navigational.service.ProductSkuService;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -17,7 +16,7 @@ public class ProductSkuServiceImpl  implements ProductSkuService {
     private final ProductSkuDao dao;
 
     public ProductSkuServiceImpl(Vertx vertx, JsonObject config) {
-        dao = new ProductSkuDaoImpl(vertx, config);
+        dao = new ProductSkuDao(vertx, config);
     }
 
     @Override

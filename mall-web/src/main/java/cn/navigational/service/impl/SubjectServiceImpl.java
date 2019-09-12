@@ -2,7 +2,6 @@ package cn.navigational.service.impl;
 
 
 import cn.navigational.dao.SubjectDao;
-import cn.navigational.dao.impl.SubjectDaoImpl;
 import cn.navigational.model.Paging;
 import cn.navigational.service.SubjectService;
 import io.vertx.core.Future;
@@ -21,7 +20,7 @@ public class SubjectServiceImpl implements SubjectService {
     private final SubjectDao dao;
 
     public SubjectServiceImpl(Vertx vertx, JsonObject config) {
-        dao = new SubjectDaoImpl(vertx, config);
+        dao = new SubjectDao(vertx, config);
     }
 
     @Override

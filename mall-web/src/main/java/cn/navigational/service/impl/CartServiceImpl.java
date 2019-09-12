@@ -1,7 +1,6 @@
 package cn.navigational.service.impl;
 
 import cn.navigational.dao.CartDao;
-import cn.navigational.dao.impl.CartDaoImpl;
 import cn.navigational.model.Paging;
 import cn.navigational.service.CartService;
 import io.vertx.core.Future;
@@ -21,7 +20,7 @@ public class CartServiceImpl implements CartService {
     private final CartDao dao;
 
     public CartServiceImpl(Vertx vertx, JsonObject config){
-        dao = new CartDaoImpl(vertx, config);
+        dao = new CartDao(vertx, config);
     }
 
     @Override

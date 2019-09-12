@@ -1,40 +1,66 @@
 package cn.navigational.dao;
 
+import cn.navigational.base.BaseDao;
 import cn.navigational.model.Paging;
 import io.vertx.core.Future;
+import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
+import io.vertx.sqlclient.Tuple;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface SubjectDao {
-    /**
-     * 获取商城专题列表
-     *
-     * @param page 分页参数
-     * @param cateId 分类id
-     *
-     */
-    Future<List<JsonObject>> getList(Paging page,int cateId);
+public class SubjectDao extends BaseDao {
+    public SubjectDao(Vertx vertx, JsonObject config) {
+        super(vertx, config);
+    }
 
-    /**
-     * 获取专题分类信息
-     *
-     * @param ids 分类id列表
-     */
-    Future<List<JsonObject>> getSubjectCateInfo(List<Integer> ids);
 
-    /**
-     *
-     * 获取全部专题分类列表
-     *
-     */
-    Future<List<JsonObject>> getSubjectCateList();
+    public Future<List<JsonObject>> getList(Paging page, int cateId) {
+        final String sql;
+        final Tuple tuple = Tuple.tuple();
+        tuple.addValue(1);
+        if (cateId == 0) {
+            sql = "SELECT * FROM mall_subject WHERE show_status=$1 LIMIT $2 OFFSET $3";
 
-    /**
-     * 获取某个专题详情
-     *
-     * @param subjectId 专题id
-     */
-    Future<Optional<JsonObject>> getSubjectInfo(int subjectId);
+        } else {
+            sql = "SELECT * FROM mall_subject WHERE show_status=$1 AND category_id=$2 LIMIT $3 OFFSET $4";
+            tuple.addValue(cateId);
+        }
+        tuple.addValue(page.getPageSize());
+        tuple.addValue(page.getInitOffset());
+        return executeQuery(sql, tuple);
+    }
+
+
+    public Future<List<JsonObject>> getSubjectCateInfo(List<Integer> ids) {
+        final StringBuilder sb = new StringBuilder();
+        final Tuple tuple = Tuple.tuple();
+        sb.append("SELECT * FROM subject_category WHERE id IN(");
+        for (int i = 0; i < ids.size(); i++) {
+            final int index = i + 1;
+            ;
+            if (i != ids.size() - 1) {
+                sb.append("$").append(index).append(",");
+            } else {
+                sb.append("$").append(index).append(")");
+            }
+            tuple.addValue(ids.get(i));
+        }
+        sb.append(" AND show_status=$").append(ids.size() + 1);
+        tuple.addValue(1);
+        return executeQuery(sb.toString(), tuple);
+    }
+
+
+    public Future<List<JsonObject>> getSubjectCateList() {
+        final String sql = "SELECT * FROM subject_category WHERE show_status=$1";
+        return executeQuery(sql, Tuple.of(1));
+    }
+
+
+    public Future<Optional<JsonObject>> getSubjectInfo(int subjectId) {
+        final String sql = "SELECT * FROM mall_subject WHERE id=$1 AND show_status=$2";
+        return findAny(sql, Tuple.of(subjectId, 1));
+    }
 }

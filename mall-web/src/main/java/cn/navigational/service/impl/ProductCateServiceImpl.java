@@ -1,8 +1,6 @@
 package cn.navigational.service.impl;
 
 import cn.navigational.dao.ProductCateDao;
-import cn.navigational.dao.impl.ProductCateDaoImpl;
-import cn.navigational.model.Paging;
 import cn.navigational.service.ProductCateService;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -20,7 +18,7 @@ public class ProductCateServiceImpl implements ProductCateService {
     private final ProductCateDao dao;
 
     public ProductCateServiceImpl(Vertx vertx, JsonObject config) {
-        dao = new ProductCateDaoImpl(vertx, config);
+        dao = new ProductCateDao(vertx, config);
     }
 
     @Override

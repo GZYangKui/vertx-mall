@@ -1,50 +1,53 @@
 package cn.navigational.dao;
 
+import cn.navigational.base.BaseDao;
 import cn.navigational.model.Paging;
 import io.vertx.core.Future;
-import io.vertx.core.json.JsonArray;
+import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
+import io.vertx.sqlclient.Tuple;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public interface CartDao {
-    /**
-     * 从数据库查找购物车信息
-     *
-     * @param userId 用户id
-     * @param paging 分页查询参数
-     * @return 返回异步json集合
-     */
-    Future<List<JsonObject>> getList(long userId, Paging paging);
+public class CartDao extends BaseDao{
+    public CartDao(Vertx vertx, JsonObject config) {
+        super(vertx, config);
+    }
 
-    /**
-     * 从数据库查找给定的item
-     *
-     * @param ids items id列表
-     */
-    Future<List<JsonObject>> getItems(List<Integer> ids);
 
-    /**
-     * 获取某个购物车item
-     *
-     * @param cartId item id
-     */
-    Future<Optional<JsonObject>> item(long cartId);
+    public Future<List<JsonObject>> getList(long userId, Paging paging) {
+        final String sql = "SELECT * FROM cart_item WHERE member_id=$1 LIMIT $2 OFFSET $3";
+        return executeQuery(sql, Tuple.of(userId, paging.getPageSize(), paging.getInitOffset()));
+    }
 
-    /**
-     * 更新购物车商品数量
-     *
-     * @param version  CAS版本号
-     * @param quantity 新商品数量
-     * @param cartId   购物车id
-     */
-    Future<Integer> updateCartNum(long version, long quantity, long cartId);
 
-    /**
-     * 删除购物车内的商品
-     *
-     * @param ids 即将被删除购物车商品id集合
-     */
-    Future<Integer> deletes(List<Integer> ids);
+    public Future<List<JsonObject>> getItems(List<Integer> ids) {
+        final StringBuilder sb = new StringBuilder();
+        final Tuple tuple = Tuple.tuple();
+        sb.append("SELECT * FROM cart_item WHERE id IN(");
+        pingIn(sb, tuple, ids,1);
+        return executeQuery(sb.toString(), tuple);
+    }
+
+
+    public Future<Optional<JsonObject>> item(long cartId) {
+        final String sql = "SELECT * FROM cart_item WHERE id=$1";
+        return findAny(sql, Tuple.of(cartId));
+    }
+
+
+    public Future<Integer> updateCartNum(long version, long quantity, long cartId) {
+        final String sql = "UPDATE cart_item SET quantity=$1,version=$2 WHERE id=$3 AND version=$4";
+        return executeUpdate(sql, Tuple.of(quantity, version + 1, cartId, version));
+    }
+
+
+    public Future<Integer> deletes(List<Integer> ids) {
+        final String sql = "DELETE FROM cart_item WHERE id = $1";
+        final List<Tuple> tuples = new ArrayList<>();
+        ids.forEach(_r -> tuples.add(Tuple.of(_r)));
+        return batchUpdate(sql, tuples);
+    }
 }

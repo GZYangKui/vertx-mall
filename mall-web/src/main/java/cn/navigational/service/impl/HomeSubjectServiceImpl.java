@@ -2,7 +2,6 @@ package cn.navigational.service.impl;
 
 
 import cn.navigational.dao.HomeSubjectDao;
-import cn.navigational.dao.impl.HomeSubjectDaoImpl;
 import cn.navigational.service.HomeSubjectService;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -21,7 +20,7 @@ public class HomeSubjectServiceImpl implements HomeSubjectService {
 
     public HomeSubjectServiceImpl(Vertx vertx, JsonObject config) {
 
-        dao = new HomeSubjectDaoImpl(vertx, config);
+        dao = new HomeSubjectDao(vertx, config);
     }
 
     @Override

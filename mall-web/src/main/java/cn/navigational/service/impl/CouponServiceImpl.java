@@ -2,7 +2,6 @@ package cn.navigational.service.impl;
 
 
 import cn.navigational.dao.CouponDao;
-import cn.navigational.dao.impl.CouponDaoImpl;
 import cn.navigational.model.Paging;
 import cn.navigational.service.CouponService;
 import io.vertx.core.Future;
@@ -19,7 +18,7 @@ public class CouponServiceImpl  implements CouponService {
     private CouponDao dao;
 
     public CouponServiceImpl(Vertx vertx, JsonObject config) {
-        dao =  new CouponDaoImpl(vertx, config);
+        dao =  new CouponDao(vertx, config);
     }
 
     @Override

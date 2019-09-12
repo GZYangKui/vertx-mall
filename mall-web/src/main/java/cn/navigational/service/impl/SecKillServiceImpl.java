@@ -2,8 +2,6 @@ package cn.navigational.service.impl;
 
 import cn.navigational.dao.ProductDao;
 import cn.navigational.dao.SecKillDao;
-import cn.navigational.dao.impl.ProductDaoImpl;
-import cn.navigational.dao.impl.SecKillDaoImpl;
 import cn.navigational.service.SecKillService;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -24,8 +22,8 @@ public class SecKillServiceImpl implements SecKillService {
     private ProductDao productDao;
 
     public SecKillServiceImpl(Vertx vertx, JsonObject config) {
-        dao = new SecKillDaoImpl(vertx, config);
-        productDao = new ProductDaoImpl(vertx, config);
+        dao = new SecKillDao(vertx, config);
+        productDao = new ProductDao(vertx, config);
     }
 
     @Override

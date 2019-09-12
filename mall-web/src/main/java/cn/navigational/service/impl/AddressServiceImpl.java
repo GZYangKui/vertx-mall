@@ -1,7 +1,6 @@
 package cn.navigational.service.impl;
 
 import cn.navigational.dao.AddressDao;
-import cn.navigational.dao.impl.AddressDaoImpl;
 import cn.navigational.model.JwtUser;
 import cn.navigational.model.Paging;
 import cn.navigational.service.AddressService;
@@ -18,7 +17,7 @@ public class AddressServiceImpl implements AddressService {
     private final AddressDao dao;
 
     public AddressServiceImpl(Vertx vertx, JsonObject config) {
-        dao = new AddressDaoImpl(vertx, config);
+        dao = new AddressDao(vertx, config);
     }
 
     @Override

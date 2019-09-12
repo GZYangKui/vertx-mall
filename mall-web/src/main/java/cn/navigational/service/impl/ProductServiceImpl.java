@@ -1,7 +1,6 @@
 package cn.navigational.service.impl;
 
 import cn.navigational.dao.ProductDao;
-import cn.navigational.dao.impl.ProductDaoImpl;
 import cn.navigational.model.Paging;
 import cn.navigational.service.ProductService;
 import io.vertx.core.Future;
@@ -19,7 +18,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductDao dao;
 
     public ProductServiceImpl(Vertx vertx, JsonObject config) {
-        dao = new ProductDaoImpl(vertx, config);
+        dao = new ProductDao(vertx, config);
     }
 
     @Override

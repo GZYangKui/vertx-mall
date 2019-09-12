@@ -1,7 +1,6 @@
 package cn.navigational.service.impl;
 
 import cn.navigational.dao.HomeAdvertiseDao;
-import cn.navigational.dao.impl.HomeAdvertiseDaoImpl;
 import cn.navigational.service.HomeAdvertiseService;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -15,7 +14,7 @@ public class HomeAdvertiseServiceImpl implements HomeAdvertiseService {
     private final HomeAdvertiseDao dao;
 
     public HomeAdvertiseServiceImpl(Vertx vertx, JsonObject config) {
-        dao = new HomeAdvertiseDaoImpl(vertx, config);
+        dao = new HomeAdvertiseDao(vertx, config);
     }
 
     @Override

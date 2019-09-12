@@ -1,25 +1,39 @@
 package cn.navigational.dao;
 
+import cn.navigational.base.BaseDao;
 import cn.navigational.model.Paging;
 import io.vertx.core.Future;
+import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
+import io.vertx.sqlclient.Tuple;
 
 import java.util.List;
 
-public interface PreferenceDao {
-    /**
-     * 获取优选专区列表
-     *
-     * @param page 分页查询参数
-     * @return 异步返回json集合
-     */
-    Future<List<JsonObject>> getList(Paging page);
+public class PreferenceDao extends BaseDao{
+    public PreferenceDao(Vertx vertx, JsonObject config) {
+        super(vertx, config);
+    }
 
-    /**
-     * 获取优选关联商品id
-     *
-     * @param preferenceIds 优选专题id
-     * @return 异步返回产品id集合
-     */
-    Future<List<JsonObject>> getRelateProductId(List<Integer> preferenceIds);
+
+    public Future<List<JsonObject>> getList(Paging page) {
+        final String sql = "SELECT * FROM preference_area WHERE show_status=$1 LIMIT $2 OFFSET $3";
+        return executeQuery(sql, Tuple.of(1, page.getPageSize(), page.getInitOffset()));
+    }
+
+
+    public Future<List<JsonObject>> getRelateProductId(List<Integer> preferenceIds) {
+        final StringBuilder sb = new StringBuilder("SELECT preference_area_id ,product_id FROM preference_area_product_relation WHERE preference_area_id IN(");
+        final Tuple tuple = Tuple.tuple();
+        for (int i = 0; i < preferenceIds.size(); i++) {
+            final int index = i + 1;
+            sb.append("$").append(index);
+            if (i == preferenceIds.size() - 1) {
+                sb.append(")");
+            } else {
+                sb.append(",");
+            }
+            tuple.addValue(preferenceIds.get(i));
+        }
+        return executeQuery(sb.toString(), tuple);
+    }
 }

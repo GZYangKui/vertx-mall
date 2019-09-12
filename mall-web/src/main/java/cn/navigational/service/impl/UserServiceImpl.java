@@ -1,7 +1,6 @@
 package cn.navigational.service.impl;
 
 import cn.navigational.dao.UserDao;
-import cn.navigational.dao.impl.UserDaoImpl;
 import cn.navigational.model.RegisterInfo;
 import cn.navigational.model.User;
 import cn.navigational.service.UserService;
@@ -34,7 +33,7 @@ public class UserServiceImpl implements UserService {
 
     public UserServiceImpl(Vertx vertx, JsonObject config) {
         this.config = config;
-        dao = new UserDaoImpl(vertx, config);
+        dao = new UserDao(vertx, config);
     }
 
     @Override
