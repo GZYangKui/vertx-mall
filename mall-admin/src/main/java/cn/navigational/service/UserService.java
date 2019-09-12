@@ -51,10 +51,25 @@ public interface UserService {
     Future<List<String>> getUserPermissionAndSave(long adminId);
 
     /**
-     *
      * 获取用户权限从redis
+     *
      * @param adminId 用户id
      */
     Future<List<String>> getUserFromRedis(long adminId);
+
+    /**
+     * 用户注销(移除redis缓存用户数据)
+     *
+     * @param adminId 用户id
+     */
+    void logout(long adminId);
+
+    /**
+     *
+     * 获取用户数据
+     * @param adminId 用户id
+     * @return 异步返回json用户信息
+     */
+    Future<JsonObject> userInfo(long adminId);
 
 }

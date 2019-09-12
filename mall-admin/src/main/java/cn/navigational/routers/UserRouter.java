@@ -103,4 +103,27 @@ public class UserRouter extends RouterVerticle {
             response.complete(responseSuccessJson(ar.result()));
         });
     }
+
+    @RequestMapping(api = "/logout", method = HttpMethod.POST)
+    public void logout(final EBRequest request, final Promise<JsonObject> response) {
+        response.complete(responseSuccessJson());
+        //移除缓存数据
+        service.logout(request.getUser().getUserId());
+    }
+
+    @RequestMapping(api = "/info")
+    public void info(final EBRequest request, final Promise<JsonObject> response) {
+        long adminId = request.getUser().getUserId();
+
+        //获取用户信息
+        service.userInfo(adminId).setHandler(ar -> {
+            if (ar.failed()) {
+                response.complete(responseFailed("获取用户信息失败", 200));
+                return;
+            }
+            response.complete(ar.result().isEmpty() ?
+                    responseFailed("用户信息不存在", 200)
+                    : responseSuccessJson(ar.result()));
+        });
+    }
 }

@@ -31,8 +31,12 @@ public class ApiVerticle extends RestVerticle {
 
         //用户登录
         router.post("/api/user/login");
+        //获取用户信息
+        router.get("/api/user/info");
         //获取用户权限
         router.post("/api/user/userPermission");
+        //用户注销
+        router.post("/api/user/logout");
 
 
         router.route("/api/*").handler(this::sendMessage);

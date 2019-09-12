@@ -12,14 +12,11 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.redis.client.RedisOptions;
 import io.vertx.redis.op.SetOptions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.lang.reflect.Array;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -40,7 +37,7 @@ public class UserServiceImpl implements UserService {
     private RedisUtils redis;
 
     //redis缓存用户权限key前缀
-    public static final String REDIS_USER_PREFIX = "redis-user-";
+    private static final String REDIS_USER_PREFIX = "redis-user-";
 
     public UserServiceImpl(Vertx vertx, JsonObject config) {
         this.config = config;
@@ -139,6 +136,28 @@ public class UserServiceImpl implements UserService {
             if (Objects.nonNull(str)) {
                 promise.complete(strToList(str));
             }
+        });
+        return promise.future();
+    }
+
+    @Override
+    public void logout(long adminId) {
+        redis.remove(REDIS_USER_PREFIX + adminId, ar -> {
+        });
+    }
+
+    @Override
+    public Future<JsonObject> userInfo(long adminId) {
+        Promise<JsonObject> promise = Promise.promise();
+        dao.getUserInfo(adminId).setHandler(ar -> {
+            if (ar.failed()) {
+                logger.error("获取用户信息失败:{}", nullableStr(ar.cause()));
+                promise.fail(ar.cause());
+                ar.cause().printStackTrace();
+                return;
+            }
+            //如果信息不存在则返回空json
+            promise.complete(ar.result().orElse(new JsonObject()));
         });
         return promise.future();
     }

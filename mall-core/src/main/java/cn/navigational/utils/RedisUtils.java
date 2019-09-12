@@ -55,8 +55,8 @@ public class RedisUtils {
         });
     }
 
-    public void put(String key, String value,SetOptions options) {
-        putWithOption(key, value, options,ar -> {
+    public void put(String key, String value, SetOptions options) {
+        putWithOption(key, value, options, ar -> {
             //Empty
         });
     }
@@ -95,6 +95,24 @@ public class RedisUtils {
                 return;
             }
             h.handle(Future.succeededFuture(ar.result()));
+        });
+    }
+
+    /**
+     * 从redis中移除数据
+     *
+     * @param key     被移除数据key
+     * @param handler 回调函数
+     */
+    public void remove(String key, Handler<AsyncResult<Void>> handler) {
+        client.del(key, ar -> {
+            if (ar.failed()) {
+                LOGGER.error("从redis删除数据失败:{}", nullableStr(ar.cause()));
+                handler.handle(Future.failedFuture(ar.cause()));
+                ar.cause().printStackTrace();
+                return;
+            }
+            handler.handle(Future.succeededFuture());
         });
     }
 

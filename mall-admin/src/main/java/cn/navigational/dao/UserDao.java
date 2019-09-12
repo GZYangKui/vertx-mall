@@ -36,4 +36,9 @@ public class UserDao extends BaseDao {
                 "mrr.admin_id=ma.id AND mrr.role_id=rpr.role_id AND mp.id=rpr.permission_id";
         return executeQuery(sql, Tuple.of(adminId));
     }
+
+    public Future<Optional<JsonObject>> getUserInfo(long adminId) {
+        String sql = "SELECT username,icon,email,nick_name AS \"nickName\" FROM mall_admin WHERE id=$1";
+        return findAny(sql, Tuple.of(adminId));
+    }
 }
