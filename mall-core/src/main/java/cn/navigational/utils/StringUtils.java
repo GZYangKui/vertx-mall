@@ -3,7 +3,7 @@ package cn.navigational.utils;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -174,11 +174,34 @@ public class StringUtils {
         return flag;
     }
 
+
+    //正则表达式匹配数组字符串[a]或者[a,b]
+    private static Pattern pattern = Pattern.compile("^\\[(\\w(,?))+]$");
+
+    /**
+     * 字符串转换List
+     *
+     * @param str 即将被转字符串
+     * @return 返回包含字符串的数组
+     */
+    public static List<String> strToList(String str) {
+        List<String> list = new ArrayList<>();
+
+        //如果匹配字符串
+        if (pattern.matcher(str).matches()) {
+            String temp = str.replace("[", "").replace("]", "");
+            list.addAll(Arrays.asList(temp.split(",")));
+        }
+
+        return list;
+    }
+
     //获取当前时间
     public static LocalDateTime getCurrentTime() {
         final Date date = Date.from(Instant.now());
         final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
         return LocalDateTime.parse(format.format(date));
     }
+
 }
 

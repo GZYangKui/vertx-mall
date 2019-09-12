@@ -18,12 +18,14 @@ import io.vertx.redis.op.SetOptions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.lang.reflect.Array;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static cn.navigational.utils.ExceptionUtils.nullableStr;
+import static cn.navigational.utils.StringUtils.strToList;
 import static cn.navigational.utils.TokenUtils.generateKey;
 
 public class UserServiceImpl implements UserService {
@@ -122,14 +124,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public Future<List<String>> getUserFromRedis(long adminId) {
         Promise<List<String>> promise = Promise.promise();
-        String key = "redis-user-"+adminId;
-        redis.get(key,ar->{
-            if (ar.failed()){
+        String key = "redis-user-" + adminId;
+        redis.get(key, ar -> {
+            if (ar.failed()) {
                 promise.fail(ar.cause());
                 return;
             }
-            System.out.println(ar.result());
-            promise.complete(List.of());
+            //将字符串转换为字符串集合
+            String str = ar.result();
+            if (Objects.nonNull(str)) {
+                promise.complete(strToList(str));
+            }
         });
         return promise.future();
     }
