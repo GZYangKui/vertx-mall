@@ -12,6 +12,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.redis.client.RedisOptions;
 import io.vertx.redis.op.SetOptions;
@@ -37,6 +38,9 @@ public class UserServiceImpl implements UserService {
     private JsonObject config;
 
     private RedisUtils redis;
+
+    //redis缓存用户权限key前缀
+    public static final String REDIS_USER_PREFIX = "redis-user-";
 
     public UserServiceImpl(Vertx vertx, JsonObject config) {
         this.config = config;
@@ -124,7 +128,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Future<List<String>> getUserFromRedis(long adminId) {
         Promise<List<String>> promise = Promise.promise();
-        String key = "redis-user-" + adminId;
+        String key = REDIS_USER_PREFIX + adminId;
         redis.get(key, ar -> {
             if (ar.failed()) {
                 promise.fail(ar.cause());
@@ -142,7 +146,7 @@ public class UserServiceImpl implements UserService {
     //将用户权限缓存进redis
     private void savePermissionToRedis(long adminId, List<String> permissions) {
         //生成rediskey
-        String key = "redis-user-" + adminId;
+        String key = REDIS_USER_PREFIX + adminId;
         //设置过期时间
         SetOptions options = new SetOptions();
 
@@ -151,6 +155,5 @@ public class UserServiceImpl implements UserService {
 
         //写进redis
         redis.put(key, permissions.toString(), options);
-
     }
 }

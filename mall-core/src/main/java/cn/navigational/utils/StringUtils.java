@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class StringUtils {
     /**
@@ -185,15 +186,9 @@ public class StringUtils {
      * @return 返回包含字符串的数组
      */
     public static List<String> strToList(String str) {
-        List<String> list = new ArrayList<>();
-
-        //如果匹配字符串
-        if (pattern.matcher(str).matches()) {
-            String temp = str.replace("[", "").replace("]", "");
-            list.addAll(Arrays.asList(temp.split(",")));
-        }
-
-        return list;
+        String temp = str.replace("[", "").replace("]", "");
+        return Arrays.stream(temp.split(","))
+                .map(String::trim).collect(Collectors.toList());
     }
 
     //获取当前时间

@@ -7,6 +7,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static cn.navigational.config.Constants.*;
@@ -35,10 +36,7 @@ public class RBACValidator extends HttpValidator {
             return;
         }
 
-        long userId = event
-                .getBodyAsJson()
-                .getJsonObject(USER)
-                .getLong(USER_ID);
+        long userId = event.getBodyAsJson().getJsonObject(USER).getLong(USER_ID);
         service.getUserFromRedis(userId).setHandler(ar -> {
             if (ar.failed()) {
                 logger.error("从redis中获取用户权限失败:{}", nullableStr(ar.cause()));
@@ -52,7 +50,6 @@ public class RBACValidator extends HttpValidator {
                 validatorFailed(event, "你没有访问改资源的权限");
                 return;
             }
-
             logger.error("用户id为：{} 申请访问资源:{}", userId, uri);
             event.next();
         });
