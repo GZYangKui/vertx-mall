@@ -8,6 +8,13 @@ import io.vertx.ext.web.RoutingContext;
 
 import static cn.navigational.config.Constants.*;
 
+/**
+ *
+ * Http请求数据转换为json
+ *
+ * @author YangKui
+ * @since 1.0
+ */
 public class HttpDataConverter extends HttpValidator {
     @Override
     public void handle(RoutingContext routingContext) {
