@@ -28,7 +28,6 @@ public class ApiVerticle extends RestVerticle {
         router.route("/api/*").handler(RequireToken.create(vertx, config()));
         //检查用户权限
         router.route("/api/*").handler(RBACValidator.create(vertx, config()));
-
         //用户登录
         router.post("/api/user/login");
         //获取用户信息
@@ -39,11 +38,13 @@ public class ApiVerticle extends RestVerticle {
         router.post("/api/user/logout");
 
 
+
+        //通过EventBus将请求转发到子路由上面处理
         router.route("/api/*").handler(this::sendMessage);
 
         int port = config().getInteger(PORT);
 
-
+        //创建http服务器
         vertx.createHttpServer().requestHandler(router).listen(port, ar -> {
             if (ar.failed()) {
                 startPromise.fail(ar.cause());
