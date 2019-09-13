@@ -36,6 +36,8 @@ public class ApiVerticle extends RestVerticle {
         router.post("/api/user/userPermission");
         //用户注销
         router.post("/api/user/logout");
+        //获取商品列表
+        router.post("/api/product/list");
 
 
 
