@@ -30,7 +30,7 @@ public class ProductDao extends BaseDao {
 
         sql.append(" LIMIT $1 OFFSET $2");
 
-        Paging paging = new Paging(paramList.getPageIndex(), paramList.getPageSize());
+        Paging paging = new Paging(paramList.getPageNum(), paramList.getPageSize());
         tuple.addValue(paging.getPageSize());
         tuple.addValue(paging.getInitOffset());
 

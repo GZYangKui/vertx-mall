@@ -251,11 +251,11 @@ public class BaseDao {
     /**
      * 获取分页查询参数
      *
-     * @param pageIndex 分页查询起始页
+     * @param pageNum 分页查询起始页
      * @param pageSize  分页查询页面尺寸
      * @return 返回分装好的分页查询参数
      */
-    protected Paging getPaging(int pageIndex, int pageSize) {
-        return new Paging(pageIndex, pageSize);
+    protected Paging getPaging(int pageNum, int pageSize) {
+        return new Paging(pageNum, pageSize);
     }
 }

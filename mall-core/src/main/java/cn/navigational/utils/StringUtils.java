@@ -1,5 +1,7 @@
 package cn.navigational.utils;
 
+import io.vertx.core.json.JsonObject;
+
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -173,6 +175,10 @@ public class StringUtils {
 
         }
         return flag;
+    }
+
+    public static boolean jsonNonEmpty(String key, JsonObject target) {
+        return target.containsKey(key) && target.getString(key) != null;
     }
 
 
