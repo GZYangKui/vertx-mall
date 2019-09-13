@@ -30,4 +30,5 @@ public class Constants {
     public static final String PATH = "path";
     public static final String HTTP_METHOD = "method";
     public static final String REDIS_CLIENT = "redisClient";
+    public static final String TOTAL = "total";
 }

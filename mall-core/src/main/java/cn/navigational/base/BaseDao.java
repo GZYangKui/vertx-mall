@@ -9,6 +9,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.pgclient.PgConnectOptions;
 import io.vertx.pgclient.PgPool;
 import io.vertx.sqlclient.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -39,7 +40,6 @@ public class BaseDao {
     }
 
     /**
-     *
      * 执行查询
      *
      * @param sql sql语句
@@ -210,14 +210,52 @@ public class BaseDao {
     }
 
     /**
+     * 统计数据数量
      *
+     * @param sql sql语句
+     * @return 异步返回数据数量
+     */
+    protected Future<Long> count(String sql) {
+        Promise<Long> promise = Promise.promise();
+        executeQuery(sql).setHandler(ar -> {
+            if (ar.failed()) {
+                promise.fail(ar.cause());
+                return;
+            }
+            long sum = ar.result().get(0).getLong("count");
+            promise.complete(sum);
+        });
+        return promise.future();
+    }
+
+    /**
+     * 统计数据数量并指定条件
      *
+     * @param sql   sql语句
+     * @param param 条件
+     * @return 异步返回数据数量
+     */
+    protected Future<Long> countWithParam(String sql, Tuple param) {
+        Promise<Long> promise = Promise.promise();
+        executeQuery(sql, param).setHandler(ar -> {
+            if (ar.failed()) {
+                promise.fail(ar.cause());
+                return;
+            }
+            long sum = ar.result().get(0).getLong("count");
+            promise.complete(sum);
+        });
+        return promise.future();
+    }
+
+    /**
      * 获取分页查询参数
+     *
      * @param pageIndex 分页查询起始页
-     * @param pageSize 分页查询页面尺寸
+     * @param pageSize  分页查询页面尺寸
      * @return 返回分装好的分页查询参数
      */
-    protected Paging getPaging(int pageIndex,int pageSize){
-        return new Paging(pageIndex,pageSize);
-            }
+    protected Paging getPaging(int pageIndex, int pageSize) {
+        return new Paging(pageIndex, pageSize);
+    }
 }

@@ -14,4 +14,14 @@ public interface ProductService {
      * @return 异步返回商品列表
      */
     Future<List<JsonObject>> list(ProductQueryParamList paramList);
+
+    /**
+     *
+     * 统计商品数量
+     *
+     * @param paramList 查询参数列表
+     * @return 异步返回数据数量
+     *
+     */
+    Future<Long> getProductNum(ProductQueryParamList paramList);
 }

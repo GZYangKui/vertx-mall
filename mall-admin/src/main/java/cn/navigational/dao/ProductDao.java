@@ -36,4 +36,11 @@ public class ProductDao extends BaseDao {
 
         return executeQuery(sql.toString(), tuple);
     }
+
+    public Future<Long> countProduct(ProductQueryParamList paramList) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT COUNT(id) FROM product");
+
+        return count(sb.toString());
+    }
 }

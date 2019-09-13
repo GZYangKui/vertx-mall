@@ -13,6 +13,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
+import static cn.navigational.utils.ExceptionUtils.nullableStr;
+
 
 public class ProductServiceImpl implements ProductService {
     private ProductDao dao;
@@ -27,7 +29,22 @@ public class ProductServiceImpl implements ProductService {
         Promise<List<JsonObject>> promise = Promise.promise();
         dao.getProductList(paramList).setHandler(ar -> {
             if (ar.failed()) {
-                logger.error("获取商品列表失败:{}", ExceptionUtils.nullableStr(ar.cause()));
+                logger.error("获取商品列表失败:{}", nullableStr(ar.cause()));
+                promise.fail(ar.cause());
+                ar.cause().printStackTrace();
+                return;
+            }
+            promise.complete(ar.result());
+        });
+        return promise.future();
+    }
+
+    @Override
+    public Future<Long> getProductNum(ProductQueryParamList paramList) {
+        Promise<Long> promise = Promise.promise();
+        dao.countProduct(paramList).setHandler(ar -> {
+            if (ar.failed()) {
+                logger.error("获取商品数量失败:{}", nullableStr(ar.cause()));
                 promise.fail(ar.cause());
                 ar.cause().printStackTrace();
                 return;
