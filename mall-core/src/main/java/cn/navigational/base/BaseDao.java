@@ -1,5 +1,6 @@
 package cn.navigational.base;
 
+import cn.navigational.model.Paging;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
@@ -207,4 +208,16 @@ public class BaseDao {
         });
         return list;
     }
+
+    /**
+     *
+     *
+     * 获取分页查询参数
+     * @param pageIndex 分页查询起始页
+     * @param pageSize 分页查询页面尺寸
+     * @return 返回分装好的分页查询参数
+     */
+    protected Paging getPaging(int pageIndex,int pageSize){
+        return new Paging(pageIndex,pageSize);
+            }
 }

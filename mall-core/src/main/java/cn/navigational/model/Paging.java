@@ -15,6 +15,11 @@ public class Paging {
         initOffset = (page - 1) * pageSize;
     }
 
+    public Paging(int pageIndex, int pageSize) {
+        this.initOffset = (pageIndex - 1) * pageSize;
+        this.pageSize = pageSize;
+    }
+
     public int getInitOffset() {
         return initOffset;
     }
