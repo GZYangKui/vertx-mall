@@ -13,5 +13,5 @@ public interface ProductService {
      * @param paramList 指定查询条件
      * @return 异步返回商品列表
      */
-    public Future<List<JsonObject>> list(ProductQueryParamList paramList);
+    Future<List<JsonObject>> list(ProductQueryParamList paramList);
 }

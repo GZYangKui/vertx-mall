@@ -19,7 +19,14 @@ public class ProductDao extends BaseDao {
         StringBuilder sql = new StringBuilder();
         Tuple tuple = Tuple.tuple();
 
-        sql.append("SELECT * FROM product");
+        sql.append("SELECT id, brand_id AS \"brandId\",product_category_id AS \"productCategoryId\"," +
+                "title,pic,product_sn AS \"productSn\",delete_status AS \"deleteStatus\"," +
+                "publish_status AS \"publishStatus\",new_status AS \"newStatus\",recommend_status AS \"recommedStatus\"," +
+                "verify_status AS \"verifyStatus\",price,sale,brand_name AS \"brandName\"," +
+                "product_category_name AS \"productCategoryName\",subtitle AS \"subTitle\"," +
+                "sort,description,album_pics AS \"albumPics\",services,gift_growth AS \"goftGrowth\"," +
+                "gift_point AS \"giftPoint\",use_point_limit AS \"usePointLimit\",original_price" +
+                " AS \"originalPrice\" FROM product");
 
         sql.append(" LIMIT $1 OFFSET $2");
 
