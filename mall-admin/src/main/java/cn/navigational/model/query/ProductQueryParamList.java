@@ -17,15 +17,15 @@ public class ProductQueryParamList {
     //关键字
     private String keyword;
     //发布状态
-    private int publishStatus;
+    private int publishStatus = -1;
     //审核状态
-    private int verifyStatus;
+    private int verifyStatus = -1;
     //商品编号
     private String productSn;
     //分类id
-    private int productCategoryId;
+    private int productCategoryId = -1;
     //品牌id
-    private int brandId;
+    private int brandId=-1;
 
 
     public int getBrandId() {

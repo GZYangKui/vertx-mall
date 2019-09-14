@@ -11,6 +11,6 @@ public class ExceptionUtils {
      */
     public static String nullableStr(Throwable e) {
         e.printStackTrace();
-        return Optional.ofNullable(e.getCause()).orElse(new Exception("null")).getMessage();
+        return Optional.ofNullable(e).orElse(new Exception("null")).getMessage();
     }
 }
