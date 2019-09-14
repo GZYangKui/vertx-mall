@@ -3,7 +3,6 @@ package cn.navigational.impl;
 import cn.navigational.BaseTest;
 import cn.navigational.api.ApiVerticle;
 import cn.navigational.routers.ProductCateRouter;
-import cn.navigational.routers.ProductRouter;
 import cn.navigational.routers.UserRouter;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.buffer.Buffer;
