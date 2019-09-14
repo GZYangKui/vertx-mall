@@ -2,6 +2,7 @@ package cn.navigational.impl;
 
 import cn.navigational.base.BaseVerticle;
 import cn.navigational.enums.EventBusDataType;
+import cn.navigational.utils.ExceptionUtils;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -11,8 +12,8 @@ import org.apache.logging.log4j.Logger;
 import java.util.Objects;
 
 import static cn.navigational.config.Constants.*;
-import static cn.navigational.utils.ResponseUtils.response;
-import static cn.navigational.utils.ResponseUtils.responseTemplate;
+import static cn.navigational.utils.ExceptionUtils.nullableStr;
+import static cn.navigational.utils.ResponseUtils.*;
 
 public class RestVerticle extends BaseVerticle {
 
@@ -53,9 +54,9 @@ public class RestVerticle extends BaseVerticle {
     }
 
     private JsonObject executeException(Throwable _t) {
-        final JsonObject msg = responseTemplate("服务器错误", 500, false, EventBusDataType.JSON);
-        msg.put(CAUSE, Objects.isNull(_t.getMessage()) ? "NULL" : _t.getMessage());
-        return msg;
+        logger.error("Event bus 请求失败:{}", nullableStr(_t));
+        return responseFailed(ERROR_MESSAGE,500);
+
     }
 
 }

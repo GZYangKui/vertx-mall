@@ -29,7 +29,6 @@ public class BrandServiceImpl implements BrandService {
             if (ar.failed()) {
                 promise.fail(ar.cause());
                 logger.error("获取品牌列表失败:{}", nullableStr(ar.cause()));
-                ar.cause().printStackTrace();
                 return;
             }
             promise.complete(ar.result());
@@ -44,7 +43,6 @@ public class BrandServiceImpl implements BrandService {
             if (ar.failed()) {
                 promise.fail(ar.cause());
                 logger.error("统计品牌数量过程发生错误:{}", nullableStr(ar.cause()));
-                ar.cause().printStackTrace();
                 return;
             }
             promise.complete(ar.result());

@@ -31,7 +31,6 @@ public class ProductServiceImpl implements ProductService {
             if (ar.failed()) {
                 logger.error("获取商品列表失败:{}", nullableStr(ar.cause()));
                 promise.fail(ar.cause());
-                ar.cause().printStackTrace();
                 return;
             }
             promise.complete(ar.result());

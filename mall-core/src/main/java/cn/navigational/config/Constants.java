@@ -31,4 +31,5 @@ public class Constants {
     public static final String HTTP_METHOD = "method";
     public static final String REDIS_CLIENT = "redisClient";
     public static final String TOTAL = "total";
+    public static final String ERROR_MESSAGE = "服务器繁忙,请稍后重试!";
 }

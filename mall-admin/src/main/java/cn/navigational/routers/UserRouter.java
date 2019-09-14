@@ -65,7 +65,6 @@ public class UserRouter extends RouterVerticle {
                 flag = service.checkPassword(password, adminUser.getPassword());
             } catch (NoSuchAlgorithmException e) {
                 logger.error("用户密码加密过程发生错误:{}", nullableStr(e.getCause()));
-                e.printStackTrace();
                 response.fail(e);
                 return;
             }

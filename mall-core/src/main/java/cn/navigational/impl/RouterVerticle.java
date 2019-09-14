@@ -4,6 +4,8 @@ import cn.navigational.annotation.RequestMapping;
 import cn.navigational.annotation.Router;
 import cn.navigational.base.BaseVerticle;
 import cn.navigational.model.EBRequest;
+import cn.navigational.model.RequestMappingModel;
+import cn.navigational.utils.ExceptionUtils;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.http.HttpMethod;
@@ -12,12 +14,10 @@ import io.vertx.core.json.JsonObject;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static cn.navigational.config.Constants.*;
+import static cn.navigational.utils.ExceptionUtils.nullableStr;
 import static cn.navigational.utils.ResponseUtils.responseFailed;
 import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
 
@@ -30,7 +30,7 @@ import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
  */
 public abstract class RouterVerticle extends BaseVerticle {
     //缓存方法
-    private final Map<String, Map<String, Object>> requestMapping = new HashMap<>();
+    private final List<RequestMappingModel> cacheRequest = new ArrayList<>();
 
     @Override
     public void start(Promise<Void> startPromise) throws Exception {
@@ -44,49 +44,51 @@ public abstract class RouterVerticle extends BaseVerticle {
             final Annotation[] annotations = method.getDeclaredAnnotations();
             for (Annotation annotation : annotations) {
                 if (annotation.annotationType() == RequestMapping.class) {
-                    final RequestMapping map = (RequestMapping) annotation;
-                    final Map<String, Object> info = new HashMap<>();
-                    info.put(HTTP_METHOD, ((RequestMapping) annotation).method());
-                    info.put("execute", method);
-                    requestMapping.put(router.api() + map.api(), info);
+                    RequestMappingModel model = new RequestMappingModel();
+                    model.setApi(router.api() + ((RequestMapping) annotation).api());
+                    model.setHttpRequestMethod(((RequestMapping) annotation).method());
+                    model.setMethod(method);
+                    cacheRequest.add(model);
                 }
             }
         }
-        vertx.eventBus().<JsonObject>consumer(getAPi(), _msg -> {
-            final JsonObject data = _msg.body();
+        vertx.eventBus().<JsonObject>consumer(getAPi(), msg -> {
+            final JsonObject data = msg.body();
 
             final EBRequest ebRequest = EBRequest.create(data);
 
             final String path = ebRequest.getPath();
             final HttpMethod httpMethod = ebRequest.getMethod();
 
-            //检查当前api是否存在,以及请求方法是否符合@RequestMapping中设定的请求方法
-            if (!requestMapping.containsKey(path) || requestMapping.get(path).get(HTTP_METHOD) != httpMethod) {
-                _msg.reply(notFound(path));
+            RequestMappingModel request = null;
+            for (RequestMappingModel model : cacheRequest) {
+                if (model.getApi().equals(path) && model.getHttpRequestMethod() == httpMethod) {
+                    request = model;
+                    break;
+                }
+            }
+            if (request == null) {
+                msg.reply(notFound(path));
                 return;
             }
-
-            //反射执行特定方法
+            //动态代理执行方法
             try {
-
-                final Method method = (Method) requestMapping.get(path).get("execute");
 
                 final Promise<JsonObject> promise = Promise.promise();
 
-                method.invoke(this, ebRequest, promise);
+                request.getMethod().invoke(this, ebRequest, promise);
 
-                promise.future().setHandler(_rs -> {
-                    if (_rs.failed()) {
-                        logger.error("业务逻辑处理失败:{}", _rs.cause().getMessage());
-                        _msg.reply(error(_rs.cause()));
+                promise.future().setHandler(ar -> {
+                    if (ar.failed()) {
+                        logger.error("业务逻辑处理失败:{}", nullableStr(ar.cause()));
+                        msg.reply(error());
                         return;
                     }
-                    _msg.reply(_rs.result());
+                    msg.reply(ar.result());
                 });
             } catch (IllegalAccessException | InvocationTargetException e) {
-                logger.error("reflect execute failed cause:{}", Optional.of(e.getCause()).orElse(new Exception("NullPointException")).getMessage());
-                e.printStackTrace();
-                _msg.reply(error(e.getCause()));
+                logger.error("反射执行：{}方法失败：{}", request.getMethod().getName(), nullableStr(e));
+                msg.reply(error());
             }
         });
         startPromise.complete();
@@ -98,10 +100,8 @@ public abstract class RouterVerticle extends BaseVerticle {
         return msg;
     }
 
-    private JsonObject error(Throwable _t) {
-        final JsonObject msg = responseFailed("程序出错", 500);
-        msg.put(CAUSE, Objects.isNull(_t.getMessage()) ? "NULL" : _t.getMessage());
-        return msg;
+    private JsonObject error() {
+        return responseFailed(ERROR_MESSAGE, 500);
     }
 
     private String getAPi() {

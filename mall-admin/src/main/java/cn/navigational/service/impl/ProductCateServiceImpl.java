@@ -48,7 +48,6 @@ public class ProductCateServiceImpl implements ProductCateService {
             if (ar.failed()) {
                 promise.fail(ar.cause());
                 logger.error("统计分类数量过程发生错误:{}", nullableStr(ar.cause()));
-                ar.cause().printStackTrace();
                 return;
             }
             promise.complete(ar.result());
@@ -63,7 +62,6 @@ public class ProductCateServiceImpl implements ProductCateService {
             if (ar.failed()) {
                 promise.fail(ar.cause());
                 logger.error("获取分类及其子分类失败:{}", nullableStr(ar.cause()));
-                ar.cause().printStackTrace();
                 return;
             }
 

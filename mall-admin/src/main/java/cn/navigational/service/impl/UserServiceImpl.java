@@ -51,7 +51,6 @@ public class UserServiceImpl implements UserService {
         dao.findAdminByUsername(username).setHandler(ar -> {
             if (ar.failed()) {
                 logger.error("根据管理员用户名查询管理员账号信息失败:{}", nullableStr(ar.cause()));
-                promise.fail(ar.cause());
                 return;
             }
             Optional<JsonObject> optional = ar.result();
@@ -106,7 +105,6 @@ public class UserServiceImpl implements UserService {
             if (ar.failed()) {
                 logger.error("获取用户权限失败:{}", nullableStr(ar.cause()));
                 promise.fail(ar.cause());
-                ar.cause().printStackTrace();
                 return;
             }
             //获取权限值
@@ -160,7 +158,6 @@ public class UserServiceImpl implements UserService {
             if (ar.failed()) {
                 logger.error("获取用户信息失败:{}", nullableStr(ar.cause()));
                 promise.fail(ar.cause());
-                ar.cause().printStackTrace();
                 return;
             }
             //如果信息不存在则返回空json
