@@ -1,6 +1,7 @@
 package cn.navigational.validator;
 
 import cn.navigational.base.HttpValidator;
+import cn.navigational.model.AdminUser;
 import cn.navigational.service.UserService;
 import cn.navigational.service.impl.UserServiceImpl;
 import io.vertx.core.Vertx;
@@ -29,14 +30,14 @@ public class RBACValidator extends HttpValidator {
 
     @Override
     public void handle(RoutingContext event) {
-        String uri = event.request().uri();
+        String uri = event.request().path();
         if (skips.contains(uri)) {
             event.next();
             return;
         }
 
         long userId = event.getBodyAsJson().getJsonObject(USER).getLong(USER_ID);
-        logger.info("ID为{}的用户申请访问资源:{}", userId, uri);
+
         service.getUserFromRedis(userId).setHandler(ar -> {
             if (ar.failed()) {
                 logger.error("从redis中获取用户权限失败:{}", nullableStr(ar.cause()));
@@ -44,16 +45,22 @@ public class RBACValidator extends HttpValidator {
                 return;
             }
 
-            List<String> list = ar.result();
+            JsonObject userInfo = ar.result();
+            List permissions = userInfo.getJsonArray("permissions").getList();
+            List roles = userInfo.getJsonArray("roles").getList();
+
+            AdminUser user = userInfo.getJsonObject("user").mapTo(AdminUser.class);
+
+            logger.info("用户:{} 申请访问资源:{}", user.getUsername(), uri);
 
             // '*'表示最高访问权
-            if ((list.isEmpty() || !list.contains(uri)) && !list.contains("*")) {
+            if ((permissions.isEmpty() || !permissions.contains(uri)) && !permissions.contains("*")) {
                 validatorFailed(event, "你没有访问改资源的权限");
-                logger.info("ID为{}的用户不具备访问{}资源的权限", userId, uri);
+                logger.info("的用户:{} 不具备访问:{} 资源的权限", user.getUsername(), uri);
                 return;
             }
 
-            logger.info("将资源:{} 授权给ID为{}的用户", uri, userId);
+            logger.info("将资源:{} 授权给的用户:{}", uri, user.getNickName());
             event.next();
         });
 

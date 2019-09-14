@@ -29,7 +29,7 @@ public class UserDao extends BaseDao {
     }
 
     public Future<List<JsonObject>> getUserPermission(long adminId) {
-        String sql = "SELECT mp.parent_id AS \"parentId\",mp.create_time AS \"createTime\"," +
+        String sql = "SELECT mr.name AS \"roleName\",mp.parent_id AS \"parentId\",mp.create_time AS \"createTime\"," +
                 "mp.id,mp.name,mp.value,mp.type,mp.status,mp.sort,mr.name AS \"roleName\" " +
                 "FROM mall_admin ma,mall_role mr,admin_role_relation mrr," +
                 "mall_permission mp,role_permission_relation rpr WHERE ma.id=$1 AND " +

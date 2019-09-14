@@ -72,13 +72,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void recordAdminLogging(LoginLogger logger) {
+    public void recordAdminLogging(LoginLogger logger, AdminUser user) {
         dao.saveLoginLogging(logger).setHandler(ar -> {
             if (ar.failed()) {
                 this.logger.error("保存用户登录日志失败:{}", nullableStr(ar.cause()));
                 return;
             }
-            this.logger.info("保存用户登录记录成功,用户id:{}", logger.getAdminId());
+            this.logger.info("保存用户{}登录记录成功", user.getUsername());
         });
     }
 
@@ -100,9 +100,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Future<List<String>> getUserPermissionAndSave(long adminId) {
-        Promise<List<String>> promise = Promise.promise();
-        dao.getUserPermission(adminId).setHandler(ar -> {
+    public Future<JsonObject> getUserPermissionAndSave(AdminUser user) {
+        Promise<JsonObject> promise = Promise.promise();
+        dao.getUserPermission(user.getId()).setHandler(ar -> {
             if (ar.failed()) {
                 logger.error("获取用户权限失败:{}", nullableStr(ar.cause()));
                 promise.fail(ar.cause());
@@ -110,21 +110,28 @@ public class UserServiceImpl implements UserService {
                 return;
             }
             //获取权限值
-            List<String> list = ar.result().stream()
+            List<String> permissions = ar.result().stream()
                     .map(r -> r.getString("value"))
                     .collect(Collectors.toList());
+            List<String> roles = ar.result().stream()
+                    .map(r -> r.getString("roleName"))
+                    .collect(Collectors.toList());
+            //生成缓存json数据
+            JsonObject rp = new JsonObject();
+            rp.put("roles", roles);
+            rp.put("permissions", permissions);
+            rp.put("user", JsonObject.mapFrom(user));
 
-            savePermissionToRedis(adminId, list);
-
+            saveRPToRedis(user.getId(), rp);
             //返回数据
-            promise.complete(list);
+            promise.complete(rp);
         });
         return promise.future();
     }
 
     @Override
-    public Future<List<String>> getUserFromRedis(long adminId) {
-        Promise<List<String>> promise = Promise.promise();
+    public Future<JsonObject> getUserFromRedis(long adminId) {
+        Promise<JsonObject> promise = Promise.promise();
         String key = REDIS_USER_PREFIX + adminId;
         redis.get(key, ar -> {
             if (ar.failed()) {
@@ -134,7 +141,7 @@ public class UserServiceImpl implements UserService {
             //将字符串转换为字符串集合
             String str = ar.result();
             if (Objects.nonNull(str)) {
-                promise.complete(strToList(str));
+                promise.complete(new JsonObject(str));
             }
         });
         return promise.future();
@@ -163,7 +170,7 @@ public class UserServiceImpl implements UserService {
     }
 
     //将用户权限缓存进redis
-    private void savePermissionToRedis(long adminId, List<String> permissions) {
+    private void saveRPToRedis(long adminId, JsonObject userInfo) {
         //生成rediskey
         String key = REDIS_USER_PREFIX + adminId;
         //设置过期时间
@@ -173,6 +180,6 @@ public class UserServiceImpl implements UserService {
         options.setEX(2 * 60 * 60);
 
         //写进redis
-        redis.put(key, permissions.toString(), options);
+        redis.put(key, userInfo.toString(), options);
     }
 }

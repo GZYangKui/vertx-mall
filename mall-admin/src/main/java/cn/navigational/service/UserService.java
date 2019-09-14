@@ -31,8 +31,9 @@ public interface UserService {
      * 记录管理员登录日志
      *
      * @param logger 用户登录日志信息
+     * @param user 用户信息
      */
-    void recordAdminLogging(LoginLogger logger);
+    void recordAdminLogging(LoginLogger logger,AdminUser user);
 
     /**
      * 生成jwt令牌
@@ -45,17 +46,17 @@ public interface UserService {
     /**
      * 得到用户权限并保存到redis
      *
-     * @param adminId
+     * @param user 用户信息
      * @return
      */
-    Future<List<String>> getUserPermissionAndSave(long adminId);
+    Future<JsonObject> getUserPermissionAndSave(AdminUser user);
 
     /**
      * 获取用户权限从redis
      *
      * @param adminId 用户id
      */
-    Future<List<String>> getUserFromRedis(long adminId);
+    Future<JsonObject> getUserFromRedis(long adminId);
 
     /**
      * 用户注销(移除redis缓存用户数据)
