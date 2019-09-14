@@ -53,7 +53,7 @@ public class ProductCateServiceImpl implements ProductCateService {
             }
             promise.complete(ar.result());
         });
-        return null;
+        return promise.future();
     }
 
     @Override

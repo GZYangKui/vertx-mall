@@ -15,8 +15,7 @@ import io.vertx.ext.web.client.WebClient;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static cn.navigational.config.Constants.DATA;
-import static cn.navigational.config.Constants.TOKEN;
+import static cn.navigational.config.Constants.*;
 
 /**
  *
@@ -39,13 +38,10 @@ public class ProductCateTest extends BaseTest {
     public void testCateList(TestContext context){
         Async async = context.async();
         String url = "/api/productCategory/list";
-        JsonObject info = new JsonObject();
-        info.put("pageIndex", 1);
-        info.put("pageSize", 10);
         WebClient client = WebClient.create(vertx);
-        HttpRequest<Buffer> request = client.post(port, host, url);
+        HttpRequest<Buffer> request = client.get(port, host, url);
         request.headers().add("Authorization", "Bearer " + user.getJsonObject(DATA).getString(TOKEN));
-        request.sendJson(info,ar -> {
+        request.send(ar -> {
             if (ar.failed()) {
                 context.fail(ar.cause());
                 return;
@@ -53,6 +49,43 @@ public class ProductCateTest extends BaseTest {
             commonAsset(ar, context);
             async.complete();
         });
+    }
+
+    @Test
+    public void testCateFixPaging(TestContext context){
+        Async async = context.async();
+        String url = "/api/productCategory/list?pageNum=1&pageSize=1";
+        WebClient client = WebClient.create(vertx);
+        HttpRequest<Buffer> request = client.get(port, host, url);
+        request.headers().add("Authorization", "Bearer " + user.getJsonObject(DATA).getString(TOKEN));
+        request.send(ar -> {
+            if (ar.failed()) {
+                context.fail(ar.cause());
+                return;
+            }
+            JsonObject result = commonAsset(ar, context);
+            context.assertTrue(result.getJsonArray("data").size()==1);
+            async.complete();
+        });
+
+    }
+    @Test
+    public void testCateFixPagingAndKeyword(TestContext context){
+        Async async = context.async();
+        String url = "/api/productCategory/list?pageNum=1&pageSize=1&keyword=华为x";
+        WebClient client = WebClient.create(vertx);
+        HttpRequest<Buffer> request = client.get(port, host, url);
+        request.headers().add("Authorization", "Bearer " + user.getJsonObject(DATA).getString(TOKEN));
+        request.send(ar -> {
+            if (ar.failed()) {
+                context.fail(ar.cause());
+                return;
+            }
+            JsonObject result = commonAsset(ar, context);
+            context.assertTrue(result.getJsonArray("data").size()==1);
+            async.complete();
+        });
+
     }
 
     @Test

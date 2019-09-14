@@ -21,8 +21,8 @@ public class ProductCateDao extends BaseDao {
         sb.append("SELECT  id,parent_id AS \"parentId\",name,product_count AS \"productCount\"," +
                 "show_status AS showStatus,icon,description,sort FROM product_category WHERE 1=$1");
         if (param.getKeyword() != null) {
-            sb.append(" AND name LIKE %$2%");
-            tuple.addValue(param.getKeyword());
+            sb.append(" AND name LIKE $2");
+            tuple.addValue("%"+param.getKeyword()+"%");
         }
         sb.append(" LIMIT ").append(
                 param.getKeyword() != null ? "$3 OFFSET $4" : "$2 OFFSET $3");
@@ -38,10 +38,11 @@ public class ProductCateDao extends BaseDao {
         sb.append("SELECT count(*) FROM product_category");
         Tuple tuple = Tuple.tuple();
         if (param.getKeyword() != null) {
-            sb.append(" WHERE name LIKE %$1%");
-            tuple.addValue(param.getKeyword());
+            sb.append(" WHERE name LIKE $1");
+            tuple.addValue("%"+param.getKeyword()+"%");
         }
         String sql = sb.toString();
+        System.out.println(sql);
         return tuple.size() > 0 ? countWithParam(sql, tuple) : count(sql);
     }
 }
