@@ -6,15 +6,14 @@ import cn.navigational.service.ProductCateService;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static cn.navigational.utils.ExceptionUtils.nullableStr;
 
@@ -72,11 +71,24 @@ public class ProductCateServiceImpl implements ProductCateService {
                 promise.complete(Collections.emptyList());
                 return;
             }
-            //做分类处理
+            //TODO 时间复杂度太高,分类多的时候性能急剧下降,有待改进
             List<JsonObject> list = ar.result();
-            //TODO 未完成递归获取子分类功能
-
-
+            List<JsonObject> destory = new ArrayList<>();
+            for (JsonObject root : list) {
+                long id = root.getLong("id");
+                for (JsonObject item : list) {
+                    if (item.getLong("parentId") == id) {
+                        JsonArray children = root.getJsonArray("children");
+                        if (children == null) {
+                            children = new JsonArray();
+                            root.put("children", children);
+                        }
+                        children.add(item);
+                        destory.add(item);
+                    }
+                }
+            }
+            destory.forEach(list::remove);
             promise.complete(list);
         });
         return promise.future();
