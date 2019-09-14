@@ -42,6 +42,8 @@ public class ApiVerticle extends RestVerticle {
         router.post("/api/product/update/newStatus");
         //获取商品品牌列表
         router.get("/api/brand/list");
+        //获取商城会员等级
+        router.get("/api/memberLevel/list");
 
 
         //通过EventBus将请求转发到子路由上面处理
