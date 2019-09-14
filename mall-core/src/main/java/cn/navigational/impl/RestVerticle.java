@@ -54,8 +54,9 @@ public class RestVerticle extends BaseVerticle {
     }
 
     private JsonObject executeException(Throwable _t) {
-        logger.error("Event bus 请求失败:{}", nullableStr(_t));
-        return responseFailed(ERROR_MESSAGE,500);
+        logger.error("Event bus 请求失败:{}", _t.getMessage());
+        _t.printStackTrace();
+        return responseFailed(ERROR_MESSAGE, 500);
 
     }
 
