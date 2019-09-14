@@ -52,4 +52,46 @@ public class ProductServiceImpl implements ProductService {
         });
         return promise.future();
     }
+
+    @Override
+    public Future<Integer> updatePublishStatus(List<Integer> ids, int publishStatus) {
+        Promise<Integer> promise = Promise.promise();
+        dao.updateProductStatus(ids, publishStatus, "publish_status").setHandler(ar -> {
+            if (ar.failed()) {
+                logger.error("更改商品发布状态失败:{}", nullableStr(ar.cause()));
+                promise.fail(ar.cause());
+                return;
+            }
+            promise.complete(ar.result());
+        });
+        return promise.future();
+    }
+
+    @Override
+    public Future<Integer> updateNewStatus(List<Integer> ids, int newStatus) {
+        Promise<Integer> promise = Promise.promise();
+        dao.updateProductStatus(ids, newStatus, "new_status").setHandler(ar -> {
+            if (ar.failed()) {
+                logger.error("更改商品新品状态失败:{}", nullableStr(ar.cause()));
+                promise.fail(ar.cause());
+                return;
+            }
+            promise.complete(ar.result());
+        });
+        return promise.future();
+    }
+
+    @Override
+    public Future<Integer> updateRecommendStatus(List<Integer> ids, int recommendStatus) {
+        Promise<Integer> promise = Promise.promise();
+        dao.updateProductStatus(ids, recommendStatus, "recommend_status").setHandler(ar -> {
+            if (ar.failed()) {
+                logger.error("更改商品推荐状态失败:{}", nullableStr(ar.cause()));
+                promise.fail(ar.cause());
+                return;
+            }
+            promise.complete(ar.result());
+        });
+        return promise.future();
+    }
 }

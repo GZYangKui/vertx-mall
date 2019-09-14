@@ -36,6 +36,10 @@ public class ApiVerticle extends RestVerticle {
         router.post("/api/user/logout");
         //获取商品列表
         router.get("/api/product/list");
+        //更新商品发布状态
+        router.post("/api/product/update/publishStatus");
+        //更新商品新品状态
+        router.post("/api/product/update/newStatus");
         //获取商品品牌列表
         router.get("/api/brand/list");
 
