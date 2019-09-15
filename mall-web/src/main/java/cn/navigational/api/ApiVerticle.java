@@ -36,72 +36,11 @@ public class ApiVerticle extends RestVerticle {
         //用户注册
         router.post("/api/user/register").handler(RegisterValidator.create());
 
-        //获取地址列表
-        router.get("/api/address/list");
-
-        //获取默认地址
-        router.get("/api/address/default");
-
-        //商品列表
-        router.get("/api/product/list");
-
-        //获取商品库存信息
-        router.get("/api/sku/info");
-
-        //获取商品分类列表
-        router.get("/api/productCate/list");
-
-        //获取优惠券列表
-        router.get("/api/coupon/list");
-
-        //获取优选专题列表
-        router.get("/api/preference/list");
-
-        //获取商城广告位
-        router.get("/api/homeAdvertise/list");
-
-        //获取地址详细信息
-        router.get("/api/address/detail");
-
-        //更新默认地址
-        router.post("/api/address/updateDefault");
-
         //更新地址信息
         router.post("/api/address/update").handler(AddressValidator.create());
 
         //新增地址信息
         router.post("/api/address/create").handler(AddressValidator.create());
-
-        //删除地址信息
-        router.post("/api/address/delete");
-
-        //获取专题分类
-        router.get("/api/subject/cateList");
-
-        //获取某个分类下的专题
-        router.get("/api/subject/list");
-
-        //获取购物车列表
-        router.get("/api/cart/list");
-
-        //更新购物车商品数量
-        router.post("/api/cart/updateNum");
-
-        //删除购物车商品数量
-        router.post("/api/cart/deletes");
-
-        //获取首页专题推荐列表
-        router.get("/api/homeSubject/list");
-
-        //获取推荐商品列表
-        router.get("/api/product/recommend");
-
-        //获取秒杀时刻表
-        router.get("/api/secKill/home");
-
-        //获取指定时间段的商品列表
-        router.get("/api/secKill/timeSlotWithProduct");
-
 
         //将请求分发到指定的分路由上去
         router.route("/api/*").handler(this::sendMessage);
