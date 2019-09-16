@@ -1,6 +1,6 @@
 package cn.navigational.routers;
 
-import cn.navigational.annotation.RequestMapping;
+import cn.navigational.annotation.RouterMapping;
 import cn.navigational.annotation.Router;
 import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
@@ -33,7 +33,7 @@ public class UserRouter extends RouterVerticle {
         service = new UserServiceImpl(vertx, config());
     }
 
-    @RequestMapping(api = "/login", method = HttpMethod.POST)
+    @RouterMapping(api = "/login", method = HttpMethod.POST)
     public void login(final EBRequest request, final Promise<JsonObject> response) {
         JsonObject reqJson = request.getBodyAsJson();
         String username = reqJson.getString("username");
@@ -91,14 +91,14 @@ public class UserRouter extends RouterVerticle {
         });
     }
 
-    @RequestMapping(api = "/logout", method = HttpMethod.POST)
+    @RouterMapping(api = "/logout", method = HttpMethod.POST)
     public void logout(final EBRequest request, final Promise<JsonObject> response) {
         response.complete(responseSuccessJson());
         //移除缓存数据
         service.logout(request.getUser().getUserId());
     }
 
-    @RequestMapping(api = "/info")
+    @RouterMapping(api = "/info")
     public void info(final EBRequest request, final Promise<JsonObject> response) {
         long adminId = request.getUser().getUserId();
 

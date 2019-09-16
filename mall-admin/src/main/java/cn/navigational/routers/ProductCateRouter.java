@@ -1,6 +1,6 @@
 package cn.navigational.routers;
 
-import cn.navigational.annotation.RequestMapping;
+import cn.navigational.annotation.RouterMapping;
 import cn.navigational.annotation.Router;
 import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
@@ -35,7 +35,7 @@ public class ProductCateRouter extends RouterVerticle {
         service = new ProductCateServiceImpl(vertx, config());
     }
 
-    @RequestMapping(api = "/list", description = "获取商品分类")
+    @RouterMapping(api = "/list", description = "获取商品分类")
     public void list(final EBRequest request, final Promise<JsonObject> response) {
         ProductCateQueryParam param = getParam(request.getQuery());
         service.list(param).setHandler(ar -> {
@@ -55,7 +55,7 @@ public class ProductCateRouter extends RouterVerticle {
         });
     }
 
-    @RequestMapping(api = "/list/withChildren", description = "获取商品列表和子分类")
+    @RouterMapping(api = "/list/withChildren", description = "获取商品列表和子分类")
     public void listWithChildren(final EBRequest request, final Promise<JsonObject> response) {
         ProductCateQueryParam param = new ProductCateQueryParam();
         param.setPageSize(1000);

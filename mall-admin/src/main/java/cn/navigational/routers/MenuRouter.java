@@ -1,6 +1,6 @@
 package cn.navigational.routers;
 
-import cn.navigational.annotation.RequestMapping;
+import cn.navigational.annotation.RouterMapping;
 import cn.navigational.annotation.Router;
 import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
@@ -27,7 +27,7 @@ public class MenuRouter extends RouterVerticle {
         service = new MenuServiceImpl(vertx,config());
     }
 
-    @RequestMapping(api = "/list")
+    @RouterMapping(api = "/list")
     public void list(final EBRequest request, final Promise<JsonObject> response){
 
     }

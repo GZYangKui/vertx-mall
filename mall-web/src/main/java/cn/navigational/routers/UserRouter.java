@@ -1,6 +1,6 @@
 package cn.navigational.routers;
 
-import cn.navigational.annotation.RequestMapping;
+import cn.navigational.annotation.RouterMapping;
 import cn.navigational.annotation.Router;
 import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
@@ -9,14 +9,10 @@ import cn.navigational.model.RegisterInfo;
 import cn.navigational.model.User;
 import cn.navigational.service.UserService;
 import cn.navigational.service.impl.UserServiceImpl;
-import io.vertx.core.Future;
 
 import io.vertx.core.Promise;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
-
-
-import static cn.navigational.config.Constants.BODY;
 
 @Verticle()
 @Router(api = "/api/user")
@@ -30,13 +26,13 @@ public class UserRouter extends RouterVerticle {
         service = new UserServiceImpl(vertx, config());
     }
 
-    @RequestMapping(api = "/login", description = "用户登录", method = HttpMethod.POST)
+    @RouterMapping(api = "/login", description = "用户登录", method = HttpMethod.POST)
     public void login(final EBRequest request, final Promise<JsonObject> promise) {
         final User user = request.getBodyAsJson().mapTo(User.class);
         futureStatus(service.login(user), promise);
     }
 
-    @RequestMapping(api = "/register", description = "用户注册", method = HttpMethod.POST)
+    @RouterMapping(api = "/register", description = "用户注册", method = HttpMethod.POST)
     public void register(final EBRequest request, final Promise<JsonObject> promise) {
         final RegisterInfo registerInfo = request.getBodyAsJson().mapTo(RegisterInfo.class);
         futureStatus(service.register(registerInfo), promise);

@@ -1,13 +1,12 @@
 package cn.navigational.routers;
 
-import cn.navigational.annotation.RequestMapping;
+import cn.navigational.annotation.RouterMapping;
 import cn.navigational.annotation.Router;
 import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
 import cn.navigational.model.EBRequest;
 import cn.navigational.service.CouponService;
 import cn.navigational.service.impl.CouponServiceImpl;
-import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
@@ -25,7 +24,7 @@ public class CouponRoute extends RouterVerticle {
         service = new CouponServiceImpl(vertx, config());
     }
 
-    @RequestMapping(api = "/list", method = HttpMethod.GET, description = "优惠券列表")
+    @RouterMapping(api = "/list", method = HttpMethod.GET, description = "优惠券列表")
     public void list(final EBRequest request, final Promise<JsonObject> promise) {
         futureStatus(service.list(request.getPaging()),promise);
     }

@@ -1,11 +1,10 @@
 package cn.navigational.impl;
 
-import cn.navigational.annotation.RequestMapping;
+import cn.navigational.annotation.RouterMapping;
 import cn.navigational.annotation.Router;
 import cn.navigational.base.BaseVerticle;
 import cn.navigational.model.EBRequest;
 import cn.navigational.model.RequestMappingModel;
-import cn.navigational.utils.ExceptionUtils;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.http.HttpMethod;
@@ -26,7 +25,7 @@ import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
  *
  * @author GZYangKui
  * @see io.vertx.core.eventbus.EventBus
- * @see cn.navigational.annotation.RequestMapping
+ * @see RouterMapping
  */
 public abstract class RouterVerticle extends BaseVerticle {
     //缓存方法
@@ -43,10 +42,10 @@ public abstract class RouterVerticle extends BaseVerticle {
         for (Method method : methods) {
             final Annotation[] annotations = method.getDeclaredAnnotations();
             for (Annotation annotation : annotations) {
-                if (annotation.annotationType() == RequestMapping.class) {
+                if (annotation.annotationType() == RouterMapping.class) {
                     RequestMappingModel model = new RequestMappingModel();
-                    model.setApi(router.api() + ((RequestMapping) annotation).api());
-                    model.setHttpRequestMethod(((RequestMapping) annotation).method());
+                    model.setApi(router.api() + ((RouterMapping) annotation).api());
+                    model.setHttpRequestMethod(((RouterMapping) annotation).method());
                     model.setMethod(method);
                     cacheRequest.add(model);
                 }

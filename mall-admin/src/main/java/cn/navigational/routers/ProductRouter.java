@@ -1,6 +1,6 @@
 package cn.navigational.routers;
 
-import cn.navigational.annotation.RequestMapping;
+import cn.navigational.annotation.RouterMapping;
 import cn.navigational.annotation.Router;
 import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
@@ -39,7 +39,7 @@ public class ProductRouter extends RouterVerticle {
         service = new ProductServiceImpl(vertx, config());
     }
 
-    @RequestMapping(api = "/list", description = "获取商品列表")
+    @RouterMapping(api = "/list", description = "获取商品列表")
     public void list(final EBRequest request, final Promise<JsonObject> response) {
         ProductQueryParamList paramList = getParam(request.getQuery());
 
@@ -62,7 +62,7 @@ public class ProductRouter extends RouterVerticle {
         });
     }
 
-    @RequestMapping(api = "/update/publishStatus", method = HttpMethod.POST, description = "更改商品发布状态")
+    @RouterMapping(api = "/update/publishStatus", method = HttpMethod.POST, description = "更改商品发布状态")
     public void publishStatus(final EBRequest request, Promise<JsonObject> response) {
 
         int var2 = Integer.parseInt(request.getQuery("publishStatus"));
@@ -78,7 +78,7 @@ public class ProductRouter extends RouterVerticle {
         });
     }
 
-    @RequestMapping(api = "/update/newStatus", method = HttpMethod.POST, description = "更改商品新品状态")
+    @RouterMapping(api = "/update/newStatus", method = HttpMethod.POST, description = "更改商品新品状态")
     public void newStatus(final EBRequest request, Promise<JsonObject> response) {
         int var2 = Integer.parseInt(request.getQuery("newStatus"));
 
@@ -93,7 +93,7 @@ public class ProductRouter extends RouterVerticle {
         });
     }
 
-    @RequestMapping(api = "/update/recommendStatus", method = HttpMethod.POST, description = "更改商品推荐状态")
+    @RouterMapping(api = "/update/recommendStatus", method = HttpMethod.POST, description = "更改商品推荐状态")
     public void recommendStatus(final EBRequest request, Promise<JsonObject> response) {
         int var2 = Integer.parseInt(request.getQuery("recommendStatus"));
         service.updateRecommendStatus(getProductIdFromQuery(request), var2).setHandler(ar -> {

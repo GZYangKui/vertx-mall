@@ -1,13 +1,12 @@
 package cn.navigational.routers;
 
-import cn.navigational.annotation.RequestMapping;
+import cn.navigational.annotation.RouterMapping;
 import cn.navigational.annotation.Router;
 import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
 import cn.navigational.model.EBRequest;
 import cn.navigational.service.HomeSubjectService;
 import cn.navigational.service.impl.HomeSubjectServiceImpl;
-import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
@@ -26,7 +25,7 @@ public class HomeSubjectRouter extends RouterVerticle {
         service = new HomeSubjectServiceImpl(vertx, config());
     }
 
-    @RequestMapping(api = "/list", method = HttpMethod.GET, description = "获取首页专题推荐列表")
+    @RouterMapping(api = "/list", method = HttpMethod.GET, description = "获取首页专题推荐列表")
     public void list(final EBRequest request, final Promise<JsonObject> promise) {
         futureStatus(service.list(), promise);
     }

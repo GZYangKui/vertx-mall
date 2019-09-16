@@ -1,6 +1,6 @@
 package cn.navigational.routers;
 
-import cn.navigational.annotation.RequestMapping;
+import cn.navigational.annotation.RouterMapping;
 import cn.navigational.annotation.Router;
 import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
@@ -36,7 +36,7 @@ public class BrandRouter extends RouterVerticle {
         service = new BrandServiceImpl(vertx, config());
     }
 
-    @RequestMapping(api = "/list", description = "获取品牌列表")
+    @RouterMapping(api = "/list", description = "获取品牌列表")
     public void list(final EBRequest request, final Promise<JsonObject> response) {
         BrandQueryParam param = getParam(request.getQuery());
         service.list(param).setHandler(ar -> {

@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * 一般该注解与RequestMapping组合使用
  *
  * @author GZYangKui
- * @see cn.navigational.annotation.RequestMapping
+ * @see RouterMapping
  *
  */
 @Retention(RetentionPolicy.RUNTIME)

@@ -1,6 +1,6 @@
 package cn.navigational.routers;
 
-import cn.navigational.annotation.RequestMapping;
+import cn.navigational.annotation.RouterMapping;
 import cn.navigational.annotation.Router;
 import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
@@ -29,19 +29,19 @@ public class AddressRouter extends RouterVerticle {
         service = new AddressServiceImpl(vertx, config());
     }
 
-    @RequestMapping(api = "/list", method = HttpMethod.GET, description = "获取地址列表")
+    @RouterMapping(api = "/list", method = HttpMethod.GET, description = "获取地址列表")
     public void list(final EBRequest request, final Promise<JsonObject> promise) {
         final JwtUser user = request.getUser();
         final Paging paging = request.getPaging();
         futureStatus(service.list(paging, user),promise);
     }
 
-    @RequestMapping(api = "/default", method = HttpMethod.GET, description = "获取默认收货地址")
+    @RouterMapping(api = "/default", method = HttpMethod.GET, description = "获取默认收货地址")
     public void defaultAddress(final EBRequest request, final Promise<JsonObject> promise) {
         futureStatus(service.defaultAddress(request.getUser()),promise);
     }
 
-    @RequestMapping(api = "/detail", method = HttpMethod.GET, description = "获取地址详情")
+    @RouterMapping(api = "/detail", method = HttpMethod.GET, description = "获取地址详情")
     public void detail(final EBRequest request, final Promise<JsonObject> promise) {
         service.detail(Integer.parseInt(request.getQuery("address_id"))).setHandler(_rs -> {
             if (_rs.failed()) {
@@ -52,7 +52,7 @@ public class AddressRouter extends RouterVerticle {
         });
     }
 
-    @RequestMapping(api = "/update", method = HttpMethod.POST, description = "更新地址信息")
+    @RouterMapping(api = "/update", method = HttpMethod.POST, description = "更新地址信息")
     public void update(final EBRequest request, final Promise<JsonObject> promise) {
         final JsonObject info = request.getBodyAsJson();
         final long userId = request.getUser().getUserId();
@@ -66,12 +66,12 @@ public class AddressRouter extends RouterVerticle {
         });
     }
 
-    @RequestMapping(api = "/create", method = HttpMethod.POST, description = "添加新地址信息")
+    @RouterMapping(api = "/create", method = HttpMethod.POST, description = "添加新地址信息")
     public void create(final EBRequest request, final Promise<JsonObject> promise) {
         futureStatus(service.create(request.getBodyAsJson(), request.getUser().getUserId()),promise);
     }
 
-    @RequestMapping(api = "/updateDefault", method = HttpMethod.POST, description = "更新默认地址")
+    @RouterMapping(api = "/updateDefault", method = HttpMethod.POST, description = "更新默认地址")
     public void updateDefault(final EBRequest request, final Promise<JsonObject> promise) {
         final int addressId = request.getBodyAsJson().getInteger("addressId");
         final long userId = request.getUser().getUserId();
@@ -84,7 +84,7 @@ public class AddressRouter extends RouterVerticle {
         });
     }
 
-    @RequestMapping(api = "/delete", method = HttpMethod.POST, description = "删除地址信息")
+    @RouterMapping(api = "/delete", method = HttpMethod.POST, description = "删除地址信息")
     public void delete(final EBRequest request, final Promise<JsonObject> promise) {
         final int addressId = request.getBodyAsJson().getInteger("addressId");
         final long userId = request.getUser().getUserId();
