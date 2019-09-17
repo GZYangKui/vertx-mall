@@ -138,9 +138,7 @@ public class UserServiceImpl implements UserService {
             }
             //将字符串转换为字符串集合
             String str = ar.result();
-            if (Objects.nonNull(str)) {
-                promise.complete(new JsonObject(str));
-            }
+            promise.complete(Objects.isNull(str) ? new JsonObject() : new JsonObject(str));
         });
         return promise.future();
     }
@@ -173,8 +171,8 @@ public class UserServiceImpl implements UserService {
         //设置过期时间
         SetOptions options = new SetOptions();
 
-        //设置两小时过期
-        options.setEX(2 * 60 * 60);
+        //设置半小时之内没有活动 登出
+        options.setEX(15*60);
 
         //写进redis
         redis.put(key, userInfo.toString(), options);

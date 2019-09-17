@@ -2,6 +2,7 @@ package cn.navigational.api;
 
 import cn.navigational.annotation.Verticle;
 import cn.navigational.auth.RequireToken;
+import cn.navigational.auth.SessionAuth;
 import cn.navigational.impl.HttpDataConverter;
 import cn.navigational.impl.RestVerticle;
 import cn.navigational.validator.RBACValidator;
@@ -26,6 +27,8 @@ public class ApiVerticle extends RestVerticle {
         router.route("/api/*").handler(HttpDataConverter.create());
         //要求授权
         router.route("/api/*").handler(RequireToken.create(vertx, config()));
+        //检查会话是否超时
+        router.route("/api/*").handler(SessionAuth.create(vertx, config()));
         //检查用户权限
         router.route("/api/*").handler(RBACValidator.create(vertx, config()));
 

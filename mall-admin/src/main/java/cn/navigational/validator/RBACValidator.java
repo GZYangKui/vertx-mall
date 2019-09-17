@@ -5,6 +5,7 @@ import cn.navigational.model.AdminUser;
 import cn.navigational.service.UserService;
 import cn.navigational.service.impl.UserServiceImpl;
 import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 
@@ -21,33 +22,31 @@ import static cn.navigational.utils.ExceptionUtils.nullableStr;
  */
 public class RBACValidator extends HttpValidator {
     private UserService service;
-    private List skips;
+    private JsonObject config;
 
     private RBACValidator(Vertx vertx, JsonObject config) {
         service = new UserServiceImpl(vertx, config);
-        skips = config.getJsonArray(SKIP).getList();
+        this.config = config;
     }
 
     @Override
     public void handle(RoutingContext event) {
-        String uri = event.request().path();
-        if (skips.contains(uri)) {
-            event.next();
+        if (isSkip(config, event)) {
             return;
         }
 
         long userId = event.getBodyAsJson().getJsonObject(USER).getLong(USER_ID);
 
         service.getUserFromRedis(userId).setHandler(ar -> {
-            if (ar.failed()) {
+            if (ar.failed() || ar.result().isEmpty()) {
                 logger.error("从redis中获取用户权限失败:{}", nullableStr(ar.cause()));
-                validatorFailed(event, "鉴权失败");
+                validatorFailed(event, "鉴权失败(可能会话已过期)");
                 return;
             }
 
+            String uri = event.request().path();
             JsonObject userInfo = ar.result();
-            List permissions = userInfo.getJsonArray("permissions").getList();
-            List roles = userInfo.getJsonArray("roles").getList();
+            JsonArray permissions = userInfo.getJsonArray("permissions");
 
             AdminUser user = userInfo.getJsonObject("user").mapTo(AdminUser.class);
 

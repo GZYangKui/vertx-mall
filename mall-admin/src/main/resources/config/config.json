@@ -11,7 +11,7 @@
   "jwtConfig": {
     "key": "123123gdjakjfkgnjfhgeggfffjjkjklffflllajgngekkasakkanv",
     "issuer": "navigational.cn",
-    "term": 120
+    "term": 180
   },
   "dataSource": {
     "host": "localhost",
