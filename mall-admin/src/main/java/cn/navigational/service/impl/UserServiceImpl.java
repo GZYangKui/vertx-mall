@@ -136,7 +136,6 @@ public class UserServiceImpl implements UserService {
                 promise.fail(ar.cause());
                 return;
             }
-            //将字符串转换为字符串集合
             String str = ar.result();
             promise.complete(Objects.isNull(str) ? new JsonObject() : new JsonObject(str));
         });
