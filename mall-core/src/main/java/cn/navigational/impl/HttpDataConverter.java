@@ -38,9 +38,9 @@ public class HttpDataConverter extends HttpValidator {
 
         temp.put(HTTP_METHOD, request.method().name());
 
-        ////////请求参数/////////
+        ////////请求参数(主要来源表单提交/可变url中)/////////
         JsonObject requestParam = new JsonObject();
-        request.headers().forEach(e -> {
+        request.params().forEach(e -> {
             requestParam.put(e.getKey(), e.getValue());
         });
         temp.put(REQUEST_PARAM, requestParam);
