@@ -32,4 +32,5 @@ public class Constants {
     public static final String REDIS_CLIENT = "redisClient";
     public static final String TOTAL = "total";
     public static final String ERROR_MESSAGE = "服务器繁忙,请稍后重试!";
+    public static final String REQUEST_PARAM = "requestParma";
 }

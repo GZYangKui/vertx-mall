@@ -27,6 +27,8 @@ public class EBRequest {
 
     private JwtUser user;
 
+    private JsonObject requestParam;
+
     private EBRequest() {
     }
 
@@ -99,6 +101,19 @@ public class EBRequest {
         return (byte[]) body;
     }
 
+    public JsonObject getRequestParam() {
+        return requestParam;
+    }
+
+    public void setRequestParam(JsonObject requestParam) {
+        this.requestParam = requestParam;
+    }
+
+    //获取单个请求参数
+    public String getSingleRequestParam(String key) {
+        return requestParam.getString(key, "");
+    }
+
     //获取query中制定参数的值
     public String getQuery(String key) {
         return getQuery().getString(key);
@@ -116,12 +131,14 @@ public class EBRequest {
 
     public static EBRequest create(JsonObject obj) {
 
-        final EBRequest ebRequest = new EBRequest();
+        EBRequest ebRequest = new EBRequest();
         ebRequest.setEventAddress(obj.getString(EVENT_ADDRESS));
         ebRequest.setPath(obj.getString(PATH));
         ebRequest.setHeaders(obj.getJsonObject(HEADERS));
         ebRequest.setMethod(HttpMethod.valueOf(obj.getString(HTTP_METHOD)));
         ebRequest.setQuery(obj.getJsonObject(QUERY));
+        ebRequest.setRequestParam(obj.getJsonObject(REQUEST_PARAM));
+
         if (ebRequest.getMethod() == HttpMethod.POST) {
             ebRequest.setBody(obj.getValue(BODY));
         }

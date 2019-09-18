@@ -9,7 +9,6 @@ import io.vertx.ext.web.RoutingContext;
 import static cn.navigational.config.Constants.*;
 
 /**
- *
  * Http请求数据转换为json
  *
  * @author YangKui
@@ -39,6 +38,13 @@ public class HttpDataConverter extends HttpValidator {
 
         temp.put(HTTP_METHOD, request.method().name());
 
+        ////////请求参数/////////
+        JsonObject requestParam = new JsonObject();
+        request.headers().forEach(e -> {
+            requestParam.put(e.getKey(), e.getValue());
+        });
+        temp.put(REQUEST_PARAM, requestParam);
+
         if (request.method() == HttpMethod.POST) {
             final String str = routingContext.getBodyAsString();
             if (str.startsWith("{")) {
@@ -63,7 +69,7 @@ public class HttpDataConverter extends HttpValidator {
     private JsonObject getHeaders(HttpServerRequest request) {
         final JsonObject headers = new JsonObject();
         request.headers().forEach(_rs -> headers.put(_rs.getKey(), _rs.getValue()));
-        headers.put("ip",request.remoteAddress().host());
+        headers.put("ip", request.remoteAddress().host());
         return headers;
     }
 
