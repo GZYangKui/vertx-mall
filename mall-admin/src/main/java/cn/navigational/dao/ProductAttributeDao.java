@@ -7,6 +7,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.sqlclient.Tuple;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ProductAttributeDao extends BaseDao {
     public ProductAttributeDao(Vertx vertx, JsonObject config) {
@@ -28,5 +29,16 @@ public class ProductAttributeDao extends BaseDao {
     public Future<Long> countAttrCate() {
         String sql = "SELECT count(id) FROM product_attribute_category";
         return count(sql);
+    }
+
+    public Future<Optional<JsonObject>> findCategory(String cateName) {
+        String sql = "SELECT id,name,attribute_count AS \"attributeCount\",param_count \"paramCount\"" +
+                "FROM product_attribute_category WHERE name=$1";
+        return findAny(sql, Tuple.of(cateName));
+    }
+
+    public Future<Integer> createCatefory(String cateName) {
+        String sql = "INSERT INTO product_attribute_category(name) VALUES($1)";
+        return executeUpdate(sql, Tuple.of(cateName));
     }
 }

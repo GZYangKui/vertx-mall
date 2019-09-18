@@ -7,10 +7,15 @@ import cn.navigational.impl.RouterVerticle;
 import cn.navigational.model.EBRequest;
 import cn.navigational.service.ProductAttributeService;
 import cn.navigational.service.impl.ProductAttributeServiceImpl;
+import cn.navigational.utils.Assert;
 import io.vertx.core.Promise;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 
+import java.util.Optional;
+
 import static cn.navigational.config.Constants.TOTAL;
+import static cn.navigational.utils.Assert.isEmpty;
 import static cn.navigational.utils.ResponseUtils.responseFailed;
 import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
 
@@ -56,6 +61,33 @@ public class ProductAttributeRouter extends RouterVerticle {
                 }
                 result.put(TOTAL, arr.result());
                 response.complete(result);
+            });
+        });
+    }
+
+    @RouterMapping(api = "/category/create", method = HttpMethod.POST, description = "创建分类")
+    public void categoryCreate(final EBRequest request, final Promise<JsonObject> response) {
+        String name = request.getSingleRequestParam("name");
+        if (isEmpty(name)) {
+            response.complete(responseFailed("分类名称不能为空", 200));
+            return;
+        }
+        service.categoryDetail(name).setHandler(ar -> {
+            if (ar.failed()) {
+                response.complete(responseFailed("新增分类失败", 200));
+                return;
+            }
+            Optional<JsonObject> optional = ar.result();
+            if (optional.isPresent()) {
+                response.complete(responseFailed("分类名称已经存在", 200));
+                return;
+            }
+            service.createCategory(name).setHandler(arr -> {
+                if (arr.failed()) {
+                    response.complete(responseFailed("新增分类失败", 200));
+                    return;
+                }
+                response.complete(responseSuccessJson());
             });
         });
     }

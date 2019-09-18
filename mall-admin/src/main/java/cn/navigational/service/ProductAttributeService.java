@@ -4,6 +4,7 @@ import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductAttributeService {
 
@@ -25,4 +26,21 @@ public interface ProductAttributeService {
      * @return 异步返回分类数量
      */
     Future<Long> countAttrCate();
+
+    /**
+     *
+     * 获取某个分类
+     *
+     * @param cateName 分类名称
+     *
+     */
+    Future<Optional<JsonObject>> categoryDetail(String cateName);
+
+    /**
+     *
+     * 创建分类
+     * @param cateName 分类名称
+     * @return {@link Void}
+     */
+    Future<Void> createCategory(String cateName);
 }
