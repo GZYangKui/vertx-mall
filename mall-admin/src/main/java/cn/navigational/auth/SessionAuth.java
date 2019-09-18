@@ -46,9 +46,8 @@ public class SessionAuth extends HttpValidator {
             }
             //跳转到下一个路由处理
             routingContext.next();
-            AdminUser adminUser = ar.result().getJsonObject("user").mapTo(AdminUser.class);
             //刷新令牌和用户权限
-            userService.getUserPermissionAndSave(adminUser);
+            userService.flushToken(userId, ar.result());
         });
     }
 

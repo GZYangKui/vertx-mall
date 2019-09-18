@@ -73,4 +73,14 @@ public interface UserService {
      */
     Future<JsonObject> userInfo(long adminId);
 
+    /**
+     *
+     * 刷新令牌
+     *
+     * @param adminId 管理员id
+     * @param userInfo 管理员信息
+     *
+     */
+    void flushToken(long adminId,JsonObject userInfo);
+
 }

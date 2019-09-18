@@ -120,7 +120,7 @@ public class UserServiceImpl implements UserService {
             rp.put("permissions", permissions);
             rp.put("user", JsonObject.mapFrom(user));
 
-            saveRPToRedis(user.getId(), rp);
+            flushToken(user.getId(), rp);
             //返回数据
             promise.complete(rp);
         });
@@ -165,13 +165,13 @@ public class UserServiceImpl implements UserService {
     }
 
     //将用户权限缓存进redis
-    private void saveRPToRedis(long adminId, JsonObject userInfo) {
+    public void flushToken(long adminId, JsonObject userInfo) {
         //生成rediskey
         String key = REDIS_USER_PREFIX + adminId;
         //设置过期时间
         SetOptions options = new SetOptions();
 
-        //设置半小时之内没有活动 登出
+        //设置15分钟之内没有活动 登出
         options.setEX(15*60);
 
         //写进redis
