@@ -1,5 +1,6 @@
 package cn.navigational.service;
 
+import cn.navigational.model.Paging;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 
@@ -43,4 +44,23 @@ public interface ProductAttributeService {
      * @return {@link Void}
      */
     Future<Void> createCategory(String cateName);
+
+    /**
+     *
+     * 获取某个分类下的属性/参数
+     * @param cId 分类id
+     * @param type 属性/参数
+     * @param page 分页查询参数
+     * @return 异步返回属性/参数数据集合
+     */
+    Future<List<JsonObject>> list(int cId,int type,Paging page);
+
+    /**
+     *
+     * 获取指定分类想指定属性/参数的数量
+     * @param type 属性或者参数
+     * @param cId 分类Id
+     * @return 异步返回统计数量
+     */
+    Future<Long> countAttrWithType(int cId,int type);
 }

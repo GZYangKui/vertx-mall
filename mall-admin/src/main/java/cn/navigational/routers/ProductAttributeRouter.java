@@ -5,15 +5,18 @@ import cn.navigational.annotation.RouterMapping;
 import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
 import cn.navigational.model.EBRequest;
+import cn.navigational.model.Paging;
 import cn.navigational.service.ProductAttributeService;
 import cn.navigational.service.impl.ProductAttributeServiceImpl;
-import cn.navigational.utils.Assert;
 import io.vertx.core.Promise;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import static cn.navigational.config.Constants.DATA;
 import static cn.navigational.config.Constants.TOTAL;
 import static cn.navigational.utils.Assert.isEmpty;
 import static cn.navigational.utils.ResponseUtils.responseFailed;
@@ -48,20 +51,18 @@ public class ProductAttributeRouter extends RouterVerticle {
         if (query.containsKey("pageSize")) {
             pageSize = Long.parseLong(query.getString("pageSize"));
         }
-        service.listCategory(pageNum, pageSize).setHandler(ar -> {
+        List<JsonObject> list = new ArrayList<>();
+        service.listCategory(pageNum, pageSize).compose(rs -> {
+            list.addAll(rs);
+            return service.countAttrCate();
+        }).setHandler(ar -> {
             if (ar.failed()) {
                 response.complete(responseFailed("获取分类列表失败", 200));
                 return;
             }
-            JsonObject result = responseSuccessJson(ar.result());
-            service.countAttrCate().setHandler(arr -> {
-                if (arr.failed()) {
-                    response.complete(responseFailed("获取分类列表失败", 200));
-                    return;
-                }
-                result.put(TOTAL, arr.result());
-                response.complete(result);
-            });
+            JsonObject rs = responseSuccessJson(list);
+            rs.put(TOTAL, ar.result());
+            response.complete(rs);
         });
     }
 
@@ -90,5 +91,43 @@ public class ProductAttributeRouter extends RouterVerticle {
                 response.complete(responseSuccessJson());
             });
         });
+    }
+
+    @RouterMapping(api = "/list", description = "获取某个分类下的属性/参数")
+    public void list(final EBRequest request, final Promise<JsonObject> response) {
+        int pageIndex = 1;
+        int pageSize = 10;
+        int cId;
+        int type;
+        String var1 = request.getQuery("pageNum");
+        String var2 = request.getQuery("pageSize");
+        String var3 = request.getQuery("cid");
+        String var4 = request.getQuery("type");
+        if (isEmpty(var3) || isEmpty(var4)) {
+            response.complete(responseFailed("缺少请求参数", 200));
+            return;
+        }
+        cId = Integer.parseInt(var3);
+        type = Integer.parseInt(var4);
+        if (!isEmpty(var1))
+            pageIndex = Integer.parseInt(var1);
+        if (!isEmpty(var2))
+            pageSize = Integer.parseInt(var2);
+        Paging page = new Paging(pageIndex, pageSize);
+
+        List<JsonObject> list = new ArrayList<>();
+        service.list(cId, type, page).compose((rs) -> {
+            list.addAll(rs);
+            return service.countAttrWithType(cId, type);
+        }).setHandler(ar -> {
+            if (ar.failed()) {
+                response.complete(responseFailed("获取属性/参数失败", 200));
+                return;
+            }
+            JsonObject rs = responseSuccessJson(list);
+            rs.put(TOTAL, ar.result());
+            response.complete(rs);
+        });
+
     }
 }
