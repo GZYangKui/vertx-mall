@@ -8,12 +8,14 @@ import cn.navigational.model.EBRequest;
 import cn.navigational.model.Paging;
 import cn.navigational.service.ProductAttributeService;
 import cn.navigational.service.impl.ProductAttributeServiceImpl;
+import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static cn.navigational.config.Constants.DATA;
@@ -73,24 +75,17 @@ public class ProductAttributeRouter extends RouterVerticle {
             response.complete(responseFailed("分类名称不能为空", 200));
             return;
         }
-        service.categoryDetail(name).setHandler(ar -> {
-            if (ar.failed()) {
-                response.complete(responseFailed("新增分类失败", 200));
-                return;
-            }
-            Optional<JsonObject> optional = ar.result();
-            if (optional.isPresent()) {
-                response.complete(responseFailed("分类名称已经存在", 200));
-                return;
-            }
-            service.createCategory(name).setHandler(arr -> {
-                if (arr.failed()) {
-                    response.complete(responseFailed("新增分类失败", 200));
-                    return;
-                }
-                response.complete(responseSuccessJson());
-            });
-        });
+
+        service.categoryDetail(name).compose(cate -> Objects.isNull(cate)
+                ? service.createCategory(name)
+                : Future.failedFuture("分类已存在"))
+                .setHandler(ar -> {
+                    if (ar.failed()) {
+                        response.complete(responseFailed("新增分类失败(分类可能已经存在)", 200));
+                        return;
+                    }
+                    response.complete(responseSuccessJson());
+                });
     }
 
     @RouterMapping(api = "/list", description = "获取某个分类下的属性/参数")
