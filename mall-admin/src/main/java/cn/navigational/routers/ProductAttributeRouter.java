@@ -6,6 +6,7 @@ import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
 import cn.navigational.model.EBRequest;
 import cn.navigational.model.Paging;
+import cn.navigational.model.ProductAttribute;
 import cn.navigational.service.ProductAttributeService;
 import cn.navigational.service.impl.ProductAttributeServiceImpl;
 import io.vertx.core.Future;
@@ -16,9 +17,7 @@ import io.vertx.core.json.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
-import static cn.navigational.config.Constants.DATA;
 import static cn.navigational.config.Constants.TOTAL;
 import static cn.navigational.utils.Assert.isEmpty;
 import static cn.navigational.utils.ResponseUtils.responseFailed;
@@ -124,5 +123,25 @@ public class ProductAttributeRouter extends RouterVerticle {
             response.complete(rs);
         });
 
+    }
+
+    @RouterMapping(api = "/create", method = HttpMethod.POST, description = "创建规格/参数")
+    public void createAttr(final EBRequest request, final Promise<JsonObject> response) {
+        ProductAttribute attribute = request.getBodyAsJson().mapTo(ProductAttribute.class);
+        service.getProductAttribute(attribute).compose
+                (r -> r.isPresent()
+                        ? Future.failedFuture("规格/参数已经存在")
+                        : service.createAttribute(attribute))
+                .compose(r ->
+                        service.changeCateChildrenNum(
+                                attribute.getProductAttributeCategoryId(),
+                                attribute.getType(), 1))
+                .setHandler(ar -> {
+                    if (ar.failed()) {
+                        response.complete(responseFailed("创建属性/规格失败", 200));
+                        return;
+                    }
+                    response.complete(responseSuccessJson());
+                });
     }
 }

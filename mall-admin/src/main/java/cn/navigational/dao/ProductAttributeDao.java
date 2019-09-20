@@ -2,6 +2,7 @@ package cn.navigational.dao;
 
 import cn.navigational.base.BaseDao;
 import cn.navigational.model.Paging;
+import cn.navigational.model.ProductAttribute;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
@@ -54,5 +55,37 @@ public class ProductAttributeDao extends BaseDao {
     public Future<Long> countAttr(int cId, int type) {
         String sql = "SELECT COUNT(id) FROM product_attribute WHERE product_attribute_category_id=$1 AND type=$2";
         return countWithParam(sql, Tuple.of(cId, type));
+    }
+
+    public Future<Optional<JsonObject>> findAttribute(ProductAttribute attribute) {
+        String sql = "SELECT id,product_attribute_category_id AS \"productProductCategoryId\"," +
+                "name,select_type AS \"selectType\",input_type AS \"inputType\",input_list AS \"inputList\"," +
+                "sort,filter_type AS \"filterType\",search_type AS \"searchType\",related_status AS \"relatedStatus\"," +
+                "hand_add_status AS \"handAddStatus\",type FROM product_attribute WHERE product_attribute_category_id=$1" +
+                " AND name=$2 AND type=$3";
+        Tuple tuple = Tuple.tuple();
+        tuple.addValue(attribute.getProductAttributeCategoryId());
+        tuple.addValue(attribute.getName());
+        tuple.addValue(attribute.getType());
+        return findAny(sql, tuple);
+    }
+
+    public Future<Integer> createAttribute(ProductAttribute attribute) {
+        String sql = "INSERT INTO  product_attribute(product_attribute_category_id," +
+                "name,select_type,input_type,input_list,sort,filter_type,search_type," +
+                "related_status,hand_add_status,type) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11）";
+        Tuple tuple = Tuple.tuple();
+        tuple.addValue(attribute.getProductAttributeCategoryId());
+        tuple.addValue(attribute.getName());
+        tuple.addValue(attribute.getSelectType());
+        tuple.addValue(attribute.getInputType());
+        tuple.addValue(attribute.getInputList());
+        tuple.addValue(attribute.getSort());
+        tuple.addValue(attribute.getFilterType());
+        tuple.addValue(attribute.getSearchType());
+        tuple.addValue(attribute.getRelatedStatus());
+        tuple.addValue(attribute.getHandAddStatus());
+        tuple.addValue(attribute.getType());
+        return executeUpdate(sql, tuple);
     }
 }

@@ -2,6 +2,7 @@ package cn.navigational.service.impl;
 
 import cn.navigational.dao.ProductAttributeDao;
 import cn.navigational.model.Paging;
+import cn.navigational.model.ProductAttribute;
 import cn.navigational.service.ProductAttributeService;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -80,9 +81,9 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
     }
 
     @Override
-    public Future<List<JsonObject>> list(int cId,int type,Paging page) {
+    public Future<List<JsonObject>> list(int cId, int type, Paging page) {
         Promise<List<JsonObject>> promise = Promise.promise();
-        dao.listAttr(cId,type,page).setHandler(ar -> {
+        dao.listAttr(cId, type, page).setHandler(ar -> {
             if (ar.failed()) {
                 logger.error("获取属性/分类列表失败:{}", nullableStr(ar.cause()));
                 promise.fail(ar.cause());
@@ -96,14 +97,44 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
     @Override
     public Future<Long> countAttrWithType(int cId, int type) {
         Promise<Long> promise = Promise.promise();
-        dao.countAttr(cId,type).setHandler(ar->{
-           if (ar.failed()){
-               logger.error("统计属性/分类过程发生错误:{}",nullableStr(ar.cause()));
-               promise.fail(ar.cause());
-               return;
-           }
-           promise.complete(ar.result());
+        dao.countAttr(cId, type).setHandler(ar -> {
+            if (ar.failed()) {
+                logger.error("统计属性/分类过程发生错误:{}", nullableStr(ar.cause()));
+                promise.fail(ar.cause());
+                return;
+            }
+            promise.complete(ar.result());
         });
         return promise.future();
+    }
+
+    @Override
+    public Future<Void> createAttribute(ProductAttribute attribute) {
+        Promise<Void> promise = Promise.promise();
+        dao.createAttribute(attribute).setHandler(ar -> {
+            if (ar.failed()) {
+                promise.fail(ar.cause());
+                logger.error("创建参数/规格失败:{}", nullableStr(ar.cause()));
+                ar.cause().printStackTrace();
+                return;
+            }
+            int updated = ar.result();
+            if (updated > 0) {
+                promise.complete();
+            } else {
+                promise.fail("插入失败");
+            }
+        });
+        return promise.future();
+    }
+
+    @Override
+    public Future<Optional<JsonObject>> getProductAttribute(ProductAttribute attribute) {
+        return dao.findAttribute(attribute);
+    }
+
+    @Override
+    public Future<Void> changeCateChildrenNum(int cateId, int type, int status) {
+        return null;
     }
 }

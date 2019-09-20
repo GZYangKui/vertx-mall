@@ -1,6 +1,7 @@
 package cn.navigational.service;
 
 import cn.navigational.model.Paging;
+import cn.navigational.model.ProductAttribute;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 
@@ -63,4 +64,29 @@ public interface ProductAttributeService {
      * @return 异步返回统计数量
      */
     Future<Long> countAttrWithType(int cId,int type);
+
+    /**
+     *
+     * 创建属性/规格
+     *
+     * @param attribute 商品属性/规格
+     */
+    Future<Void> createAttribute(ProductAttribute attribute);
+
+    /**
+     *
+     * 获取商品属性/规格
+     * @param attribute 商品属性/规格
+     * @return {@link Optional<JsonObject>}
+     */
+    Future<Optional<JsonObject>> getProductAttribute(ProductAttribute attribute);
+
+    /**
+     *
+     * 增加分类下参数/规格数目
+     * @param cateId 分类id
+     * @param type 属性/参数
+     * @param status 大于零添加 小于零减少
+     */
+    Future<Void> changeCateChildrenNum(int cateId,int type,int status);
 }
