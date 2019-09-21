@@ -128,8 +128,8 @@ public class ProductAttributeRouter extends RouterVerticle {
     @RouterMapping(api = "/create", method = HttpMethod.POST, description = "创建规格/参数")
     public void createAttr(final EBRequest request, final Promise<JsonObject> response) {
         ProductAttribute attribute = request.getBodyAsJson().mapTo(ProductAttribute.class);
-        service.getProductAttribute(attribute).compose
-                (r -> r.isPresent()
+        service.getProductAttribute(attribute)
+                .compose(r -> r.isPresent()
                         ? Future.failedFuture("规格/参数已经存在")
                         : service.createAttribute(attribute))
                 .compose(r ->
