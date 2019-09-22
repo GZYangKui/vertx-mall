@@ -2,6 +2,7 @@ package cn.navigational.service.impl;
 
 import cn.navigational.dao.ProductAttributeDao;
 import cn.navigational.model.Paging;
+import cn.navigational.model.ProductAttributCategory;
 import cn.navigational.model.ProductAttribute;
 import cn.navigational.service.ProductAttributeService;
 import io.vertx.core.Future;
@@ -12,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static cn.navigational.utils.ExceptionUtils.nullableStr;
@@ -55,7 +57,7 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
     @Override
     public Future<Optional<JsonObject>> categoryDetail(String cateName) {
         Promise<Optional<JsonObject>> promise = Promise.promise();
-        dao.findCategory(cateName).setHandler(ar -> {
+        dao.findCategoryByName(cateName).setHandler(ar -> {
             if (ar.failed()) {
                 logger.error("获取分类详情失败:{}", nullableStr(ar.cause()));
                 promise.fail(ar.cause());
@@ -134,7 +136,40 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
     }
 
     @Override
-    public Future<Void> changeCateChildrenNum(int cateId, int type, int status) {
-        return null;
+    public Future<Void> changeCateChildrenNum(int cateId, int type, int val, final Promise<Void> promise) {
+        categoryDetail(cateId).compose(r -> {
+            if (r.isEmpty()) {
+                return Future.failedFuture("分类不存在");
+            }
+            ProductAttributCategory cate = r.get().mapTo(ProductAttributCategory.class);
+            return dao.updateCateAttrNum(cate, type, val);
+        }).setHandler(ar -> {
+            if (ar.failed()) {
+                promise.fail(ar.cause());
+                logger.error("更新商品属性分类规格/参数数量失败:{}", nullableStr(ar.cause()));
+                return;
+            }
+            int updated = ar.result();
+            if (updated > 0) {
+                promise.complete();
+            } else {
+                changeCateChildrenNum(cateId, type, val,promise);
+            }
+        });
+        return promise.future();
+    }
+
+    @Override
+    public Future<Optional<JsonObject>> categoryDetail(int cateId) {
+        Promise<Optional<JsonObject>> promise = Promise.promise();
+        dao.findCategoryById(cateId).setHandler(ar -> {
+            if (ar.failed()) {
+                logger.error("获取分类详情失败:{}", nullableStr(ar.cause()));
+                promise.fail(ar.cause());
+                return;
+            }
+            promise.complete(ar.result());
+        });
+        return promise.future();
     }
 }

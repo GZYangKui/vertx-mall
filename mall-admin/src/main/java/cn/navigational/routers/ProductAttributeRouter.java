@@ -75,9 +75,10 @@ public class ProductAttributeRouter extends RouterVerticle {
             return;
         }
 
-        service.categoryDetail(name).compose(cate -> Objects.isNull(cate)
-                ? service.createCategory(name)
-                : Future.failedFuture("分类已存在"))
+        service.categoryDetail(name)
+                .compose(cate -> Objects.isNull(cate)
+                        ? service.createCategory(name)
+                        : Future.failedFuture("分类已存在"))
                 .setHandler(ar -> {
                     if (ar.failed()) {
                         response.complete(responseFailed("新增分类失败(分类可能已经存在)", 200));
@@ -127,18 +128,15 @@ public class ProductAttributeRouter extends RouterVerticle {
 
     @RouterMapping(api = "/create", method = HttpMethod.POST, description = "创建规格/参数")
     public void createAttr(final EBRequest request, final Promise<JsonObject> response) {
-        ProductAttribute attribute = request.getBodyAsJson().mapTo(ProductAttribute.class);
-        service.getProductAttribute(attribute)
-                .compose(r -> r.isPresent()
-                        ? Future.failedFuture("规格/参数已经存在")
-                        : service.createAttribute(attribute))
-                .compose(r ->
-                        service.changeCateChildrenNum(
-                                attribute.getProductAttributeCategoryId(),
-                                attribute.getType(), 1))
+        ProductAttribute attr = request.getBodyAsJson().mapTo(ProductAttribute.class);
+        int cateId = attr.getProductAttributeCategoryId();
+        int type = attr.getType();
+        service.getProductAttribute(attr)
+                .compose(r -> r.isPresent() ? Future.failedFuture("规格/参数已经存在") : service.createAttribute(attr))
+                .compose(r -> service.changeCateChildrenNum(cateId, type, 1, Promise.promise()))
                 .setHandler(ar -> {
                     if (ar.failed()) {
-                        response.complete(responseFailed("创建属性/规格失败", 200));
+                        response.complete(responseFailed(ar.cause().getMessage(), 200));
                         return;
                     }
                     response.complete(responseSuccessJson());

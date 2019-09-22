@@ -11,7 +11,7 @@
     <properties>
         <!--vert.x版本号-->
         <vertx.version>3.8.1</vertx.version>
-        <!--设置各模块之间jdk】版本保持一致-->
+        <!--设置各模块之间jdk版本保持一致-->
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <!--程序主类-->
