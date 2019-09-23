@@ -17,11 +17,13 @@ import io.vertx.core.json.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static cn.navigational.config.Constants.TOTAL;
 import static cn.navigational.utils.Assert.isEmpty;
 import static cn.navigational.utils.ResponseUtils.responseFailed;
 import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
+import static cn.navigational.utils.StringUtils.getIdFromQuery;
 
 /**
  * 商品属性管理接口
@@ -75,17 +77,55 @@ public class ProductAttributeRouter extends RouterVerticle {
             return;
         }
 
-        service.categoryDetail(name)
-                .compose(cate -> Objects.isNull(cate)
-                        ? service.createCategory(name)
-                        : Future.failedFuture("分类已存在"))
-                .setHandler(ar -> {
-                    if (ar.failed()) {
-                        response.complete(responseFailed("新增分类失败(分类可能已经存在)", 200));
-                        return;
-                    }
-                    response.complete(responseSuccessJson());
-                });
+        service.categoryDetail(name).compose(cate -> Objects.isNull(cate)
+                ? service.createCategory(name)
+                : Future.failedFuture("分类已存在")).setHandler(ar -> {
+            if (ar.failed()) {
+                response.complete(responseFailed("新增分类失败(分类可能已经存在)", 200));
+                return;
+            }
+            response.complete(responseSuccessJson());
+        });
+    }
+
+    @RouterMapping(api = "/category/delete", method = HttpMethod.GET, description = "删除分分类")
+    public void deleteCate(final EBRequest request, final Promise<JsonObject> response) {
+        String temp = request.getQuery("cateId");
+        if (isEmpty(temp)) {
+            response.complete(responseFailed("请求参数缺失", 200));
+            return;
+        }
+        int cateId = Integer.parseInt(temp);
+        service.deleteCategory(cateId).compose(r -> {
+            if (r > 0)
+                return service.deleteCateAttr(cateId);
+            else
+                return Future.failedFuture("删除分类失败");
+        }).setHandler(ar -> {
+            if (ar.failed()) {
+                response.complete(responseFailed("删除分类失败", 200));
+                return;
+            }
+            response.complete(responseSuccessJson());
+        });
+    }
+
+    @RouterMapping(api = "/category/update", method = HttpMethod.POST, description = "更新分类信息")
+    public void updateCate(final EBRequest request, final Promise<JsonObject> response) {
+        String var1 = request.getQuery("cateId");
+        String name = request.getSingleRequestParam("name");
+        if (isEmpty(var1) || isEmpty(name)) {
+            response.complete(responseFailed("请求参数缺失", 200));
+            return;
+        }
+        int cateId = Integer.parseInt(var1);
+        service.updateCate(cateId, name).setHandler(ar -> {
+            if (ar.failed() || ar.result() <= 0) {
+                response.complete(responseFailed("更新分类失败", 200));
+                return;
+            }
+            response.complete(responseSuccessJson());
+        });
     }
 
     @RouterMapping(api = "/list", description = "获取某个分类下的属性/参数")
@@ -141,5 +181,26 @@ public class ProductAttributeRouter extends RouterVerticle {
                     }
                     response.complete(responseSuccessJson());
                 });
+    }
+
+    @RouterMapping(api = "/delete", method = HttpMethod.POST, description = "删除某个属性")
+    public void delete(final EBRequest request, final Promise<JsonObject> response) {
+        String var1 = request.getSingleRequestParam("ids");
+        if (isEmpty(var1)) {
+            response.complete(responseFailed("缺少请求参数", 200));
+            return;
+        }
+        List<Integer> ids = getIdFromQuery(var1);
+        service.listAttr(ids).compose(r -> {
+            List<Integer> t = r.stream().map(ProductAttribute::getProductAttributeCategoryId).collect(Collectors.toList());
+            //TODO 数据聚合然后对分类数据进行操作
+            return service.deleteAttr(ids);
+        }).setHandler(ar -> {
+            if (ar.failed()) {
+                response.complete(responseFailed("删除属性/参数失败", 200));
+                return;
+            }
+            response.complete(responseSuccessJson());
+        });
     }
 }

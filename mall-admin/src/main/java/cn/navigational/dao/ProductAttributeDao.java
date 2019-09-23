@@ -9,6 +9,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.sqlclient.Tuple;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -110,5 +111,42 @@ public class ProductAttributeDao extends BaseDao {
         tuple.addValue(attribute.getHandAddStatus());
         tuple.addValue(attribute.getType());
         return executeUpdate(sql, tuple);
+    }
+
+    public Future<Integer> deleteCategory(int cateId) {
+        String sql = "DELETE FROM product_attribute_category WHERE id=$1";
+        return executeUpdate(sql, Tuple.of(cateId));
+    }
+
+    public Future<Integer> deleteCateAttr(int cateId) {
+        String sql = "DELETE FROM product_attribute WHERE product_attribute_category_id=$1";
+        return executeUpdate(sql, Tuple.of(cateId));
+    }
+
+    public Future<Integer> updateCate(int cateId, String name) {
+        String sql = "UPDATE product_attribute_category SET name=$1 WHERE id=$2";
+        return executeUpdate(sql, Tuple.of(name, cateId));
+    }
+
+    public Future<List<JsonObject>> findAttrById(List<Integer> ids) {
+        Tuple tuple = Tuple.tuple();
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT id,product_attribute_category_id AS \"productProductCategoryId\"," +
+                "name,select_type AS \"selectType\",input_type AS \"inputType\",input_list AS \"inputList\"," +
+                "sort,filter_type AS \"filterType\",search_type AS \"searchType\",related_status AS \"relatedStatus\"," +
+                "hand_add_status AS \"handAddStatus\",type FROM product_attribute WHERE id IN(");
+        pingIn(sb, tuple, ids, 1);
+        return executeQuery(sb.toString(), tuple);
+    }
+
+    public Future<Integer> deleteAttr(List<Integer> ids) {
+        List<Tuple> tuples = new ArrayList<>();
+        String sql = "DELETE FROM product_attribute WHERE id=$1";
+        for (Integer id : ids) {
+            Tuple tuple = Tuple.tuple();
+            tuple.addValue(id);
+            tuples.add(tuple);
+        }
+        return batchUpdate(sql, tuples);
     }
 }

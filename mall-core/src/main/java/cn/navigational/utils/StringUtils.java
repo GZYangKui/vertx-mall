@@ -1,5 +1,6 @@
 package cn.navigational.utils;
 
+import cn.navigational.model.EBRequest;
 import io.vertx.core.json.JsonObject;
 
 import java.text.SimpleDateFormat;
@@ -202,6 +203,23 @@ public class StringUtils {
         final Date date = Date.from(Instant.now());
         final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
         return LocalDateTime.parse(format.format(date));
+    }
+
+    /**
+     * 从请求url中获取商品id列表
+     *
+     * @return 返回id列表集合
+     */
+    public static List<Integer> getIdFromQuery(String var1) {
+        List<Integer> ids = new ArrayList<>();
+        if (var1.contains(",")) {
+            ids = Arrays.stream(var1.split(","))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
+        } else {
+            ids.add(Integer.parseInt(var1));
+        }
+        return ids;
     }
 
 }

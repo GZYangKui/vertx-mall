@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import static cn.navigational.config.Constants.TOTAL;
 import static cn.navigational.utils.ResponseUtils.responseFailed;
 import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
+import static cn.navigational.utils.StringUtils.getIdFromQuery;
 import static cn.navigational.utils.StringUtils.jsonNonEmpty;
 
 /**
@@ -66,8 +67,8 @@ public class ProductRouter extends RouterVerticle {
     public void publishStatus(final EBRequest request, Promise<JsonObject> response) {
 
         int var2 = Integer.parseInt(request.getQuery("publishStatus"));
-
-        service.updatePublishStatus(getProductIdFromQuery(request), var2).setHandler(ar -> {
+        List<Integer> ids = getIdFromQuery(request.getQuery("ids"));
+        service.updatePublishStatus(ids, var2).setHandler(ar -> {
             if (ar.failed()) {
                 response.complete(responseFailed("更新状态失败", 200));
                 return;
@@ -81,8 +82,8 @@ public class ProductRouter extends RouterVerticle {
     @RouterMapping(api = "/update/newStatus", method = HttpMethod.POST, description = "更改商品新品状态")
     public void newStatus(final EBRequest request, Promise<JsonObject> response) {
         int var2 = Integer.parseInt(request.getQuery("newStatus"));
-
-        service.updateNewStatus(getProductIdFromQuery(request), var2).setHandler(ar -> {
+        List<Integer> ids = getIdFromQuery(request.getQuery("ids"));
+        service.updateNewStatus(ids, var2).setHandler(ar -> {
             if (ar.failed()) {
                 response.complete(responseFailed("更新新品状态失败", 200));
                 return;
@@ -96,7 +97,8 @@ public class ProductRouter extends RouterVerticle {
     @RouterMapping(api = "/update/recommendStatus", method = HttpMethod.POST, description = "更改商品推荐状态")
     public void recommendStatus(final EBRequest request, Promise<JsonObject> response) {
         int var2 = Integer.parseInt(request.getQuery("recommendStatus"));
-        service.updateRecommendStatus(getProductIdFromQuery(request), var2).setHandler(ar -> {
+        List<Integer> ids = getIdFromQuery(request.getQuery("ids"));
+        service.updateRecommendStatus(ids, var2).setHandler(ar -> {
             if (ar.failed()) {
                 response.complete(responseFailed("更新推荐状态失败", 200));
                 return;
@@ -107,24 +109,6 @@ public class ProductRouter extends RouterVerticle {
         });
     }
 
-    /**
-     * 从请求url中获取商品id列表
-     *
-     * @param request {@link EBRequest}
-     * @return 返回id列表集合
-     */
-    private List<Integer> getProductIdFromQuery(final EBRequest request) {
-        String var1 = request.getQuery("ids");
-        List<Integer> ids = new ArrayList<>();
-        if (var1.contains(",")) {
-            ids = Arrays.stream(var1.split(","))
-                    .map(Integer::parseInt)
-                    .collect(Collectors.toList());
-        } else {
-            ids.add(Integer.parseInt(var1));
-        }
-        return ids;
-    }
 
     /**
      * 生成查询参数

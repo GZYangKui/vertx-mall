@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static cn.navigational.utils.ExceptionUtils.nullableStr;
 
@@ -153,7 +154,7 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
             if (updated > 0) {
                 promise.complete();
             } else {
-                changeCateChildrenNum(cateId, type, val,promise);
+                changeCateChildrenNum(cateId, type, val, promise);
             }
         });
         return promise.future();
@@ -169,6 +170,51 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
                 return;
             }
             promise.complete(ar.result());
+        });
+        return promise.future();
+    }
+
+    @Override
+    public Future<Integer> deleteCategory(int cateId) {
+        return dao.deleteCategory(cateId);
+    }
+
+    @Override
+    public Future<Integer> deleteCateAttr(int cateId) {
+        return dao.deleteCateAttr(cateId);
+    }
+
+    @Override
+    public Future<Integer> updateCate(int cateId, String name) {
+        return dao.updateCate(cateId, name);
+    }
+
+    @Override
+    public Future<List<ProductAttribute>> listAttr(List<Integer> ids) {
+        Promise<List<ProductAttribute>> promise = Promise.promise();
+        dao.findAttrById(ids).setHandler(ar -> {
+            if (ar.failed()) {
+                promise.fail(ar.cause());
+                logger.error("批量获取属性失败:{}", nullableStr(ar.cause()));
+                return;
+            }
+            List<ProductAttribute> attrs = ar.result().stream().map(r -> r.mapTo(ProductAttribute.class)).collect(Collectors.toList());
+            promise.complete(attrs);
+        });
+        return promise.future();
+    }
+
+    @Override
+    public Future<Void> deleteAttr(List<Integer> ids) {
+        Promise<Void> promise = Promise.promise();
+        dao.deleteAttr(ids).setHandler(ar -> {
+            if (ar.failed()) {
+                promise.fail(ar.cause());
+                logger.error("批量删除属性失败:{}", nullableStr(ar.cause()));
+                return;
+            }
+            logger.info("批量删除{}条属性/规格", ar.result());
+            promise.complete();
         });
         return promise.future();
     }

@@ -86,10 +86,46 @@ public interface ProductAttributeService {
     /**
      * 增加分类下参数/规格数目
      *
-     * @param cateId 分类id
-     * @param type   规格/参数
-     * @param val 增加/减少的具体值 大于零添加 小于零减少
+     * @param cateId  分类id
+     * @param type    规格/参数
+     * @param val     增加/减少的具体值 大于零添加 小于零减少
      * @param promise 这个参数只是配合CAS更新添加的
      */
     Future<Void> changeCateChildrenNum(int cateId, int type, int val, Promise<Void> promise);
+
+    /**
+     * 删除分类
+     *
+     * @param cateId 分类id
+     */
+    Future<Integer> deleteCategory(int cateId);
+
+    /**
+     * 删除分类下的规格/参数
+     *
+     * @param cateId 参数id
+     */
+    Future<Integer> deleteCateAttr(int cateId);
+
+    /**
+     * 更新分类名称
+     *
+     * @param cateId 分类id
+     * @param name   分类名称
+     */
+    Future<Integer> updateCate(int cateId, String name);
+
+    /**
+     *
+     * 获取规格/参数
+     * @param ids 属性/规格id列表
+     * @return 异步返回属性列表
+     */
+    Future<List<ProductAttribute>> listAttr(List<Integer> ids);
+    /**
+     *
+     * 批量删除属性
+     * @param ids 被删除属性id集合
+     */
+    Future<Void> deleteAttr(List<Integer> ids);
 }
