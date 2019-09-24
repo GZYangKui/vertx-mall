@@ -151,10 +151,30 @@ public class ProductAttributeDao extends BaseDao {
     }
 
     public Future<Optional<JsonObject>> findAttrById(int id) {
-        String sql = "SELECT id,product_attribute_category_id AS \"productProductCategoryId\"," +
+        String sql = "SELECT id,product_attribute_category_id AS \"productAttributeCategoryId\"," +
                 "name,select_type AS \"selectType\",input_type AS \"inputType\",input_list AS \"inputList\"," +
                 "sort,filter_type AS \"filterType\",search_type AS \"searchType\",related_status AS \"relatedStatus\"," +
                 "hand_add_status AS \"handAddStatus\",type FROM product_attribute WHERE id=$1";
         return findAny(sql, Tuple.of(id));
+    }
+
+    public Future<Integer> updateAttr(ProductAttribute attr) {
+        String sql = "UPDATE product_attribute SET product_attribute_category_id=$1," +
+                "name=$2,select_type=$3,input_type=$4,input_list=$5,sort=$6,filter_type=$7,search_type=$8," +
+                "related_status=$9,hand_add_status=$10,type=$11 WHERE id=$12";
+        Tuple tuple = Tuple.tuple();
+        tuple.addValue(attr.getProductAttributeCategoryId());
+        tuple.addValue(attr.getName());
+        tuple.addValue(attr.getSelectType());
+        tuple.addValue(attr.getInputType());
+        tuple.addValue(attr.getInputList());
+        tuple.addValue(attr.getSort());
+        tuple.addValue(attr.getFilterType());
+        tuple.addValue(attr.getSearchType());
+        tuple.addValue(attr.getRelatedStatus());
+        tuple.addValue(attr.getHandAddStatus());
+        tuple.addValue(attr.getType());
+        tuple.addValue(attr.getId());
+        return executeUpdate(sql, tuple);
     }
 }

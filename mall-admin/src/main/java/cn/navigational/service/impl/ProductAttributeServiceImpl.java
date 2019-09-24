@@ -239,4 +239,9 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
     public Future<Optional<JsonObject>> getAttr(int attrId){
         return dao.findAttrById(attrId);
     }
+
+    @Override
+    public Future<Integer> updateAttr(ProductAttribute attr) {
+        return dao.updateAttr(attr);
+    }
 }

@@ -149,4 +149,11 @@ public interface ProductAttributeService {
      */
     Future<Optional<JsonObject>> getAttr(int attrId);
 
+    /**
+     *
+     * 更新属性/规格
+     * @param attr 属性/规格
+     */
+    Future<Integer> updateAttr(ProductAttribute attr);
+
 }

@@ -16,9 +16,7 @@ import io.vertx.core.json.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static cn.navigational.config.Constants.TOTAL;
 import static cn.navigational.utils.Assert.isEmpty;
@@ -78,9 +76,12 @@ public class ProductAttributeRouter extends RouterVerticle {
             return;
         }
 
-        service.categoryDetail(name).compose(cate -> Objects.isNull(cate)
-                ? service.createCategory(name)
-                : Future.failedFuture("分类已存在")).setHandler(ar -> {
+        service.categoryDetail(name).compose(optional -> {
+            if (optional.isPresent()) {
+                return Future.failedFuture("分类已存在");
+            }
+            return service.createCategory(name);
+        }).setHandler(ar -> {
             if (ar.failed()) {
                 response.complete(responseFailed("新增分类失败(分类可能已经存在)", 200));
                 return;
@@ -172,16 +173,20 @@ public class ProductAttributeRouter extends RouterVerticle {
         ProductAttribute attr = request.getBodyAsJson().mapTo(ProductAttribute.class);
         int cateId = attr.getProductAttributeCategoryId();
         int type = attr.getType();
-        service.getProductAttribute(attr)
-                .compose(r -> r.isPresent() ? Future.failedFuture("规格/参数已经存在") : service.createAttribute(attr))
-                .compose(r -> service.changeCateChildrenNum(cateId, type, 1, Promise.promise(), 0))
-                .setHandler(ar -> {
-                    if (ar.failed()) {
-                        response.complete(responseFailed(ar.cause().getMessage(), 200));
-                        return;
-                    }
-                    response.complete(responseSuccessJson());
-                });
+        service.getProductAttribute(attr).compose(r -> {
+            if (r.isPresent()) {
+                return Future.failedFuture("规格/参数已经存在");
+            }
+            return service.createAttribute(attr);
+        }).compose(r ->
+                service.changeCateChildrenNum(cateId, type, 1, Promise.promise(), 0)).setHandler(ar -> {
+            if (ar.failed()) {
+                response.complete(responseFailed(ar.cause().getMessage(), 200));
+                return;
+            }
+            response.complete(responseSuccessJson());
+        });
+
     }
 
     @RouterMapping(api = "/delete", method = HttpMethod.POST, description = "删除某个属性")
@@ -225,6 +230,36 @@ public class ProductAttributeRouter extends RouterVerticle {
             } else {
                 response.complete(responseSuccessJson(optional.get()));
             }
+        });
+    }
+
+    @RouterMapping(api = "/update", method = HttpMethod.POST, description = "更新属性/规格")
+    public void update(final EBRequest request, final Promise<JsonObject> response) {
+        ProductAttribute attr = request.getBodyAsJson().mapTo(ProductAttribute.class);
+        List<ProductAttribute> attrs = new ArrayList<>();
+        service.getAttr(attr.getId()).compose(r -> {
+            if (r.isEmpty()) {
+                return Future.failedFuture("属性不存在");
+            }
+            attrs.add(r.get().mapTo(ProductAttribute.class));
+            return service.updateAttr(attr);
+        }).compose(r -> {
+            if (r <= 0) {
+                return Future.failedFuture("更新失败");
+            }
+            ///对比分类是否发生改变,如果发生改变,则改变对应分类属性/规格数目///
+            ProductAttribute attr1 = attrs.get(0);
+            if (attr1.getProductAttributeCategoryId() != attr.getProductAttributeCategoryId()) {
+                service.changeCateChildrenNum(attr.getProductAttributeCategoryId(), attr.getType(), 1, Promise.promise(), 1);
+                service.changeCateChildrenNum(attr1.getProductAttributeCategoryId(), attr1.getType(), -1, Promise.promise(), 1);
+            }
+            return Future.succeededFuture();
+        }).setHandler(ar -> {
+            if (ar.failed()) {
+                response.complete(responseFailed(ar.cause().getMessage(), 200));
+                return;
+            }
+            response.complete(responseSuccessJson());
         });
     }
 }
