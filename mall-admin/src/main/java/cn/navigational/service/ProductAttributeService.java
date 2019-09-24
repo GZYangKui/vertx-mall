@@ -1,6 +1,7 @@
 package cn.navigational.service;
 
 import cn.navigational.model.Paging;
+import cn.navigational.model.ProductAttributCategory;
 import cn.navigational.model.ProductAttribute;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -90,8 +91,9 @@ public interface ProductAttributeService {
      * @param type    规格/参数
      * @param val     增加/减少的具体值 大于零添加 小于零减少
      * @param promise 这个参数只是配合CAS更新添加的
+     * @param flag 记录执行次数
      */
-    Future<Void> changeCateChildrenNum(int cateId, int type, int val, Promise<Void> promise);
+    Future<Void> changeCateChildrenNum(int cateId, int type, int val, Promise<Void> promise,int flag);
 
     /**
      * 删除分类
@@ -128,4 +130,23 @@ public interface ProductAttributeService {
      * @param ids 被删除属性id集合
      */
     Future<Void> deleteAttr(List<Integer> ids);
+
+    /**
+     *
+     * 批量更新商品参数或者规格分类
+     *
+     * @param attrs 分类集合
+     * @param val 值
+     */
+    void batchUpdateAttrCate(List<ProductAttribute> attrs,int val);
+
+    /**
+     *
+     *
+     * 获取属性详情
+     * @param attrId 属性/规格参数
+     *
+     */
+    Future<Optional<JsonObject>> getAttr(int attrId);
+
 }

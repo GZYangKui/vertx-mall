@@ -131,7 +131,7 @@ public class ProductAttributeDao extends BaseDao {
     public Future<List<JsonObject>> findAttrById(List<Integer> ids) {
         Tuple tuple = Tuple.tuple();
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT id,product_attribute_category_id AS \"productProductCategoryId\"," +
+        sb.append("SELECT id,product_attribute_category_id AS \"productAttributeCategoryId\"," +
                 "name,select_type AS \"selectType\",input_type AS \"inputType\",input_list AS \"inputList\"," +
                 "sort,filter_type AS \"filterType\",search_type AS \"searchType\",related_status AS \"relatedStatus\"," +
                 "hand_add_status AS \"handAddStatus\",type FROM product_attribute WHERE id IN(");
@@ -148,5 +148,13 @@ public class ProductAttributeDao extends BaseDao {
             tuples.add(tuple);
         }
         return batchUpdate(sql, tuples);
+    }
+
+    public Future<Optional<JsonObject>> findAttrById(int id) {
+        String sql = "SELECT id,product_attribute_category_id AS \"productProductCategoryId\"," +
+                "name,select_type AS \"selectType\",input_type AS \"inputType\",input_list AS \"inputList\"," +
+                "sort,filter_type AS \"filterType\",search_type AS \"searchType\",related_status AS \"relatedStatus\"," +
+                "hand_add_status AS \"handAddStatus\",type FROM product_attribute WHERE id=$1";
+        return findAny(sql, Tuple.of(id));
     }
 }

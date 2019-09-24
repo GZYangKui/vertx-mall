@@ -17,6 +17,7 @@ import io.vertx.core.json.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static cn.navigational.config.Constants.TOTAL;
@@ -173,7 +174,7 @@ public class ProductAttributeRouter extends RouterVerticle {
         int type = attr.getType();
         service.getProductAttribute(attr)
                 .compose(r -> r.isPresent() ? Future.failedFuture("规格/参数已经存在") : service.createAttribute(attr))
-                .compose(r -> service.changeCateChildrenNum(cateId, type, 1, Promise.promise()))
+                .compose(r -> service.changeCateChildrenNum(cateId, type, 1, Promise.promise(), 0))
                 .setHandler(ar -> {
                     if (ar.failed()) {
                         response.complete(responseFailed(ar.cause().getMessage(), 200));
@@ -192,8 +193,9 @@ public class ProductAttributeRouter extends RouterVerticle {
         }
         List<Integer> ids = getIdFromQuery(var1);
         service.listAttr(ids).compose(r -> {
-            List<Integer> t = r.stream().map(ProductAttribute::getProductAttributeCategoryId).collect(Collectors.toList());
-            //TODO 数据聚合然后对分类数据进行操作
+            //减去分类参数/规格数量
+            service.batchUpdateAttrCate(r, -1);
+            //删除属性/规格
             return service.deleteAttr(ids);
         }).setHandler(ar -> {
             if (ar.failed()) {
@@ -201,6 +203,28 @@ public class ProductAttributeRouter extends RouterVerticle {
                 return;
             }
             response.complete(responseSuccessJson());
+        });
+    }
+
+    @RouterMapping(api = "/detail", method = HttpMethod.GET, description = "获取属性/规格详情")
+    public void detail(final EBRequest request, final Promise<JsonObject> response) {
+        String var1 = request.getQuery("attrId");
+        if (isEmpty(var1)) {
+            response.complete(responseFailed("参数缺失", 200));
+            return;
+        }
+        int attrId = Integer.parseInt(var1);
+        service.getAttr(attrId).setHandler(ar -> {
+            if (ar.failed()) {
+                response.fail(ar.cause());
+                return;
+            }
+            Optional<JsonObject> optional = ar.result();
+            if (optional.isEmpty()) {
+                response.complete(responseFailed("参数/规格不存在", 200));
+            } else {
+                response.complete(responseSuccessJson(optional.get()));
+            }
         });
     }
 }

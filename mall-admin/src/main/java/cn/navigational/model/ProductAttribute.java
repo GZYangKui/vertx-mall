@@ -1,6 +1,7 @@
 package cn.navigational.model;
 
 public class ProductAttribute {
+    private int id;
     //分类筛选样式：1->普通；1->颜色
     private int filterType;
     //是否支持手动新增；0->不支持；1->支持
@@ -109,5 +110,13 @@ public class ProductAttribute {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -137,7 +137,12 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
     }
 
     @Override
-    public Future<Void> changeCateChildrenNum(int cateId, int type, int val, final Promise<Void> promise) {
+    public Future<Void> changeCateChildrenNum(int cateId, int type, int val, final Promise<Void> promise, int flag) {
+        if (flag >= 4) {
+            promise.fail("CAS尝试多次旋转失败!");
+            logger.info("CAS 尝试多次自螺旋修改商品分类/规格分类数量失败");
+            return Future.failedFuture("");
+        }
         categoryDetail(cateId).compose(r -> {
             if (r.isEmpty()) {
                 return Future.failedFuture("分类不存在");
@@ -154,7 +159,7 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
             if (updated > 0) {
                 promise.complete();
             } else {
-                changeCateChildrenNum(cateId, type, val, promise);
+                changeCateChildrenNum(cateId, type, val, promise, flag + 1);
             }
         });
         return promise.future();
@@ -198,7 +203,12 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
                 logger.error("批量获取属性失败:{}", nullableStr(ar.cause()));
                 return;
             }
-            List<ProductAttribute> attrs = ar.result().stream().map(r -> r.mapTo(ProductAttribute.class)).collect(Collectors.toList());
+            List<ProductAttribute> attrs = null;
+            try {
+                attrs = ar.result().stream().map(r -> r.mapTo(ProductAttribute.class)).collect(Collectors.toList());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             promise.complete(attrs);
         });
         return promise.future();
@@ -217,5 +227,16 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
             promise.complete();
         });
         return promise.future();
+    }
+
+    @Override
+    public void batchUpdateAttrCate(List<ProductAttribute> attrs, int val) {
+        attrs.forEach(attr -> {
+            changeCateChildrenNum(attr.getProductAttributeCategoryId(), attr.getType(), val, Promise.promise(), 1);
+        });
+    }
+    @Override
+    public Future<Optional<JsonObject>> getAttr(int attrId){
+        return dao.findAttrById(attrId);
     }
 }
