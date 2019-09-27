@@ -51,6 +51,7 @@ public class OSSRouter extends RouterVerticle {
     /******oss secret*******/
     private String secret = "*";
 
+
     private static final Logger logger = LogManager.getLogger(OSSRouter.class);
 
     @Override
@@ -63,8 +64,7 @@ public class OSSRouter extends RouterVerticle {
         ///签名属于耗时任务///
         vertx.<JsonObject>executeBlocking(fut -> {
             String url = "https://" + bucketName + "." + endpoint;
-            //文件存储路径 TODO 逻辑有待深究
-            String dir = "vertx-mall/"+randomDir();
+            String dir = "vertx-mall/" + randomDir();
             OSSClient client = new OSSClient(endpoint, accessKeyId, secret);
             PolicyConditions conditions = new PolicyConditions();
             conditions.addConditionItem(PolicyConditions.COND_CONTENT_LENGTH_RANGE, 0, maxSize);
@@ -92,10 +92,13 @@ public class OSSRouter extends RouterVerticle {
 
     }
 
-    //产生随机文件夹
-    private String randomDir() {
-        int number = (int) (Math.random() * 9 * 1000);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-        return dateFormat.format(new Date()) + number;
+    /**
+     * 根据日期生成文件夹
+     *
+     * @return 返回日期文件夹名称 例如:2019-09-27
+     */
+    private static String randomDir() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return dateFormat.format(new Date());
     }
 }
