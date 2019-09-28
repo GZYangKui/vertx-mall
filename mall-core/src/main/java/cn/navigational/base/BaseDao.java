@@ -187,25 +187,26 @@ public class BaseDao {
      * @return json数据集合
      */
     private List<JsonObject> rowSetToJson(RowSet rowSet) {
-        final List<JsonObject> list = new ArrayList<>();
-        rowSet.forEach(_row -> {
-            final JsonObject temp = new JsonObject();
-            for (int i = 0; i < _row.size(); i++) {
-                final Object val = _row.getValue(i);
+        List<JsonObject> list = new ArrayList<>();
+        for (Object o : rowSet) {
+            JsonObject temp = new JsonObject();
+            Row row = (Row) o;
+            for (int i = 0; i < row.size(); i++) {
+                Object val = row.getValue(i);
                 if (val != null) {
                     if (val instanceof LocalDateTime) {
-                        temp.put(_row.getColumnName(i), val.toString());
+                        temp.put(row.getColumnName(i), val.toString());
                     } else if (val instanceof LocalDate) {
-                        temp.put(_row.getColumnName(i), val.toString());
+                        temp.put(row.getColumnName(i), val.toString());
                     } else if (val instanceof LocalTime) {
-                        temp.put(_row.getColumnName(i), val.toString());
+                        temp.put(row.getColumnName(i), val.toString());
                     } else {
-                        temp.put(_row.getColumnName(i), val);
+                        temp.put(row.getColumnName(i), val);
                     }
                 }
             }
             list.add(temp);
-        });
+        }
         return list;
     }
 
@@ -251,8 +252,8 @@ public class BaseDao {
     /**
      * 获取分页查询参数
      *
-     * @param pageNum 分页查询起始页
-     * @param pageSize  分页查询页面尺寸
+     * @param pageNum  分页查询起始页
+     * @param pageSize 分页查询页面尺寸
      * @return 返回分装好的分页查询参数
      */
     protected Paging getPaging(int pageNum, int pageSize) {

@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
         final Promise<Optional<JsonObject>> optionalPromise = Promise.promise();
         final User temp = new User();
         temp.setUsername(info.getUsername());
-        dao.getUser(temp).setHandler(optionalPromise.future());
+        dao.getUser(temp).setHandler(optionalPromise);
         optionalPromise.future().setHandler(_rs -> {
             if (_rs.failed()) {
                 promise.fail(_rs.cause());
