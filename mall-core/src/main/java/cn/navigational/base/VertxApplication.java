@@ -23,7 +23,14 @@ import java.util.jar.JarFile;
 
 import static cn.navigational.utils.ExceptionUtils.nullableStr;
 
-
+/**
+ *
+ * Vert.x启动类,一般配合着{@link Application} 和 {@link ScanPackage}使用
+ *
+ * @author YangKui
+ * @since 1.0
+ *
+ */
 public class VertxApplication {
 
     //vertx 实例
