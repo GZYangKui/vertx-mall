@@ -5,8 +5,7 @@ import cn.navigational.annotation.RouterMapping;
 import cn.navigational.annotation.Verticle;
 import cn.navigational.impl.RouterVerticle;
 import cn.navigational.model.EBRequest;
-import cn.navigational.utils.ExceptionUtils;
-import cn.navigational.utils.ResponseUtils;
+import cn.navigational.model.config.OssConfig;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.model.MatchMode;
@@ -16,7 +15,6 @@ import io.vertx.core.json.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -35,41 +33,28 @@ import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
 @Verticle
 @Router(api = "/api/oss")
 public class OSSRouter extends RouterVerticle {
-    /***************************************************
-     *   OSS配置信息,实际开发替换为自己的oss信息             *
-     * *************************************************/
-    /****oss sign expire time(unit is seconds)*****/
-    private int expire = 60;
-    /****oss allow upload max size file****/
-    private long maxSize = 5 * 1024 * 1024;
-    /****oss buckname*****/
-    private String bucketName = "vertx-mall";
-    /*****oss endpoint*****/
-    private String endpoint = "oss-cn-beijing.aliyuncs.com";
-    /******oss accessKeyId*******/
-    private String accessKeyId = "*";
-    /******oss secret*******/
-    private String secret = "*";
 
+    private OssConfig ossConfig;
 
     private static final Logger logger = LogManager.getLogger(OSSRouter.class);
 
     @Override
     public void start(Promise<Void> startPromise) throws Exception {
         super.start(startPromise);
+        ossConfig = config().getJsonObject("ossConfig").mapTo(OssConfig.class);
     }
 
     @RouterMapping(api = "/policy", description = "签阿里云oss")
     public void policy(final EBRequest request, final Promise<JsonObject> response) {
         ///签名属于耗时任务///
         vertx.<JsonObject>executeBlocking(fut -> {
-            String url = "https://" + bucketName + "." + endpoint;
+            String url = "https://" + ossConfig.getBucketName() + "." + ossConfig.getEndpoint();
             String dir = "vertx-mall/" + randomDir();
-            OSSClient client = new OSSClient(endpoint, accessKeyId, secret);
+            OSSClient client = new OSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getSecret());
             PolicyConditions conditions = new PolicyConditions();
-            conditions.addConditionItem(PolicyConditions.COND_CONTENT_LENGTH_RANGE, 0, maxSize);
+            conditions.addConditionItem(PolicyConditions.COND_CONTENT_LENGTH_RANGE, 0, ossConfig.getMaxSize());
             conditions.addConditionItem(MatchMode.StartWith, PolicyConditions.COND_KEY, dir);
-            String postPolicy = client.generatePostPolicy(new Date(expire), conditions);
+            String postPolicy = client.generatePostPolicy(new Date(ossConfig.getExpire()), conditions);
             byte[] bytes = postPolicy.getBytes(StandardCharsets.UTF_8);
             String policy = BinaryUtil.toBase64String(bytes);
             //生成签名

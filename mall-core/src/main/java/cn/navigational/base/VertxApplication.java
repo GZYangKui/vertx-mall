@@ -3,6 +3,7 @@ package cn.navigational.base;
 import cn.navigational.annotation.Application;
 import cn.navigational.annotation.ScanPackage;
 import cn.navigational.annotation.Verticle;
+import cn.navigational.utils.ExceptionUtils;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.file.FileSystem;
@@ -11,7 +12,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
@@ -21,54 +21,47 @@ import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import static cn.navigational.utils.ExceptionUtils.nullableStr;
 
 
 public class VertxApplication {
 
-    //配置文件路径
-    private String config = "config/config.json";
-
     //vertx 实例
-    private final Vertx vertx = Vertx.vertx();
+    private Vertx vertx = Vertx.vertx();
 
 
-    private final Logger logger = LogManager.getLogger();
+    private Logger logger = LogManager.getLogger();
 
 
-    private final DeploymentOptions options = new DeploymentOptions();
-
-    private final List<String> verticle = new ArrayList<>();
+    private DeploymentOptions options = new DeploymentOptions();
 
 
-    /**
-     * 初始化应用
-     */
     public void init() {
-        final FileSystem fs = vertx.fileSystem();
-        final Application app = this.getClass().getDeclaredAnnotation(Application.class);
-        final ScanPackage scanPackage = this.getClass().getDeclaredAnnotation(ScanPackage.class);
 
+        Application app = this.getClass().getDeclaredAnnotation(Application.class);
+        ScanPackage scanPackage = this.getClass().getDeclaredAnnotation(ScanPackage.class);
+
+        //判断配置文件是否为空
         if (app != null) {
-            config = app.config();
+            JsonObject appConfig = initConfig(app.configs());
+            options.setConfig(appConfig);
         }
-
-        final JsonObject appConfig = fs.readFileBlocking(config).toJsonObject();
 
         scanVerticle(scanPackage.packages());
 
-        options.setConfig(appConfig);
+        String[] packages = scanPackage.packages();
 
-        if (!verticle.isEmpty()) {
-            verticle.forEach(_clazz -> {
-                logger.info("start deploy {}", _clazz);
-                vertx.deployVerticle(_clazz, options, _rs -> {
-                    if (_rs.succeeded()) {
-                        logger.info("{} deployment success!", _clazz);
-                    } else {
-                        _rs.cause().printStackTrace();
-                        logger.error("{} deployment failed:{}", _clazz, _rs.cause().getMessage());
-                    }
-                });
+        List<String> verticle = scanVerticle(packages);
+
+        //开始部署verticle
+        for (String clazz : verticle) {
+            logger.info("start deploy {}", clazz);
+            vertx.deployVerticle(clazz, options, ar -> {
+                if (ar.succeeded()) {
+                    logger.info("{} deployment success!", clazz);
+                } else {
+                    logger.error("{} deployment failed:{}", nullableStr(ar.cause()));
+                }
             });
         }
     }
@@ -78,20 +71,21 @@ public class VertxApplication {
      *
      * @param pack 所需要扫描的包路径
      */
-    private void scanVerticle(String... pack) {
+    private List<String> scanVerticle(String... pack) {
         if (pack.length == 0) {
-            return;
+            return List.of();
         }
+        List<String> verticle = new ArrayList<>();
         for (String path : pack) {
             try {
-                final Enumeration<URL> clazz = getClass().getClassLoader().getResources(path.replaceAll("\\.", "/"));
+                Enumeration<URL> clazz = getClass().getClassLoader().getResources(path.replaceAll("\\.", "/"));
                 while (clazz.hasMoreElements()) {
-                    final URL url = clazz.nextElement();
+                    URL url = clazz.nextElement();
                     if (url != null) {
                         //文件系统
                         if (url.getProtocol().equals("file")) {
-                            final String packagePath = URLDecoder.decode(url.getFile(), StandardCharsets.UTF_8);
-                            addClass(packagePath, path);
+                            String packagePath = URLDecoder.decode(url.getFile(), StandardCharsets.UTF_8);
+                            addClass(packagePath, path, verticle);
                         } else {
                             //Jar
                             logger.info("class type:{}", "jar");
@@ -104,6 +98,7 @@ public class VertxApplication {
                 logger.error("scan package failed:{}", e.getCause().getMessage());
             }
         }
+        return verticle;
     }
 
     /**
@@ -111,19 +106,19 @@ public class VertxApplication {
      *
      * @param url 初始包路径
      */
-    private List<String> scanClassFromJar(final URL url, final String path) throws IOException {
-        final List<String> list = new ArrayList<>();
-        final JarURLConnection jarURLConnection = (JarURLConnection) url.openConnection();
+    private List<String> scanClassFromJar(URL url, String path) throws IOException {
+        List<String> list = new ArrayList<>();
+        JarURLConnection jarURLConnection = (JarURLConnection) url.openConnection();
         if (Objects.nonNull(jarURLConnection) && Objects.nonNull(jarURLConnection.getJarFile())) {
-            final JarFile jarFile = jarURLConnection.getJarFile();
-            final Enumeration<JarEntry> entries = jarFile.entries();
+            JarFile jarFile = jarURLConnection.getJarFile();
+            Enumeration<JarEntry> entries = jarFile.entries();
             while (entries.hasMoreElements()) {
-                final JarEntry jarEntry = entries.nextElement();
-                final String jarEntryName = jarEntry.getName();
-                final String prefix = jarEntryName.replaceAll("/", "\\.");
+                JarEntry jarEntry = entries.nextElement();
+                String jarEntryName = jarEntry.getName();
+                String prefix = jarEntryName.replaceAll("/", "\\.");
                 if (prefix.startsWith(path) && jarEntryName.endsWith(".class")) {
-                    final String className = jarEntryName.substring(0, jarEntryName.lastIndexOf(".")).replaceAll("/", "\\.");
-                    final boolean cl = isFitClass(className);
+                    String className = jarEntryName.substring(0, jarEntryName.lastIndexOf(".")).replaceAll("/", "\\.");
+                    boolean cl = isFitClass(className);
                     if (cl) {
                         logger.info(className);
                         list.add(className);
@@ -142,25 +137,21 @@ public class VertxApplication {
      * @param packName 包名
      * @return 包含该路径下所有class文件的list集合
      */
-    private void addClass(String packPath, String packName) {
-        final File[] files = new File(packPath).listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return dir.isFile() && name.endsWith(".class") || dir.isDirectory();
-            }
-        });
+    private void addClass(String packPath, String packName, List<String> verticle) {
+        File[] files = new File(packPath).listFiles((dir, name) -> dir.isFile() && name.endsWith(".class") || dir.isDirectory());
+        assert files != null;
         for (File file : files) {
-            final String fileName = file.getName();
+            String fileName = file.getName();
             if (file.isFile()) {
-                final String className = packName + "." + fileName.split("\\.")[0];
-                final boolean clazz = isFitClass(className);
+                String className = packName + "." + fileName.split("\\.")[0];
+                boolean clazz = isFitClass(className);
                 if (clazz) {
                     verticle.add(className);
                 }
             } else {
-                final String subPath = packPath + File.separator + fileName;
-                final String subPackage = packName + "." + fileName;
-                addClass(subPath, subPackage);
+                String subPath = packPath + File.separator + fileName;
+                String subPackage = packName + "." + fileName;
+                addClass(subPath, subPackage, verticle);
             }
         }
     }
@@ -169,7 +160,7 @@ public class VertxApplication {
      * 判断是否标注@Verticle注解
      */
     private boolean isFitClass(String className) {
-        final Class clazz;
+        Class clazz;
         try {
             clazz = Class.forName(className);
             if (clazz.getDeclaredAnnotation(Verticle.class) != null) {
@@ -181,21 +172,23 @@ public class VertxApplication {
         return false;
     }
 
-    /**
-     * 设置配置文件路径
-     *
-     * @param config 配置文件
-     */
-    public VertxApplication setConfig(String config) {
-        this.config = config;
-        return this;
-    }
-
 
     public DeploymentOptions getOptions() {
         return options;
     }
 
-
-
+    /**
+     * 初始化配置信息
+     *
+     * @param configs 配置信息数组
+     */
+    private JsonObject initConfig(String[] configs) {
+        JsonObject obj = new JsonObject();
+        FileSystem fs = vertx.fileSystem();
+        for (String config : configs) {
+            JsonObject o = fs.readFileBlocking(config).toJsonObject();
+            obj.mergeIn(o);
+        }
+        return obj;
+    }
 }
