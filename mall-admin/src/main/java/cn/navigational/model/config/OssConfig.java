@@ -1,21 +1,20 @@
 package cn.navigational.model.config;
 
+/***************************************************
+ *   OSS配置信息,实际开发替换为自己的oss信息             *
+ * *************************************************/
 public class OssConfig {
-    /***************************************************
-     *   OSS配置信息,实际开发替换为自己的oss信息             *
-     * *************************************************/
-    /****oss sign expire time(unit is seconds)*****/
+    //签名超时时间(单位为秒)
     private int expire;
-    /****oss allow upload max size file****/
+    //允许最大上传文件尺寸
     private long maxSize;
-    /****oss buckname*****/
+    //oss buckName
     private String bucketName;
-    /*****oss endpoint*****/
+    // oss endpoint
     private String endpoint;
-
-    /******oss accessKeyId*******/
+    // oss accessKeyId
     private String accessKeyId;
-    /******oss secret*******/
+    //oss secret
     private String secret;
 
     public int getExpire() {
