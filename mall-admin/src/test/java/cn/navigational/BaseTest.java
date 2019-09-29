@@ -27,6 +27,8 @@ public class BaseTest {
     protected String host = "localhost";
     protected int port = 8081;
     protected JsonObject user;
+    private final static String globalPath ="/home/yangkui/.vert.x-mall/global_config.json";
+    private final static String localPath = "config/config.json";
 
 
     /**
@@ -52,7 +54,9 @@ public class BaseTest {
     protected static  DeploymentOptions readConfig() {
         DeploymentOptions options = new DeploymentOptions();
         FileSystem fs = vertx.fileSystem();
-        JsonObject config = fs.readFileBlocking("config/config.json").toJsonObject();
+        JsonObject globalConfig = fs.readFileBlocking(globalPath).toJsonObject();
+        JsonObject config = fs.readFileBlocking(localPath).toJsonObject();
+        config.mergeIn(globalConfig);
         options.setConfig(config);
         return options;
     }
