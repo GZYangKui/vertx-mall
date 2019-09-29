@@ -28,7 +28,7 @@ public class BaseTest {
     protected int port = 8081;
     protected JsonObject user;
     private final static String globalPath ="/home/yangkui/.vert.x-mall/global_config.json";
-    private final static String localPath = "config/config.json";
+    private final static String localPath = "config/local_config.json";
 
 
     /**
