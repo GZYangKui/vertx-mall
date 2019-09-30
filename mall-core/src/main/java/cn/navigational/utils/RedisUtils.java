@@ -134,30 +134,29 @@ public class RedisUtils {
      * @param h   异步回调接口
      */
     public void getJsonObject(String key, Handler<AsyncResult<JsonObject>> h) {
-        getRedisConnect().compose(ar -> this.<String>getJson(key, ar)).setHandler(ar -> {
+        getRedisConnect().compose(ar -> this.getValue(key, ar)).setHandler(ar -> {
             if (ar.failed()) {
                 h.handle(Future.failedFuture(ar.cause()));
-            } else {
-                h.handle(Future.succeededFuture(ar.result()));
+                return;
             }
+            JsonObject obj = new JsonObject();
+            if (ar.result() != null) {
+                obj.mergeIn(ar.result().toBuffer().toJsonObject());
+            }
+            h.handle(Future.succeededFuture(obj));
         });
     }
 
-    private Future<JsonObject> getJson(String key, RedisConnection con) {
-        Promise<JsonObject> promise = Promise.promise();
+    private Future<Response> getValue(String key, RedisConnection con) {
+        Promise<Response> promise = Promise.promise();
         RedisAPI api = RedisAPI.api(con);
         api.get(key, ar -> {
             if (ar.failed()) {
-                logger.error("Get JsonObject from redis failed because:{}", nullableStr(ar.cause()));
+                logger.error("Get value from redis failed because:{}", nullableStr(ar.cause()));
                 promise.fail(ar.cause());
                 return;
             } else {
-                JsonObject obj = new JsonObject();
-                if (ar.result() != null) {
-                    Response response = ar.result();
-                    obj.mergeIn(response.toBuffer().toJsonObject());
-                }
-                promise.complete(obj);
+                promise.complete(ar.result());
             }
             con.close();
         });
