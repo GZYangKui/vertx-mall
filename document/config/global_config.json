@@ -6,7 +6,7 @@
     "password": "*",
     "database": "*"
   },
-  "ossConfig":{
+  "ossConfig": {
     "expire": 60,
     "maxSize": 5242880,
     "bucketName": "*",
@@ -14,9 +14,10 @@
     "accessKeyId": "*",
     "secret": "*"
   },
-   "redisClient": {
+  "redisClient": {
     "host": "*",
     "port": 6379,
-     "maxSize": 10
+    "maxSize": 10,
+    "maxWait": 15
   }
 }

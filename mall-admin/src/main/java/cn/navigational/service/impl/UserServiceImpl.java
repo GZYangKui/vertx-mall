@@ -13,7 +13,6 @@ import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
-import io.vertx.redis.op.SetOptions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,7 +22,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static cn.navigational.utils.ExceptionUtils.nullableStr;
-import static cn.navigational.utils.StringUtils.strToList;
 import static cn.navigational.utils.TokenUtils.generateKey;
 
 public class UserServiceImpl implements UserService {
@@ -131,13 +129,12 @@ public class UserServiceImpl implements UserService {
     public Future<JsonObject> getUserFromRedis(long adminId) {
         Promise<JsonObject> promise = Promise.promise();
         String key = REDIS_USER_PREFIX + adminId;
-        redis.get(key, ar -> {
+        redis.getJsonObject(key, ar -> {
             if (ar.failed()) {
                 promise.fail(ar.cause());
                 return;
             }
-            String str = ar.result();
-            promise.complete(Objects.isNull(str) ? new JsonObject() : new JsonObject(str));
+            promise.complete(ar.result());
         });
         return promise.future();
     }
@@ -167,13 +164,10 @@ public class UserServiceImpl implements UserService {
     public void flushToken(long adminId, JsonObject userInfo) {
         //生成rediskey
         String key = REDIS_USER_PREFIX + adminId;
-        //设置过期时间
-        SetOptions options = new SetOptions();
-
         //设置15分钟之内没有活动 登出
-        options.setEX(15*60);
+        String expire = String.valueOf(15*60);
 
         //写进redis
-        redis.put(key, userInfo.toString(), options);
+        redis.putEx(key, userInfo.toString(), expire);
     }
 }

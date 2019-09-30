@@ -1,6 +1,7 @@
 package cn.navigational.utils;
 
 import io.vertx.core.*;
+import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.redis.client.*;
 import org.apache.logging.log4j.LogManager;
@@ -30,15 +31,18 @@ public class RedisUtils {
         /**************************************************
          *             初始化Redis连接信息                   *
          **************************************************/
-        logger.info("==========开始初始化Redis===========");
         String host = redisClient.getString(HOST);
         int port = redisClient.getInteger(PORT);
         int maxSize = redisClient.getInteger("maxSize");
+        int maxWait = redisClient.getInteger("maxWait");
+        String endpoint = "redis://" + host + ":" + port;
+        System.out.println(endpoint);
+        logger.info("==========开始初始化Redis===========");
 
         RedisOptions options = new RedisOptions();
-        options.setEndpoint(host + ":" + port);
-        options.setType(RedisClientType.CLUSTER);
+        options.setEndpoint(endpoint);
         options.setMaxPoolSize(maxSize);
+        options.setMaxPoolWaiting(maxWait);
 
         redis = Redis.createClient(vertx, options);
 
@@ -88,32 +92,40 @@ public class RedisUtils {
     }
 
 
-//    public void put(String key, String value, SetOptions options) {
-//
-//        putWithOption(key, value, options, ar -> {
-//            //Empty
-//        });
-//    }
-//
-//    /**
-//     * 向redis中写入数据并指定option(例如超时,过期等)
-//     *
-//     * @param key     键值对 key
-//     * @param value   键值对 value
-//     * @param options 键值对选项
-//     * @param handler 回调函数
-//     */
-//    public void putWithOption(String key, String value, SetOptions options, Handler<AsyncResult<String>> handler) {
-//        client.setWithOptions(key, value, options, ar -> {
-//            if (ar.failed()) {
-//                LOGGER.error("向redis写入数据发生错误:{}", nullableStr(ar.cause()));
-//                handler.handle(Future.failedFuture(ar.cause()));
-//                ar.cause().printStackTrace();
-//                return;
-//            }
-//            handler.handle(Future.succeededFuture());
-//        });
-//    }
+    public Future<Void> putEx(String key, String value, String expire) {
+        Promise<Void> promise = Promise.promise();
+        getRedisConnect().compose(r -> putEx(key, value, expire, r)).setHandler(ar -> {
+            if (ar.failed()) {
+                promise.fail(ar.cause());
+                return;
+            }
+            promise.complete();
+        });
+        return promise.future();
+    }
+
+    /**
+     * 向redis中写入数据并指定option(例如超时,过期等)
+     *
+     * @param key    键值对 key
+     * @param value  键值对 value
+     * @param expire 超时时间(单位为秒)
+     * @param con    Redis连接实例对象
+     */
+    private Future<Void> putEx(String key, String value, String expire, RedisConnection con) {
+        Promise<Void> promise = Promise.promise();
+        RedisAPI api = RedisAPI.api(con);
+        api.setex(key, expire, value, ar -> {
+            if (ar.failed()) {
+                logger.error("Error writing data to redis(EX):{}", nullableStr(ar.cause()));
+                promise.fail(ar.cause());
+            } else {
+                promise.complete();
+            }
+            con.close();
+        });
+        return promise.future();
+    }
 
     /**
      * 从redis中获取数据
@@ -121,8 +133,8 @@ public class RedisUtils {
      * @param key 需要获取数据的key
      * @param h   异步回调接口
      */
-    public void getString(String key, Handler<AsyncResult<String>> h) {
-        getRedisConnect().compose(ar -> this.<String>get(key, ar)).setHandler(ar -> {
+    public void getJsonObject(String key, Handler<AsyncResult<JsonObject>> h) {
+        getRedisConnect().compose(ar -> this.<String>getJson(key, ar)).setHandler(ar -> {
             if (ar.failed()) {
                 h.handle(Future.failedFuture(ar.cause()));
             } else {
@@ -131,17 +143,21 @@ public class RedisUtils {
         });
     }
 
-    private <T> Future<T> get(String key, RedisConnection con) {
-        Promise<T> promise = Promise.promise();
+    private Future<JsonObject> getJson(String key, RedisConnection con) {
+        Promise<JsonObject> promise = Promise.promise();
         RedisAPI api = RedisAPI.api(con);
         api.get(key, ar -> {
             if (ar.failed()) {
-                logger.error("Get data from redis failed because:{}", nullableStr(ar.cause()));
+                logger.error("Get JsonObject from redis failed because:{}", nullableStr(ar.cause()));
                 promise.fail(ar.cause());
                 return;
             } else {
-                T result = (T) ar.result().get(key);
-                promise.complete(result);
+                JsonObject obj = new JsonObject();
+                if (ar.result() != null) {
+                    Response response = ar.result();
+                    obj.mergeIn(response.toBuffer().toJsonObject());
+                }
+                promise.complete(obj);
             }
             con.close();
         });
