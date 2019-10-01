@@ -5,8 +5,8 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 
 import static cn.navigational.config.Constants.*;
-import static cn.navigational.utils.Assert.isEmpty;
 import static cn.navigational.utils.StringUtils.checkMobileNumber;
+import static cn.navigational.utils.StringUtils.isEmpty;
 
 
 public class RegisterValidator extends UserValidator {

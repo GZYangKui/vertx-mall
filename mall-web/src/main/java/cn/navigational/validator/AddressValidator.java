@@ -5,12 +5,15 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 
 import static cn.navigational.config.Constants.BODY;
-import static cn.navigational.utils.Assert.isEmpty;
+
 import static cn.navigational.utils.StringUtils.checkMobileNumber;
+import static cn.navigational.utils.StringUtils.isEmpty;
 
 /**
  * 校验用户地址信息
  * 用户地址信息必须包括姓名、电话、省、市、区(可选)、详细地址、是否默认地址选项。
+ * @author YangKui
+ * @since 1.0
  */
 public class AddressValidator extends HttpValidator {
     @Override

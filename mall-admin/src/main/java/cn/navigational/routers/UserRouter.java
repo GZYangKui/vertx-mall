@@ -16,10 +16,10 @@ import io.vertx.core.json.JsonObject;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
-import static cn.navigational.utils.Assert.isEmpty;
 import static cn.navigational.utils.ExceptionUtils.nullableStr;
 import static cn.navigational.utils.ResponseUtils.responseFailed;
 import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
+import static cn.navigational.utils.StringUtils.isEmpty;
 
 
 @Verticle
@@ -85,7 +85,7 @@ public class UserRouter extends RouterVerticle {
             logger.setAdminId(adminUser.getId());
             logger.setUserAgent(request.getHeader("user-agent"));
             logger.setIp(request.getHeader("ip"));
-            service.recordAdminLogging(logger,adminUser);
+            service.recordAdminLogging(logger, adminUser);
             //缓存用户权限
             service.getUserPermissionAndSave(adminUser);
         });

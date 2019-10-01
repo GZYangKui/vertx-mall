@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static cn.navigational.config.Constants.TOTAL;
-import static cn.navigational.utils.Assert.isEmpty;
 import static cn.navigational.utils.ResponseUtils.responseFailed;
 import static cn.navigational.utils.ResponseUtils.responseSuccessJson;
 import static cn.navigational.utils.StringUtils.getIdFromQuery;
+import static cn.navigational.utils.StringUtils.isEmpty;
 
 /**
  * 商品属性管理接口

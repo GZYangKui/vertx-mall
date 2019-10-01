@@ -1,7 +1,6 @@
 package cn.navigational.utils;
 
 import io.vertx.core.*;
-import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.redis.client.*;
 import org.apache.logging.log4j.LogManager;

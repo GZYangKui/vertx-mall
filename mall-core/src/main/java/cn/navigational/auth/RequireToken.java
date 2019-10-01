@@ -13,9 +13,9 @@ import io.vertx.ext.web.RoutingContext;
 import java.security.Key;
 
 import static cn.navigational.config.Constants.USER;
-import static cn.navigational.utils.Assert.isEmpty;
 import static cn.navigational.utils.ResponseUtils.response;
 import static cn.navigational.utils.ResponseUtils.responseFailed;
+import static cn.navigational.utils.StringUtils.isEmpty;
 import static cn.navigational.utils.TokenUtils.generateKey;
 
 public class RequireToken extends HttpValidator {

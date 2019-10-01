@@ -162,7 +162,7 @@ public class UserServiceImpl implements UserService {
 
     //将用户权限缓存进redis
     public void flushToken(long adminId, JsonObject userInfo) {
-        //生成rediskey
+        //生成redis-key
         String key = REDIS_USER_PREFIX + adminId;
         //设置15分钟之内没有活动 登出
         String expire = String.valueOf(15*60);
