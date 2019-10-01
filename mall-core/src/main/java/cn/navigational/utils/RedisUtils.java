@@ -53,7 +53,7 @@ public class RedisUtils {
                 return;
             }
             redis = RedisAPI.api(ar.result());
-            logger.info("==========初始化成功===========");
+            logger.info("==========Redis初始化成功===========");
         });
 
     }
