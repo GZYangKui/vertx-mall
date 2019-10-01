@@ -203,7 +203,7 @@ public class RedisUtils {
     /**
      * 通过加锁方式创建单例
      *
-     * @param vertx vertx实例对象
+     * @param vertx  vertx实例对象
      * @param config 配置信息
      * @return 返回#RedisUtils 实例
      */
@@ -212,5 +212,12 @@ public class RedisUtils {
             utils = new RedisUtils(vertx, config);
         }
         return utils;
+    }
+
+    /**
+     * 关闭redis连接
+     */
+    public void close() {
+        client.close();
     }
 }
