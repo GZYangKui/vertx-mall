@@ -18,6 +18,6 @@
     "host": "*",
     "port": 6379,
     "maxSize": 10,
-    "maxWait": 15
+    "maxWait": 8
   }
 }
