@@ -141,8 +141,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void logout(long adminId) {
-        redis.remove(REDIS_USER_PREFIX + adminId, ar -> {
-        });
+        redis.remove(List.of(REDIS_USER_PREFIX + adminId));
     }
 
     @Override
