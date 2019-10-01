@@ -36,7 +36,6 @@ public class RedisUtils {
         int maxSize = redisClient.getInteger("maxSize");
         int maxWait = redisClient.getInteger("maxWait");
         String endpoint = "redis://" + host + ":" + port;
-        System.out.println(endpoint);
         logger.info("==========开始初始化Redis===========");
 
         RedisOptions options = new RedisOptions();
@@ -154,7 +153,6 @@ public class RedisUtils {
             if (ar.failed()) {
                 logger.error("Get value from redis failed because:{}", nullableStr(ar.cause()));
                 promise.fail(ar.cause());
-                return;
             } else {
                 promise.complete(ar.result());
             }
