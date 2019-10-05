@@ -8,6 +8,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.sqlclient.Tuple;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductCateDao extends BaseDao {
@@ -15,34 +16,54 @@ public class ProductCateDao extends BaseDao {
         super(vertx, config);
     }
 
-    public Future<List<JsonObject>> list(ProductCateQueryParam param) {
+    public Future<List<JsonObject>> list(int parentId, int pageIndex, int pageSize) {
         StringBuilder sb = new StringBuilder();
-        Tuple tuple = Tuple.of(1);
-        sb.append("SELECT  id,parent_id AS \"parentId\",name,product_count AS \"productCount\"," +
-                "show_status AS showStatus,icon,description,sort FROM product_category WHERE 1=$1");
-        if (param.getKeyword() != null) {
-            sb.append(" AND name LIKE $2");
-            tuple.addValue("%"+param.getKeyword()+"%");
-        }
-        sb.append(" LIMIT ").append(
-                param.getKeyword() != null ? "$3 OFFSET $4" : "$2 OFFSET $3");
-        Paging paging = getPaging(param.getPageNum(), param.getPageSize());
+        Tuple tuple = Tuple.tuple();
+        sb.append("SELECT  id,parent_id AS \"parentId\",name,product_count AS \"productCount\",nav_status AS \"navStatus\"," +
+                "show_status AS showStatus,icon,description,sort FROM product_category WHERE parent_id=$1");
+        sb.append(" LIMIT $2 OFFSET $3");
+
+        tuple.addValue(parentId);
+        Paging paging = getPaging(pageIndex, pageSize);
         tuple.addValue(paging.getPageSize());
         tuple.addValue(paging.getInitOffset());
 
         return executeQuery(sb.toString(), tuple);
     }
 
-    public Future<Long> count(ProductCateQueryParam param) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT count(*) FROM product_category");
-        Tuple tuple = Tuple.tuple();
-        if (param.getKeyword() != null) {
-            sb.append(" WHERE name LIKE $1");
-            tuple.addValue("%"+param.getKeyword()+"%");
+    public Future<Long> count(int parentId) {
+        String sql = "SELECT count(*) FROM product_category WHERE parent_id=$1";
+        Tuple tuple = Tuple.of(parentId);
+        return countWithParam(sql, tuple);
+    }
+
+    public Future<List<JsonObject>> list() {
+        String sql = "SELECT  id,parent_id AS \"parentId\",name,product_count AS \"productCount\",show_status AS showStatus," +
+                "nav_status AS \"navStatus\",icon,description,sort FROM product_category";
+        return executeQuery(sql);
+    }
+
+    public Future<Integer> updateShowStatus(List<Integer> ids, int status) {
+        List<Tuple> tuples = new ArrayList<>();
+        String sql = "UPDATE product_category SET show_status=$1 WHERE id=$2";
+        for (Integer id : ids) {
+            Tuple tuple = Tuple.tuple();
+            tuple.addValue(status);
+            tuple.addValue(id);
+            tuples.add(tuple);
         }
-        String sql = sb.toString();
-        System.out.println(sql);
-        return tuple.size() > 0 ? countWithParam(sql, tuple) : count(sql);
+        return batchUpdate(sql, tuples);
+    }
+
+    public Future<Integer> updateNavStatus(List<Integer> ids, int status) {
+        List<Tuple> tuples = new ArrayList<>();
+        String sql = "UPDATE product_category SET nav_status=$1 WHERE id=$2";
+        for (Integer id : ids) {
+            Tuple tuple = Tuple.tuple();
+            tuple.addValue(status);
+            tuple.addValue(id);
+            tuples.add(tuple);
+        }
+        return batchUpdate(sql, tuples);
     }
 }

@@ -1,7 +1,6 @@
 package cn.navigational.service.impl;
 
 import cn.navigational.dao.ProductCateDao;
-import cn.navigational.model.query.ProductCateQueryParam;
 import cn.navigational.service.ProductCateService;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -27,13 +26,12 @@ public class ProductCateServiceImpl implements ProductCateService {
     }
 
     @Override
-    public Future<List<JsonObject>> list(ProductCateQueryParam param) {
+    public Future<List<JsonObject>> list(int parentId, int pageIndex, int pageSize) {
         Promise<List<JsonObject>> promise = Promise.promise();
-        dao.list(param).setHandler(ar -> {
+        dao.list(parentId, pageIndex, pageSize).setHandler(ar -> {
             if (ar.failed()) {
                 promise.fail(ar.cause());
-                logger.error("获取商品分类失败:{}", nullableStr(ar.cause()));
-                ar.cause().printStackTrace();
+                logger.error("获取分类失败:{}", nullableStr(ar.cause()));
                 return;
             }
             promise.complete(ar.result());
@@ -42,9 +40,9 @@ public class ProductCateServiceImpl implements ProductCateService {
     }
 
     @Override
-    public Future<Long> getCateNum(ProductCateQueryParam param) {
+    public Future<Long> getCateNum(int parentId) {
         Promise<Long> promise = Promise.promise();
-        dao.count(param).setHandler(ar -> {
+        dao.count(parentId).setHandler(ar -> {
             if (ar.failed()) {
                 promise.fail(ar.cause());
                 logger.error("统计分类数量过程发生错误:{}", nullableStr(ar.cause()));
@@ -56,9 +54,9 @@ public class ProductCateServiceImpl implements ProductCateService {
     }
 
     @Override
-    public Future<List<JsonObject>> listWithChildren(ProductCateQueryParam param) {
+    public Future<List<JsonObject>> listWithChildren() {
         Promise<List<JsonObject>> promise = Promise.promise();
-        dao.list(param).setHandler(ar -> {
+        dao.list().setHandler(ar -> {
             if (ar.failed()) {
                 promise.fail(ar.cause());
                 logger.error("获取分类及其子分类失败:{}", nullableStr(ar.cause()));
@@ -71,7 +69,7 @@ public class ProductCateServiceImpl implements ProductCateService {
             }
             //TODO 时间复杂度太高,分类多的时候性能急剧下降,有待改进
             List<JsonObject> list = ar.result();
-            List<JsonObject> destory = new ArrayList<>();
+            List<JsonObject> destroy = new ArrayList<>();
             for (JsonObject root : list) {
                 long id = root.getLong("id");
                 for (JsonObject item : list) {
@@ -82,12 +80,43 @@ public class ProductCateServiceImpl implements ProductCateService {
                             root.put("children", children);
                         }
                         children.add(item);
-                        destory.add(item);
+                        destroy.add(item);
                     }
                 }
             }
-            destory.forEach(list::remove);
+            destroy.forEach(list::remove);
             promise.complete(list);
+        });
+        return promise.future();
+    }
+
+    @Override
+    public Future<Void> updateShowStatus(List<Integer> ids, int showStatus) {
+        Promise<Void> promise = Promise.promise();
+
+        dao.updateShowStatus(ids, showStatus).setHandler(ar -> {
+            if (ar.failed()) {
+                promise.fail(ar.cause());
+                logger.error("更新显示状态失败:{}", nullableStr(ar.cause()));
+                return;
+            }
+            logger.info("成功更新{}条分类显示状态", ar.result());
+            promise.complete();
+        });
+        return promise.future();
+    }
+
+    @Override
+    public Future<Void> updateNavStatus(List<Integer> ids, int navStatus) {
+        Promise<Void> promise = Promise.promise();
+        dao.updateNavStatus(ids, navStatus).setHandler(ar -> {
+            if (ar.failed()) {
+                promise.fail(ar.cause());
+                logger.error("更新导航状态失败:{}", nullableStr(ar.cause()));
+                return;
+            }
+            logger.info("成功更新{}条分类导航状态", ar.result());
+            promise.complete();
         });
         return promise.future();
     }

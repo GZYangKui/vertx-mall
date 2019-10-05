@@ -46,7 +46,7 @@ public class OSSRouter extends RouterVerticle {
 
     @RouterMapping(api = "/policy", description = "签阿里云oss")
     public void policy(final EBRequest request, final Promise<JsonObject> response) {
-        ///签名属于耗时任务///
+        ///签名由于要请求阿里云服务器所以属于耗时任务///
         vertx.<JsonObject>executeBlocking(fut -> {
             String url = "https://" + ossConfig.getBucketName() + "." + ossConfig.getEndpoint();
             String dir = "vertx-mall/" + randomDir();
