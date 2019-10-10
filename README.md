@@ -1,4 +1,8 @@
 # vertx-mall
+## Steps to build
+
+[Portal](document/INSTALL_EN.md)
+
 ## Explain
 > Vertx-based business system, due to limited developers, only the front-end mall system and back-end management system, back-end management system will follow.
 
