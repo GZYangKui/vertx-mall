@@ -94,6 +94,7 @@ alter user postgres with password '***password***';
 ![images load failed](resource/20190226144741688.png)
 
 15.1.1 postgresql.conf
+
 ![images load failed](resource/20190226145747453.png)
 
 ```
