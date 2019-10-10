@@ -3,6 +3,11 @@
 
 [Portal](document/INSTALL_EN.md)
 
+## Project demonstration
+[vertx-mall-admin-web](https://github.com/GZYangKui/vertx-admin-mall-web)
+
+[Online shopping mall](http://mall.navigational.cn)
+
 ## Explain
 > Vertx-based business system, due to limited developers, only the front-end mall system and back-end management system, back-end management system will follow.
 
