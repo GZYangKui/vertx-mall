@@ -4,7 +4,7 @@ package cn.navigational.base;
  * 响应http请求,返回基本信息(自定义状态码+自定义回复消息)
  *
  * @author YangKui
- * @since 1.0
+ * @since 2.0
  */
 public class BasicResult {
     //自定义状态码

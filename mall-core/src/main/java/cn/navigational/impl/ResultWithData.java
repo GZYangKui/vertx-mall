@@ -9,7 +9,7 @@ import java.util.List;
  * 响应http请求并携带数据
  *
  * @author YangKui
- * @since 1.0
+ * @since 2.0
  */
 public class ResultWithData<T> extends BasicResult {
     //自定义回复数据

@@ -8,27 +8,40 @@ import io.vertx.ext.web.RoutingContext;
 
 import static cn.navigational.config.Constants.*;
 
+/**
+ * Http结果展示数据
+ *
+ * @author YangKui
+ * @since 1.0
+ * @deprecated {@link cn.navigational.base.BasicResult}
+ */
+@Deprecated
 public class ResponseUtils {
+    @Deprecated
     public static JsonObject responseFailed(String msg, int code) {
         return responseTemplate(msg, code, false, EventBusDataType.JSON);
     }
 
+    @Deprecated
     public static JsonObject responseSuccessJson() {
         return responseTemplate("ok", 200, true, EventBusDataType.JSON);
     }
 
+    @Deprecated
     public static JsonObject responseSuccessJson(Object data) {
         final JsonObject temp = responseTemplate("ok", 200, true, EventBusDataType.JSON);
         temp.put(DATA, data);
         return temp;
     }
 
+    @Deprecated
     public static JsonObject responsePng(byte[] bytes) {
         final JsonObject temp = responseTemplate("ok", 200, true, EventBusDataType.PNG);
         temp.put(DATA, bytes);
         return temp;
     }
 
+    @Deprecated
     public static JsonObject responseTemplate(String msg, int code, boolean flag, EventBusDataType type) {
         final JsonObject temp = new JsonObject();
         temp.put(CODE, code);
@@ -40,6 +53,7 @@ public class ResponseUtils {
         return temp;
     }
 
+    @Deprecated
     private static JsonObject getHeaders(EventBusDataType type) {
         final JsonObject headers = new JsonObject();
         if (type == EventBusDataType.JSON) {
@@ -57,6 +71,7 @@ public class ResponseUtils {
      * @param rcx  请求上下文对象
      * @param info 回复数据
      */
+    @Deprecated
     public static void response(RoutingContext rcx, JsonObject info) {
         final HttpServerResponse response = rcx.response();
         final EventBusDataType type = EventBusDataType.valueOf(info.getString(TYPE));
