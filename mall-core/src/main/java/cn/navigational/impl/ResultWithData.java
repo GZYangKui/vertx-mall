@@ -1,6 +1,6 @@
 package cn.navigational.impl;
 
-import com.qihaoljl.base.BasicResult;
+import cn.navigational.base.BasicResult;
 
 import java.util.ArrayList;
 import java.util.List;

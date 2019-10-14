@@ -1,6 +1,6 @@
 package cn.navigational.impl;
 
-import com.qihaoljl.base.BasicResult;
+import cn.navigational.base.BasicResult;
 
 public class ResultWithSingleData<T> extends BasicResult {
     //单条数据
